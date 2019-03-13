@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nextcloud
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - host: vieta.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nextcloud
+          servicePort: http
+  - host: doks.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: collabora
+          servicePort: tcp

@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: netdata-back
+  labels:
+    app: netdata-back
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: netdata-back
+    spec:
+      containers:
+      - name: netdata
+        image: netdata/netdata
+        volumeMounts:
+        - name: proc
+          mountPath: "/host/proc"
+          readOnly: true
+        - name: sys
+          mountPath: "/host/sys"
+          readOnly: true
+        - name: docker-sock
+          mountPath: "/var/run/docker.sock"
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: "/proc"
+      - name: sys
+        hostPath:
+          path: "/sys"
+      - name: docker-sock
+        hostPath:
+          path: "/var/run/docker.sock"
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: "back-xs"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netdata-back
+spec:
+  ports:
+    - name: tcp
+      port: 19999
+      targetPort: 19999
+      protocol: TCP
+  selector:
+    app: netdata-back
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: netdata-back
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - host: mon.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: netdata-back
+          servicePort: tcp

@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: collabora
+  labels:
+    app: collabora
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: collabora
+    spec:
+      containers:
+      - name: collabora
+        image: collabora/code:4.0.0.2
+        ports:
+        - containerPort: 9980
+          protocol: TCP
+        # env: # env variables not necessary, as loolwsd.xml has all of that
+        # - name: domain
+        #   value: "doks\\.rudenspavasaris\\.id\\.lv|163\\.172\\.162\\.100"
+        # - name: username
+        #   value: admin
+        # # - name: password
+        # #   value: "PASSWORD_GOES_HERE"
+        # - name: DONT_GEN_SSL_CERT
+        #   value: "1"
+        # - name: server_name
+        #   value: "doks.rudenspavasaris.id.lv"
+        securityContext:
+         capabilities:
+           add:
+             - MKNOD
+        volumeMounts:
+        - mountPath: /etc/loolwsd/loolwsd.xml
+          name: collabora-data
+      restartPolicy: Always
+      volumes:
+        - name: collabora-data
+          hostPath:
+            path: "/data/collabora_data/loolwsd.xml"
+      nodeSelector:
+        kubernetes.io/hostname: "back-xs"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collabora
+spec:
+  ports:
+  - name: tcp
+    targetPort: 9980
+    port: 9980
+  selector:
+    app: collabora
