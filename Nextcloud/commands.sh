@@ -1,7 +1,7 @@
 echo -n "PASSWORD_GOES_HERE" > .env
 # echo -n '"PASSWORD_GOES_HERE"' > .env_nc # Using the same password, but with ""
 
-cd ~/Code/work_in_progress/Kubernetes/Nextcloud
+cd ~/Code/CloudProject/cloud_project_kubernetes/Nextcloud
 kubectl create secret generic nextcloud-password --from-file=.env
 kubectl apply -f ingress.yml
 kubectl apply -f postgres.yml

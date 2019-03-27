@@ -5,16 +5,18 @@ sudo mkdir -p /data/pv/ovpn
 docker build -t ovpn-helm:3.9 .
 
 ###
-cd ~/Code/work_in_progress/Kubernetes/ovpn_kube/helm
+cd ~/Code/CloudProject/cloud_project_kubernetes/Openvpn
 kubectl create namespace openvpn
 kubectl apply -f pv.yml
 
 # Schedule on master
 kubectl taint node back-xs openvpn=back-xs:NoSchedule
+kubectl taint node rihpc openvpn=back-xs:NoSchedule
 kubectl taint nodes pub-xs master:NoSchedule-
 # Schedule on backend
 kubectl taint node pub-xs master=pub-xs:NoSchedule
 kubectl taint nodes back-xs openvpn:NoSchedule-
+kubectl taint nodes rihpc openvpn:NoSchedule-
 
 helm install --name openvpn -f values.yml stable/openvpn --namespace openvpn
 

@@ -29,7 +29,7 @@ kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
 
-cd ~/Code/work_in_progress/Kubernetes/Traefik
+cd ~/Code/CloudProject/cloud_project_kubernetes/Traefik
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
 kubectl apply -f traefik-configmap.yml
 kubectl apply -f traefik-deployment.yml
@@ -37,7 +37,7 @@ kubectl apply -f traefik-ui.yml
 kubectl apply -f cheese.yml
 
 # Netdata
-cd ~/Code/work_in_progress/Kubernetes/Netdata
+cd ~/Code/CloudProject/cloud_project_kubernetes/Netdata
 kubectl apply -f netdata-back.yml
 kubectl apply -f netdata-pub.yml
 

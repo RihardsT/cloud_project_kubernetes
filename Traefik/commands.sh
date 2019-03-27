@@ -1,6 +1,6 @@
 # This works now. Yayay
 
-cd ~/Code/work_in_progress/Kubernetes/Traefik
+cd ~/Code/CloudProject/cloud_project_kubernetes/Traefik
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
 kubectl apply -f traefik-configmap.yml
 kubectl apply -f traefik-deployment.yml
