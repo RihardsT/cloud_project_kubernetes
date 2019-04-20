@@ -38,7 +38,7 @@ spec:
           path: "/var/run/docker.sock"
       restartPolicy: Always
       nodeSelector:
-        kubernetes.io/hostname: "pub-xs"
+        kubernetes.io/hostname: "htz1"
       tolerations:
       - key: "master"
         operator: "Exists"

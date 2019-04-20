@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:15.0.5-apache
+        image: nextcloud:15.0.7-apache
         ports:
         - containerPort: 80
           protocol: TCP
@@ -53,7 +53,7 @@ spec:
           hostPath:
             path: "/data/nextcloud_data"
       nodeSelector:
-        kubernetes.io/hostname: "back-xs"
+        kubernetes.io/hostname: "htz1"
 ---
 apiVersion: v1
 kind: Service

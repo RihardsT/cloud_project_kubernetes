@@ -52,7 +52,7 @@ spec:
           path: /acme
       hostNetwork: true
       nodeSelector:
-        kubernetes.io/hostname: pub-xs
+        kubernetes.io/hostname: htz1
 ---
 kind: Service
 apiVersion: v1

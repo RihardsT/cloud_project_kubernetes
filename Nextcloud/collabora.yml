@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: collabora
-        image: collabora/code:4.0.0.2
+        image: collabora/code:4.0.3.1
         ports:
         - containerPort: 9980
           protocol: TCP
@@ -43,7 +43,7 @@ spec:
           hostPath:
             path: "/data/collabora_data/loolwsd.xml"
       nodeSelector:
-        kubernetes.io/hostname: "back-xs"
+        kubernetes.io/hostname: "htz1"
 ---
 apiVersion: v1
 kind: Service
