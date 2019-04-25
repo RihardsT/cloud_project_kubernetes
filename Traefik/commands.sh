@@ -13,8 +13,7 @@ kubectl get services --namespace=kube-system
 
 
 kubectl delete -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
+kubectl delete -f traefik-configmap.yml
 kubectl delete -f traefik-deployment.yml
 kubectl delete -f traefik-ui.yml
-kubectl delete -f cheese-deployment.yml
-kubectl delete -f cheese-ingress.yml
-kubectl delete -f cheese-service.yml
+kubectl delete -f cheese.yml

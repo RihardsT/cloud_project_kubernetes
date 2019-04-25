@@ -69,3 +69,13 @@ sudo kubeadm reset -f
 
 cd ~/Code/CloudProject/cloud_project_terraform
 terraform destroy -auto-approve
+
+
+### sshuttle
+SERVER_IP="163.172.162.100"; ssh ${SERVER_IP} -p 3013
+SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
+## From master to local node
+sshuttle -D -e 'ssh -i .ssh/scaleway' --python '/usr/bin/python3' -r rihards@163.172.162.100:3013 10.244.1.0/24
+# This enables getting traffic from pods running on another node.
+# Feels hacky, specified only 10.244.1.0/24, as it looks like each node has
+# differrent 10.244.X.0 IP... Up for modification
