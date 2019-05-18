@@ -25,7 +25,7 @@ data:
     [acme.tlsChallenge]
     [[acme.domains]]
       main = "rudenspavasaris.id.lv"
-      sans = ["vieta.rudenspavasaris.id.lv", "doks.rudenspavasaris.id.lv", "mon.rudenspavasaris.id.lv"]
+      sans = ["vieta.rudenspavasaris.id.lv", "doks.rudenspavasaris.id.lv", "parb.rudenspavasaris.id.lv"]
     [[acme.domains]]
       main = "mon0.rudenspavasaris.id.lv"
       sans = ["mon1.rudenspavasaris.id.lv", "mon2.rudenspavasaris.id.lv","mon3.rudenspavasaris.id.lv"]

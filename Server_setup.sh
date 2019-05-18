@@ -20,9 +20,7 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 sudo mkdir /acme
 exit
 
-SERVER_IP="163.172.162.100"
-SERVER_IP="95.216.206.226"
-scp -P 3013 ${SERVER_IP}:/home/rihards/.kube/config ~/.kube/config
+SERVER_IP="95.216.206.226"; scp -P 3013 ${SERVER_IP}:/home/rihards/.kube/config ~/.kube/config
 
 ### Helm
 helm init --upgrade
@@ -58,10 +56,10 @@ sudo apt-get purge -y kubeadm kubectl kubelet kubernetes-cni
 sudo apt autoclean; sudo apt autoremove -y
 sudo apt-get install -y kubeadm=1.13.3-00 kubectl=1.13.3-00 kubelet=1.13.3-00 kubernetes-cni=0.6.0-00
 
-sudo openvpn --config ~/OpenVPN/rihpc.ovpn
+# sudo openvpn --config ~/OpenVPN/rihpc.ovpn
 sudo kubeadm reset -f
 sudo \
- \
+\
 --ignore-preflight-errors="all"
 
 ### Reset and delete resources
@@ -72,10 +70,12 @@ terraform destroy -auto-approve
 
 
 ### sshuttle
-SERVER_IP="163.172.162.100"; ssh ${SERVER_IP} -p 3013
 SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
 ## From master to local node
 sshuttle -D -e 'ssh -i .ssh/scaleway' --python '/usr/bin/python3' -r rihards@163.172.162.100:3013 10.244.1.0/24
 # This enables getting traffic from pods running on another node.
 # Feels hacky, specified only 10.244.1.0/24, as it looks like each node has
 # differrent 10.244.X.0 IP... Up for modification
+
+sshuttle -D -e 'ssh -i .ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.216.206.226:3013 10.244.1.0/24
+sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.216.206.226:3013 10.244.1.0/24

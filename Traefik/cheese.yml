@@ -26,7 +26,7 @@ spec:
         ports:
         - containerPort: 80
       nodeSelector:
-        kubernetes.io/hostname: "pub-xs"
+        kubernetes.io/hostname: "rihpc"
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
