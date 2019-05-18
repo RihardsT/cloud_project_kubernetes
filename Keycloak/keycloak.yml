@@ -1,0 +1,115 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+  namespace: keycloak
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: keycloak
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - image: jboss/keycloak:6.0.1
+          name: keycloak
+          imagePullPolicy: Always
+          # resources:
+          #   requests:
+          #     cpu: 100m
+          #     memory: 512Mi
+          #   limits:
+          #     cpu: 500m
+          #     memory: 1Gi
+          env:
+            - name: DB_VENDOR
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak
+                  key: db_vendor
+            - name: KEYCLOAK_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak
+                  key: admin_user
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak
+                  key: admin_password
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
+            # - name: POSTGRES_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: keycloak
+            #       key: postgres_password
+            # - name: POSTGRES_DATABASE
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: keycloak
+            #       key: postgres_database
+            # - name: POSTGRES_USER
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: keycloak
+            #       key: postgres_user
+          ports:
+            - containerPort: 8080
+              name: http
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+  namespace: keycloak
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  selector:
+    app: keycloak
+  type: ClusterIP
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+  namespace: keycloak
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - host: parb.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: keycloak
+          servicePort: 80
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+data:
+  admin_user: "admin"
+  postgres_user: "keycloak"
+  postgres_database: "keycloak"
+  db_vendor: "h2"
