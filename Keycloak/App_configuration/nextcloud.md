@@ -7,6 +7,10 @@ https://stackoverflow.com/questions/48400812/sso-with-saml-keycloak-and-nextclou
 openssl req  -nodes -new -x509  -keyout nextcloud_keycloak.key -out nextcloud_keycloak.cert
 ```
 - In Keycloak, create a new realm. `Rudens`
+ - Under `Login` enable Remember Me
+ - Under `Keys` click on Certificate button
+ - Copy the certificate to a safe place
+ - Wrap the cert in `-----BEGIN CERTIFICATE-----CERT_GOES_HERE-----END CERTIFICATE-----`
 
 - In Nextcloud:
 - Install `SSO & SAML authentication` app. Open + Apps, search for SSO.
@@ -20,8 +24,7 @@ URL Target of the IdP where the SP will send the Authentication Request Message:
 https://parb.rudenspavasaris.id.lv/auth/realms/Rudens/protocol/saml
 URL Location of IdP where the SP will send the SLO Request:
 https://parb.rudenspavasaris.id.lv/auth/realms/Rudens/protocol/saml
-Public X.509 certificate of the IdP: Copy the certificate from Keycloak from the Keys-tab of my-realm.
-You will need to add '-----BEGIN CERTIFICATE-----' in front of the key and '-----END CERTIFICATE-----' to the end of it.
+Public X.509 certificate of the IdP: Copy the certificate got from the Keycloak steps above
 In Service Provider Data:
 
     Attribute, displayname: username
@@ -50,6 +53,11 @@ Clients -> Add Client -> Import File
     Friendly Name:
     SAML Attribute Name: username
     SAML Attribute NameFormat: Basic
+
+Client Scopes -> role_list -> Mappers
+  Click/open role list
+  Enable Single Role Attribute
+  Save
 
 Create user
 ```
