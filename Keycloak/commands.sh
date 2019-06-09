@@ -1,5 +1,7 @@
 ### Create
+cd ~/Code/CloudProject/cloud_project_kubernetes/Keycloak
 kubectl apply -f secrets.yml
+kubectl apply -f postgres.yml
 kubectl apply -f keycloak.yml
 
 

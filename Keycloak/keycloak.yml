@@ -43,21 +43,23 @@ spec:
                   key: admin_password
             - name: PROXY_ADDRESS_FORWARDING
               value: "true"
-            # - name: POSTGRES_PASSWORD
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: keycloak
-            #       key: postgres_password
-            # - name: POSTGRES_DATABASE
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: keycloak
-            #       key: postgres_database
-            # - name: POSTGRES_USER
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       name: keycloak
-            #       key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak
+                  key: postgres_password
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak
+                  key: postgres_user
+            - name: POSTGRES_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak
+                  key: postgres_database
+            - name: POSTGRES_PORT
+              value: '5432'
           ports:
             - containerPort: 8080
               name: http
@@ -112,4 +114,4 @@ data:
   admin_user: "admin"
   postgres_user: "keycloak"
   postgres_database: "keycloak"
-  db_vendor: "h2"
+  db_vendor: "postgres"
