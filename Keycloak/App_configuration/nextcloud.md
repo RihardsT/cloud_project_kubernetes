@@ -10,6 +10,7 @@ openssl req  -nodes -new -x509  -keyout nextcloud_keycloak.key -out nextcloud_ke
  - Under `Login` enable Remember Me
  - Under `Keys` click on Certificate button
  - Copy the certificate to a safe place
+ - fold -w64 certificate
  - Wrap the cert in `-----BEGIN CERTIFICATE-----CERT_GOES_HERE-----END CERTIFICATE-----`
 
 - In Nextcloud:
@@ -32,11 +33,11 @@ In Service Provider Data:
 
 Security Settings, enable the following options:
 
-    Indicates whether the messages sent by this SP will be signed. [Metadata of the SP will offer this info]
-    Indicates whether the messages sent by this SP will be signed.
-    Indicates whether the messages sent by this SP will be signed.
-    Indicates a requirement for the , and elements received by this SP to be signed.
-    Indicates a requirement for the elements received by this SP to be signed. [Metadata of the SP will offer this info]
+    Indicates whether the <samlp:AuthnRequest> messages sent by this SP will be signed. [Metadata of the SP will offer this info]
+    Indicates whether the <samlp:logoutRequest> messages sent by this SP will be signed.
+    Indicates whether the <samlp:logoutResponse> messages sent by this SP will be signed.
+    Indicates a requirement for the <samlp:Response>, <samlp:LogoutRequest> and <samlp:LogoutResponse> elements received by this SP to be signed.
+    Indicates a requirement for the <saml:Assertion> elements received by this SP to be signed. [Metadata of the SP will offer this info]
 
 Check there is a Metadata valid beside the Download metadata XML-Button
 ```
