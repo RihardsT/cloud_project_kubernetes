@@ -4,6 +4,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: kibana
+  namespace: elastic
 spec:
   replicas: 1
   strategy:
@@ -24,9 +25,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: kibana
+  namespace: elastic
   labels:
     name: kibana
-  name: kibana
 spec:
   ports:
     - name: http
@@ -34,20 +36,20 @@ spec:
       targetPort: 5601
   selector:
     name: kibana
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: kibana
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
-spec:
-  rules:
-  - host: mon.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kibana
-          servicePort: http
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: kibana
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: mon.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: kibana
+#           servicePort: http

@@ -1,0 +1,72 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gatekeeper
+  namespace: elastic
+  labels:
+    app: gatekeeper
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: gatekeeper
+      labels:
+        app: gatekeeper
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: gatekeeper
+          image: keycloak/keycloak-gatekeeper:6.0.1
+          imagePullPolicy: Always
+          args:
+            - --client-id=Kibana
+            - --discovery-url=https://parb.rudenspavasaris.id.lv/auth/realms/Rudens
+            - --enable-default-deny=false
+            - --enable-json-logging=true
+            - --enable-logging=true
+            - --enable-request-id=true
+            - --enable-security-filter=true
+            - --http-only-cookie=true
+            - --listen=:3000
+            - --preserve-host=true
+            - --redirection-url=https://mon.rudenspavasaris.id.lv
+            - --resources=uri=/*
+            - --upstream-url=http://kibana:5601/
+            - --encryption-key=ENCRYPTION_KEY_HERE
+            - --client-secret=CLIENT_SECRET_HERE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gatekeeper
+  namespace: elastic
+spec:
+  ports:
+    - name: tcp
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    app: gatekeeper
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: netdata-pub
+  namespace: elastic
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - host: mon.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: gatekeeper
+          servicePort: tcp
