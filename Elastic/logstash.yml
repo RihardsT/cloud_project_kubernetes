@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: logstash:7.1.1
+        image: logstash:7.2.0
         env:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
