@@ -14,31 +14,37 @@ data:
         # Mounted `filebeat-inputs` configmap:
         path: ${path.config}/inputs.d/*.yml
         # Reload inputs configs as they change:
-        reload.enabled: false
+        reload.enabled: true
       modules:
         path: ${path.config}/modules.d/*.yml
         # Reload module configs as they change:
-        reload.enabled: false
+        reload.enabled: true
 
     # To enable hints based autodiscover, remove `filebeat.config.inputs` configuration and uncomment this:
-    #filebeat.autodiscover:
-    #  providers:
-    #    - type: kubernetes
-    #      hints.enabled: true
+    # filebeat.autodiscover:
+    #   providers:
+    #   - type: kubernetes
+    #     hints.enabled: true
 
-    processors:
-      - add_cloud_metadata:
-
-    cloud.id: ${ELASTIC_CLOUD_ID}
-    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    # https://www.elastic.co/guide/en/beats/filebeat/master/defining-processors.html
+    # processors:
+    #   - add_cloud_metadata:
 
     output.logstash:
       hosts: logstash:5000
       timeout: 15
-# output.elasticsearch:
-#   hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
-# username: ${ELASTICSEARCH_USERNAME}
-# password: ${ELASTICSEARCH_PASSWORD}
+    # output.elasticsearch:
+    #   hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+
+  haproxy.yml: |-
+    # Docs: https://www.elastic.co/guide/en/beats/filebeat/7.2/filebeat-module-haproxy.html
+    # https://discuss.elastic.co/t/filebeat-6-apache2-module-fields-not-exported-to-logstash/109402
+    - module: haproxy
+      log:
+        enabled: true
+        var.paths: ["/var/lib/docker/containers/3b31433881c4df69c547774c8746407e43ec24fec850c8b5da08ff0a9c35dab0/3b31433881c4df69c547774c8746407e43ec24fec850c8b5da08ff0a9c35dab0-json.log"]
+        var.input: "file"
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -63,6 +69,7 @@ data:
     - type: docker
       containers.ids:
       - "*"
+      close_inactive: 168h
       processors:
         - add_kubernetes_metadata:
             in_cluster: true
@@ -113,6 +120,14 @@ spec:
           mountPath: /etc/filebeat.yml
           readOnly: true
           subPath: filebeat.yml
+        - name: config
+          mountPath: /usr/share/filebeat/modules.d/haproxy.yml
+          readOnly: true
+          subPath: haproxy.yml
+        # - name: config
+        #   mountPath: /usr/share/filebeat/filebeat.yml
+        #   readOnly: true
+        #   subPath: filebeat.yml
         - name: inputs
           mountPath: /usr/share/filebeat/inputs.d
           readOnly: true
@@ -127,6 +142,10 @@ spec:
         - name: varlogpods
           mountPath: /var/log/pods
           readOnly: true
+        # - name: varloghaproxy
+        #   mountPath: /var/log/haproxy.log
+        #   readOnly: true
+        #   # subPath: haproxy.log
       volumes:
       - name: config
         configMap:
@@ -150,6 +169,10 @@ spec:
         hostPath:
           path: /var/lib/filebeat-data
           type: DirectoryOrCreate
+      # - name: varloghaproxy
+      #   hostPath:
+      #     path: /var/log/haproxy.log
+      #     type: File
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding

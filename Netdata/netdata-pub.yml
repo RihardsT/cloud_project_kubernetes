@@ -26,6 +26,9 @@ spec:
         - name: docker-sock
           mountPath: "/var/run/docker.sock"
           readOnly: true
+        securityContext:
+          capabilities:
+            add: ["SYS_PTRACE"]
       volumes:
       - name: proc
         hostPath:
