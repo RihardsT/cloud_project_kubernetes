@@ -150,15 +150,10 @@ spec:
         configMap:
           defaultMode: 0600
           name: filebeat-inputs
-      # data folder stores a registry of read status for all files, so we don't send everything again on a Filebeat pod restart
       - name: data
         hostPath:
           path: /var/lib/filebeat-data
           type: DirectoryOrCreate
-      # - name: varloghaproxy
-      #   hostPath:
-      #     path: /var/log/haproxy.log
-      #     type: File
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding

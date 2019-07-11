@@ -56,22 +56,28 @@ data:
       beats {
         port => 5000
       }
+      http {
+        codec => line
+        host => "0.0.0.0"
+        port => "8080"
+        type => "http"
+      }
     }
-    # filter {
-    #   if [type] == "kube-logs" {
-    #     mutate {
-    #       rename => ["log", "message"]
-    #     }
-    #     date {
-    #       match => ["time", "ISO8601"]
-    #       remove_field => ["time"]
-    #     }
-    #     grok {
-    #       match => { "source" => "/var/log/containers/%{DATA:pod_name}_%{DATA:namespace}_%{GREEDYDATA:container_name}-%{DATA:container_id}.log" }
-    #       remove_field => ["source"]
-    #     }
-    #   }
-    # }
+
+    output {
+      if [type] == "http" {
+        elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "http-%{+YYYY.MM.dd}"
+        }
+      } else {
+          elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+          }
+      }
+    }
+
     filter {
       if [event][module] == "haproxy" {
          grok {
@@ -104,13 +110,23 @@ data:
             source => "[source][ip]"
             target => "[source][geo]"
          }
-      }
-    }
-
-    output {
-      elasticsearch {
-        hosts => "elasticsearch:9200"
-        index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
-        # document_type => "%{[@metadata][type]}"
+         mutate {
+          convert => {
+            "[destination][port]" => "integer"
+            "[haproxy][connections][active]" => "integer"
+            "[haproxy][connections][backend]" => "integer"
+            "[haproxy][connections][frontend]" => "integer"
+            "[haproxy][connections][retries]" => "integer"
+            "[haproxy][connections][server]" => "integer"
+            "[process][pid]" => "integer"
+            "[source][port]" => "integer"
+            "[temp][duration]" => "integer"
+            "[haproxy][backend_queue]" => "integer"
+            "[haproxy][bytes_read]" => "integer"
+            "[haproxy][connection_wait_time_ms]" => "integer"
+            "[haproxy][server_queue]" => "integer"
+            "[haproxy][total_waiting_time_ms]" => "integer"
+          }
+        }
       }
     }
