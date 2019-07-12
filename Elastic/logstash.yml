@@ -40,10 +40,51 @@ metadata:
     name: logstash
 spec:
   ports:
-    - port: 5000
+    - name: beats
+      port: 5000
       targetPort: 5000
+    - name: http
+      port: 8080
+      targetPort: 8080
   selector:
     name: logstash
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-tcp
+  namespace: elastic
+  labels:
+    name: logstash
+spec:
+  type: NodePort
+  ports:
+    - name: tcp
+      port: 8088
+      nodePort: 30088
+    - name: syslog
+      port: 8888
+      nodePort: 30888
+  selector:
+    name: logstash
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: logstash-mon2
+  namespace: elastic
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - host: mon2.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: logstash
+          servicePort: http
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -60,12 +101,24 @@ data:
         codec => line
         host => "0.0.0.0"
         port => "8080"
-        type => "http"
+        tags => ["input-http"]
+      }
+      tcp {
+        codec => line
+        host => "0.0.0.0"
+        port => "8088"
+        tags => ["input-http"]
+      }
+      syslog {
+        codec => line
+        host => "0.0.0.0"
+        port => "8888"
+        tags => ["input-http"]
       }
     }
 
     output {
-      if [type] == "http" {
+      if "input-http" in [tags] {
         elasticsearch {
             hosts => "elasticsearch:9200"
             index => "http-%{+YYYY.MM.dd}"

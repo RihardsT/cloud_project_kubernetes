@@ -60,4 +60,7 @@ Add the " double quotes where necessary.
 curl -X POST http://localhost:8080/ \
   -H 'content-type: content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
+curl -X POST https://mon2.rudenspavasaris.id.lv/ \
+  -H 'content-type: content-type: application/json' \
+  -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 ```
