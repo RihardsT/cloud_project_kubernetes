@@ -64,3 +64,10 @@ curl -X POST https://mon2.rudenspavasaris.id.lv/ \
   -H 'content-type: content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 ```
+
+
+
+### Kubernetes volume - hostPath
+Elastic search container is running as `elasticsearch` user.  
+To be able to write to hostPath, set permissions to allow root group to write:  
+`chmod 755 /data/elasticsearch_data`

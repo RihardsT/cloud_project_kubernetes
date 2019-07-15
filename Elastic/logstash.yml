@@ -147,7 +147,7 @@ data:
                ]
             }
             pattern_definitions => {
-               "HAPROXY_DATE" => "(%{MONTHDAY}[/-]%{MONTH}[/-]%{YEAR}:%{HOUR}:%{MINUTE}:%{SECOND})|%{SYSLOGTIMESTAMP}"
+              "HAPROXY_DATE" => "(%{MONTHDAY}[/-]%{MONTH}[/-]%{YEAR}:%{HOUR}:%{MINUTE}:%{SECOND})|%{SYSLOGTIMESTAMP}"
             }
          }
          date {

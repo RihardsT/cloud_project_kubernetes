@@ -24,6 +24,13 @@ spec:
           value: -Xmx256m -Xms256m
         - name: discovery.type
           value: single-node
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
+      volumes:
+        - name: elasticsearch-data
+          hostPath:
+            path: "/data/elasticsearch_data"
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
