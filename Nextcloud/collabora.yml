@@ -20,16 +20,6 @@ spec:
         - containerPort: 9980
           protocol: TCP
         # env: # env variables not necessary, as loolwsd.xml has all of that
-        # - name: domain
-        #   value: "doks\\.rudenspavasaris\\.id\\.lv|163\\.172\\.162\\.100"
-        # - name: username
-        #   value: admin
-        # # - name: password
-        # #   value: "PASSWORD_GOES_HERE"
-        # - name: DONT_GEN_SSL_CERT
-        #   value: "1"
-        # - name: server_name
-        #   value: "doks.rudenspavasaris.id.lv"
         securityContext:
          capabilities:
            add:

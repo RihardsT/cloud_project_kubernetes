@@ -19,6 +19,9 @@ spec:
         env:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
+        args: [
+          "--config.reload.automatic"
+        ]
         volumeMounts:
         - mountPath: /usr/share/logstash/pipeline
           name: config
@@ -132,7 +135,8 @@ data:
     }
 
     filter {
-      if [event][module] == "haproxy" {
+      # if [event][module] == "haproxy" {
+      if "input-http" in [tags] {
          grok {
             match => {
                "message" => [
