@@ -152,15 +152,15 @@ data:
          }
          date {
             match => [
-               "[haproxy][request_date]",
-               "dd/MMM/yyyy:HH:mm:ss][SSS]",
-               "MMM dd HH:mm:ss"
+              "[haproxy][request_date]",
+              "dd/MMM/yyyy:HH:mm:ss.SSS",
+              "MMM dd HH:mm:ss"
             ]
             target => "@timestamp"
          }
          grok {
             match => {
-               "source.address" => "^%{IP:[source][ip]}$"
+               "[source][address]" => "^%{IP:[source][ip]}$"
             }
          }
          geoip {
