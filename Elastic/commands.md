@@ -6,6 +6,7 @@
 Setup dashboards
 ```
 filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"]
+metricbeat setup -E setup.kibana.host=kibana:5601
 # filebeat setup --pipelines --modules haproxy
 ```
 
@@ -71,3 +72,23 @@ curl -X POST https://mon2.rudenspavasaris.id.lv/ \
 Elastic search container is running as `elasticsearch` user.  
 To be able to write to hostPath, set permissions to allow root group to write:  
 `chmod 755 /data/elasticsearch_data`
+
+
+
+###
+```
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["localhost:9200"]
+  index: "api-access-%{+yyyy.MM.dd}"
+setup.template:
+  name: 'http'
+  pattern: 'http-*'
+  enabled: false
+```
+```
+filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"] -E output.elasticsearch.indices.index="http" -E setup.template.name="http" -E setup.template.pattern="http" -E setup.dashboards.index="http"
+
+
+filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"] -E output.elasticsearch.index="http-%{+yyyy.MM.dd}" -E setup.template.name="http" -E setup.template.pattern="http-*"
+```
