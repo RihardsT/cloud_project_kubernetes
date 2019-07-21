@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+spec:
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      containers:
+      - image: itzg/minecraft-server
+        name: minecraft
+        env:
+        - name: EULA
+          value: "true"
+        - name: MEMORY
+          value: "2G"
+        ports:
+        - containerPort: 25565
+          name: main
+        volumeMounts:
+        - name: minecraft-data
+          mountPath: /data
+      volumes:
+      - name: minecraft-data
+        hostPath:
+          path: "/data/minecraft_data"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: minecraft
+# spec:
+#   ports:
+#   - name: http
+#     targetPort: 25565
+#     port: 25565
+#   selector:
+#     app: minecraft
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft
+spec:
+  type: NodePort
+  ports:
+  - port: 25565
+    nodePort: 30000
+  selector:
+    app: minecraft
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: minecraft
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: mon3.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: minecraft
+#           servicePort: http

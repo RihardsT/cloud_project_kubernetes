@@ -1,3 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netdata-pub-config
+  labels:
+    app: netdata-pub
+data:
+  netdata.conf: |-
+    [plugins]
+      cgroups = yes
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -16,6 +28,9 @@ spec:
       containers:
       - name: netdata
         image: netdata/netdata
+        securityContext:
+          capabilities:
+            add: ["SYS_PTRACE"]
         volumeMounts:
         - name: proc
           mountPath: "/host/proc"
@@ -26,9 +41,10 @@ spec:
         - name: docker-sock
           mountPath: "/var/run/docker.sock"
           readOnly: true
-        securityContext:
-          capabilities:
-            add: ["SYS_PTRACE"]
+        - name: config
+          mountPath: /etc/netdata/netdata.conf
+          readOnly: true
+          subPath: netdata.conf
       volumes:
       - name: proc
         hostPath:
@@ -39,6 +55,9 @@ spec:
       - name: docker-sock
         hostPath:
           path: "/var/run/docker.sock"
+      - name: config
+        configMap:
+          name: netdata-pub-config
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
@@ -58,20 +77,21 @@ spec:
       protocol: TCP
   selector:
     app: netdata-pub
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: netdata-pub
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
-spec:
-  rules:
-  - host: mon0.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: netdata-pub
-          servicePort: tcp
+# ---
+# # Ingres is setup for Keycloak gatekeeper instead
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: netdata-pub
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: mon0.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: netdata-pub
+#           servicePort: tcp
