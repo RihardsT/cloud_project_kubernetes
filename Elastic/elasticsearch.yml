@@ -48,20 +48,21 @@ spec:
       protocol: TCP
   selector:
     name: elasticsearch
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: elasticsearch
-#   annotations:
-#     kubernetes.io/ingress.class: traefik
-#     traefik.frontend.rule.type: PathPrefixStrip
-# spec:
-#   rules:
-#   - host: mon1.rudenspavasaris.id.lv
-#     http:
-#       paths:
-#       - path: /
-#         backend:
-#           serviceName: elasticsearch
-#           servicePort: http
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elasticsearch
+  namespace: elastic
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - host: mon2.rudenspavasaris.id.lv
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: elasticsearch
+          servicePort: http

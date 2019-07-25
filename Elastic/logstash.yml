@@ -62,26 +62,29 @@ metadata:
 spec:
   type: NodePort
   ports:
+    - name: beats
+      port: 5000
+      nodePort: 30001
     - name: tcp
       port: 8088
-      nodePort: 30088
+      nodePort: 30002
     - name: syslog
       port: 8888
-      nodePort: 30888
+      nodePort: 30003
   selector:
     name: logstash
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: logstash-mon2
+  name: logstash
   namespace: elastic
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: mon2.rudenspavasaris.id.lv
+  - host: mon3.rudenspavasaris.id.lv
     http:
       paths:
       - path: /
@@ -136,7 +139,7 @@ data:
       } else {
           elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+            index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
           }
       }
     }
