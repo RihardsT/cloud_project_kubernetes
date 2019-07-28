@@ -9,3 +9,7 @@ kubectl apply -f keycloak.yml
 # -w 0 to encode all as single line. echo "" to ease copy/paste
 echo "BASE64_ENCODED_PASSWORD_GOES_HERE" | base64 -w 0; echo ""
 base64 -w 0 FILE_NAME; echo ""
+
+
+# Gatekeeper
+kubectl create secret generic gatekeeper-netdata --from-file=secret_gatekeeper_netdata.yml

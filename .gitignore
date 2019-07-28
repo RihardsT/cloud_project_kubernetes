@@ -1,2 +1,4 @@
 .env*
 secrets.yml
+secrets_*.yml
+Secrets/

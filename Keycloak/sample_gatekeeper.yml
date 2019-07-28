@@ -1,0 +1,18 @@
+client-secret: CLIENT_SECRET_HERE
+encryption_key: ENCRYPTION_KEY_HERE
+
+client-id: CLIENT_ID
+discovery-url: https://parb.rudenspavasaris.id.lv/auth/realms/Rudens
+enable-default-deny: false
+enable-json-logging: true
+enable-logging: true
+enable-refresh-tokens: true
+enable-request-id: true
+enable-security-filter: true
+http-only-cookie: true
+listen: :3000
+preserve-host: true
+redirection-url: https://mon0.rudenspavasaris.id.lv
+upstream-url: http://SERVICE_NAME:PORT/
+resources:
+- uri: /*

@@ -2,46 +2,65 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: gatekeeper
+  name: gatekeeper-netdata
   labels:
-    app: gatekeeper
+    app: gatekeeper-netdata
 spec:
   replicas: 1
   template:
     metadata:
-      name: gatekeeper
+      name: gatekeeper-netdata
       labels:
-        app: gatekeeper
+        app: gatekeeper-netdata
     spec:
       securityContext:
         fsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
       containers:
-        - name: gatekeeper
-          image: keycloak/keycloak-gatekeeper:6.0.1
-          imagePullPolicy: Always
-          args:
-            - --client-id=Netdata
-            - --discovery-url=https://parb.rudenspavasaris.id.lv/auth/realms/Rudens
-            - --enable-default-deny=false
-            - --enable-json-logging=true
-            - --enable-logging=true
-            - --enable-request-id=true
-            - --enable-security-filter=true
-            - --http-only-cookie=true
-            - --listen=:3000
-            - --preserve-host=true
-            - --redirection-url=https://mon0.rudenspavasaris.id.lv
-            - --resources=uri=/*
-            - --upstream-url=http://netdata-pub:19999/
-            - --encryption-key=ENCRYPTION_KEY_HERE
-            - --client-secret=CLIENT_SECRET_HERE
+      - name: gatekeeper-netdata
+        image: keycloak/keycloak-gatekeeper:6.0.1
+        imagePullPolicy: Always
+        # env:
+        # - name: CLIENT_SECRET
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: gatekeeper-netdata
+        #       key: netdata_client_secret
+        # - name: ENCRYPTION_KEY
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: gatekeeper-netdata
+        #       key: netdata_encryption_key
+        args:
+          # - --client-id=Netdata
+          # - --discovery-url=https://parb.rudenspavasaris.id.lv/auth/realms/Rudens
+          # - --enable-default-deny=false
+          # - --enable-json-logging=true
+          # - --enable-logging=true
+          # - --enable-request-id=true
+          # - --enable-security-filter=true
+          # - --http-only-cookie=true
+          # - --listen=:3000
+          # - --preserve-host=true
+          # - --redirection-url=https://mon0.rudenspavasaris.id.lv
+          # - --resources=uri=/*
+          # - --upstream-url=http://netdata-pub:19999/
+          # - --client-secret=$(CLIENT_SECRET)
+          # - --encryption-key=$(ENCRYPTION_KEY)
+          - --config=/etc/secrets/secret_gatekeeper_netdata.yml
+        volumeMounts:
+          - name: secrets
+            mountPath: /etc/secrets
+      volumes:
+        - name: secrets
+          secret:
+            secretName: gatekeeper-netdata
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: gatekeeper
+  name: gatekeeper-netdata
 spec:
   ports:
     - name: tcp
@@ -49,12 +68,12 @@ spec:
       targetPort: 3000
       protocol: TCP
   selector:
-    app: gatekeeper
+    app: gatekeeper-netdata
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: netdata-pub
+  name: gatekeeper-netdata
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
@@ -65,5 +84,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: gatekeeper
+          serviceName: gatekeeper-netdata
           servicePort: tcp
