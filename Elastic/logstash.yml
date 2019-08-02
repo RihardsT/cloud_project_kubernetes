@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: logstash:7.2.0
+        image: docker.elastic.co/logstash/logstash:7.3.0
         env:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
