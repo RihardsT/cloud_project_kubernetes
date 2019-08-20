@@ -1,0 +1,25 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: traefik-conf
+  # namespace: kube-system
+data:
+  traefik.toml: |
+    [api]
+    [accessLog]
+    [entryPoints]
+      [entryPoints.http]
+        address = ":80"
+      [entryPoints.https]
+        address = ":443"
+    [certificatesResolvers]
+      [certificatesResolvers.default]
+        [certificatesResolvers.default.acme]
+          email = "rihards.teteris@outlook.com"
+          storage = "/acme/acme.json"
+          [certificatesResolvers.default.acme.httpChallenge]
+            entryPoint = "http"
+          [certificatesResolvers.default.acme.tlsChallenge]
+    [providers.kubernetesCRD]
+    [log]
+      # level = "DEBUG"

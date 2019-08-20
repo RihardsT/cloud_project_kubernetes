@@ -1,5 +1,23 @@
-kubectl apply -f traefik.yml
-kubectl apply -f services.yml
-kubectl apply -f deployments.yml
-# kubectl port-forward --address 0.0.0.0 service/traefik 8000:8000 8080:8080 443:4443 -n default
-kubectl apply -f routers.yml
+kubectl apply -f traefik-customresources.yml
+kubectl apply -f traefik-configmap.yml
+kubectl apply -f traefik-deployment.yml
+kubectl apply -f cheese.yml
+
+
+# Further use IngressRoute like so:
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroutetls
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: stilton
+      port: 80
+  tls:
+    certResolver: default
