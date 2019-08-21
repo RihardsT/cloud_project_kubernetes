@@ -43,6 +43,15 @@ spec:
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripstilton
+spec:
+  stripPrefix:
+    prefixes:
+    - /stilton
+---
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: ingressroutetls
@@ -50,7 +59,9 @@ spec:
   entryPoints:
     - https
   routes:
-  - match: Host(`rudenspavasaris.id.lv`)
+  - match: Host(`rudenspavasaris.id.lv`) && PathPrefix(`/stilton`)
+    middlewares:
+    - name: stripstilton
     kind: Rule
     services:
     - name: stilton

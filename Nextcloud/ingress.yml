@@ -1,23 +1,45 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: nextcloud
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: vieta.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: nextcloud
+#           servicePort: http
+#   - host: doks.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: collabora
+#           servicePort: tcp
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: nextcloud
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
+  name: ingressroutetls
 spec:
-  rules:
-  - host: vieta.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: nextcloud
-          servicePort: http
-  - host: doks.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: collabora
-          servicePort: tcp
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`vieta.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: nextcloud
+      port: 80
+  - match: Host(`doks.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: collabora
+      port: 9980
+  tls:
+    certResolver: default
