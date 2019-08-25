@@ -79,3 +79,9 @@ sshuttle -D -e 'ssh -i .ssh/scaleway' --python '/usr/bin/python3' -r rihards@163
 
 sshuttle -D -e 'ssh -i .ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.216.206.226:3013 10.244.1.0/24
 sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.216.206.226:3013 10.244.1.0/24
+
+
+
+####### Kubernetes upgrade
+sudo kubeadm upgrade plan
+sudo kubeadm upgrade apply v1.15.X
