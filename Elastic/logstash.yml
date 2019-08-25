@@ -94,6 +94,23 @@ spec:
           serviceName: logstash
           servicePort: http
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: logstash
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`mon3.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: logstash
+      port: 8080
+  tls:
+    certResolver: default
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:

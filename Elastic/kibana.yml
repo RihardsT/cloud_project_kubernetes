@@ -56,3 +56,20 @@ spec:
         backend:
           serviceName: kibana
           servicePort: http
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kibana
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`mon1.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: kibana
+      port: 5601
+  tls:
+    certResolver: default

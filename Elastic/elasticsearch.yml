@@ -24,13 +24,14 @@ spec:
           value: -Xmx256m -Xms256m
         - name: discovery.type
           value: single-node
-        volumeMounts:
-        - mountPath: /usr/share/elasticsearch/data
-          name: elasticsearch-data
-      volumes:
-        - name: elasticsearch-data
-          hostPath:
-            path: "/data/elasticsearch_data"
+      #   volumeMounts:
+      #   - mountPath: /usr/share/elasticsearch/data
+      #     name: elasticsearch-data
+      # volumes:
+      #     ##### Requires setting permissions on host, for this to work
+      #   - name: elasticsearch-data
+      #     hostPath:
+      #       path: "/data/elasticsearch_data"
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz2"
@@ -66,3 +67,20 @@ spec:
         backend:
           serviceName: elasticsearch
           servicePort: http
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: elasticsearch
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`mon2.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: elasticsearch
+      port: 9200
+  tls:
+    certResolver: default
