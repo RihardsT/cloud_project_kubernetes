@@ -29,6 +29,7 @@ data:
     #   hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
     output.logstash:
       hosts: logstash:5000
+      index: 'test-metricbeat'
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -102,7 +103,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: metricbeat
-        image: docker.elastic.co/beats/metricbeat:7.3.0
+        image: docker.elastic.co/beats/metricbeat:7.3.1
         args: [
           "-c", "/etc/metricbeat.yml",
           "-e",

@@ -91,4 +91,24 @@ filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["
 
 
 filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"] -E output.elasticsearch.index="http-%{+yyyy.MM.dd}" -E setup.template.name="http" -E setup.template.pattern="http-*"
+
+
+# Setup should be done before starting metricbeat,
+# otherwise it will create index with default fields and dashboards will not work.
+# Thus deleting the index before setup.
+curl -X DELETE "elasticsearch:9200/test-metricbeat-*"
+metricbeat setup \
+-E output.elasticsearch.hosts=["elasticsearch:9200"] \
+-E output.elasticsearch.index="test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}" \
+-E setup.template.name="test" \
+-E setup.template.pattern="test-*" \
+-E setup.dashboards.index="test-*" \
+-E setup.ilm.enabled=false \
+-E setup.kibana.host=kibana:5601
+
+curl -X POST "kibana:5601/api/saved_objects/index-pattern/test-*" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
+{"attributes": {
+  "title": "test-*"
+}}'
+curl -X DELETE "kibana:5601/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
 ```

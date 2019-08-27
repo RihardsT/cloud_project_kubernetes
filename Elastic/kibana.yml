@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:7.3.0
+        image: docker.elastic.co/kibana/kibana:7.3.1
         env:
           - name: SERVER_NAME
             value: mon.rudenspavasaris.id.lv
       restartPolicy: Always
       nodeSelector:
-        kubernetes.io/hostname: "htz2"
+        kubernetes.io/hostname: "htz1"
 ---
 apiVersion: v1
 kind: Service
