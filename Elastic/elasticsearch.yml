@@ -24,6 +24,12 @@ spec:
           value: -Xmx256m -Xms256m
         - name: discovery.type
           value: single-node
+        - name: xpack.security.enabled
+          value: "true"
+        - name: ELASTICSEARCH_USERNAME
+          value: elastic
+        - name: ELASTIC_PASSWORD
+          value: changeme
       #   volumeMounts:
       #   - mountPath: /usr/share/elasticsearch/data
       #     name: elasticsearch-data

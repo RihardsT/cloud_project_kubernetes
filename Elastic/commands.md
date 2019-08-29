@@ -1,7 +1,8 @@
 ### TODO:
 - [x] Get fields exported even when sending to Logstash. Check this [forum entry](https://discuss.elastic.co/t/filebeat-6-apache2-module-fields-not-exported-to-logstash/109402).
 - [x] Send logs to Logstash via http
-
+- [ ] Eventually rewrite using official operators? https://www.elastic.co/elasticsearch-kubernetes
+- [ ] Security: https://www.elastic.co/guide/en/x-pack/current/security-getting-started.html
 
 Setup dashboards
 ```
@@ -93,22 +94,67 @@ filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["
 filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"] -E output.elasticsearch.index="http-%{+yyyy.MM.dd}" -E setup.template.name="http" -E setup.template.pattern="http-*"
 
 
+### User and role
+curl -u elastic:changeme -X POST "elasticsearch:9200/_security/role/testrole?pretty" -H 'Content-Type: application/json' -d'
+{
+  "cluster": ["all"],
+  "indices": [{
+    "names": [ "test-*" ],
+    "privileges": ["all"]}
+  ]
+}'
+
+curl -u elastic:changeme -X PUT "kibana:5601/api/security/role/testrole" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
+{
+  "elasticsearch": {
+    "cluster" : [ ],
+    "indices" : [{
+      "names": [ "test-*" ],
+      "privileges": ["all"]}
+    ]
+  },
+  "kibana": [
+    {
+      "base": ["all"],
+      "feature": {},
+      "spaces": ["testspace"]
+    }
+  ]
+}'
+
+curl -u elastic:changeme -X POST "elasticsearch:9200/_security/user/testuser?pretty" -H 'Content-Type: application/json' -d'
+{ "password" : "testpassword",
+  "roles" : [ "testrole" ]
+}'
+
+### Spaces
+curl -u elastic:changeme -X POST "kibana:5601/api/spaces/space" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
+{ "id": "testspace",
+  "name": "Test space",
+  "color": "#aabbcc",
+  "initials": "T" }'
+curl -X POST "kibana:5601/s/testspace/api/saved_objects/index-pattern/test-*" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
+{"attributes": {
+  "title": "test-*"
+}}'
+
 # Setup should be done before starting metricbeat,
 # otherwise it will create index with default fields and dashboards will not work.
 # Thus deleting the index before setup.
-curl -X DELETE "elasticsearch:9200/test-metricbeat-*"
+curl -u elastic:changeme -X DELETE "elasticsearch:9200/test-metricbeat-*"
 metricbeat setup \
+-E output.elasticsearch.username="elastic" \
+-E output.elasticsearch.password="changeme" \
 -E output.elasticsearch.hosts=["elasticsearch:9200"] \
 -E output.elasticsearch.index="test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}" \
 -E setup.template.name="test" \
 -E setup.template.pattern="test-*" \
 -E setup.dashboards.index="test-*" \
 -E setup.ilm.enabled=false \
--E setup.kibana.host=kibana:5601
+-E setup.kibana.host=kibana:5601 \
+-E setup.kibana.space.id="testspace" \
+# -E setup.kibana.path="/s/testspace" # Another way how to load into specific space
 
-curl -X POST "kibana:5601/api/saved_objects/index-pattern/test-*" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
-{"attributes": {
-  "title": "test-*"
-}}'
-curl -X DELETE "kibana:5601/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
+# Delete the created metricbeat-* index pattern,
+curl -u elastic:changeme -X DELETE "kibana:5601/s/testspace/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
 ```
