@@ -157,4 +157,10 @@ metricbeat setup \
 
 # Delete the created metricbeat-* index pattern,
 curl -u elastic:changeme -X DELETE "kibana:5601/s/testspace/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
+# Create index, just to be sure, as metricbeat setup didn't seem to make it in space.
+curl -u elastic:changeme -X POST "kibana:5601/s/testspace/api/saved_objects/index-pattern/test-*" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
+{"attributes": {
+  "title": "test-*"
+}}'
+
 ```

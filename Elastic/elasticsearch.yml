@@ -30,6 +30,8 @@ spec:
           value: elastic
         - name: ELASTIC_PASSWORD
           value: changeme
+        - name: xpack.license.self_generated.type
+          value: basic
       #   volumeMounts:
       #   - mountPath: /usr/share/elasticsearch/data
       #     name: elasticsearch-data
