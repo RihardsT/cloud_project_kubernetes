@@ -22,14 +22,15 @@ data:
     backend kibana
       server kibana kibana:5601
     backend elasticsearch
-      server elasticsearch elasticsearch:9200
+      timeout queue 30s
+      server elasticsearch elasticsearch:9200 check maxconn 30
 
     frontend app
       bind *:80
       default_backend elasticsearch
-      stick-table  type ip  size 100k  expire 1m  store http_req_rate(40s)
-      http-request track-sc0 src
-      http-request deny deny_status 429 if { sc_http_req_rate(0) gt 15 }
+      # stick-table  type ip  size 100k  expire 1m  store http_req_rate(40s)
+      # http-request track-sc0 src
+      # http-request deny deny_status 429 if { sc_http_req_rate(0) gt 15 }
 
 ---
 apiVersion: extensions/v1beta1
