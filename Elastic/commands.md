@@ -59,10 +59,21 @@ Add the " double quotes where necessary.
 
 ### Sending logs to Logstash via http
 ```
-curl -X POST http://localhost:8080/ \
+curl -X POST http://logstash:8080/ \
   -H 'content-type: content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 curl -X POST https://mon2.rudenspavasaris.id.lv/ \
+  -H 'content-type: content-type: application/json' \
+  -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
+
+TODO: Find out how to filter out index from the message and send data to specified index in Logstash.
+curl -X POST http://logstash:8080/ \
+  -H 'content-type: content-type: application/json' \
+  -d '{"message": "hello world", "index": "INDEX_NAME"}'
+
+BASE64_USER_PASS=$(echo -n "username:password" | base64)
+curl -X POST http://rudenspavasaris.id.lv:3046/ \
+  -H "Authorization: Basic ${BASE64_USER_PASS}" \
   -H 'content-type: content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 ```

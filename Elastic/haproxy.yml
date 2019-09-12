@@ -19,11 +19,25 @@ data:
       option tcplog
       option dontlognull
 
+    userlist AuthUsers
+      user username insecure-password password
+
     backend kibana
       server kibana kibana:5601
+    backend logstash
+      server logstash logstash:8080
+      http-request set-header X-Client-IP %[src]
+      http-request del-header Authorization
     backend elasticsearch
       timeout queue 30s
       server elasticsearch elasticsearch:9200 check maxconn 30
+
+    frontend logstash
+      bind *:8080
+      acl host_example hdr(host) -i rudenspavasaris.id.lv:3046
+      acl authorized http_auth(AuthUsers)
+      http-request auth realm Example if host_example !authorized
+      use_backend logstash if host_example authorized
 
     frontend app
       bind *:80
@@ -60,6 +74,10 @@ spec:
         - name: http
           containerPort: 80
           hostPort: 3045
+          protocol: TCP
+        - name: logstash-http
+          containerPort: 8080
+          hostPort: 3046
           protocol: TCP
       volumes:
         - name: config
