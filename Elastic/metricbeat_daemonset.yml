@@ -25,11 +25,20 @@ data:
     processors:
       - add_cloud_metadata:
 
+    setup.template.name: 'test-metricbeat'
+    setup.template.pattern: 'test-metricbeat-*'
+    setup.ilm.enabled: false
+
     # output.elasticsearch:
     #   hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
-    output.logstash:
-      hosts: logstash:5000
+    # output.logstash:
+    #   hosts: logstash:5000
+    #   index: 'test-metricbeat'
+    output.elasticsearch:
+      hosts: ['rudenspavasaris.id.lv:3045']
       index: 'test-metricbeat'
+      username: elastic
+      password: changeme
 ---
 apiVersion: v1
 kind: ConfigMap

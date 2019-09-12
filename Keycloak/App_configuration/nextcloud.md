@@ -64,4 +64,4 @@ Create user
 ```
 
 ### Login with previous admin account if something goes wrong?
-http://vieta.rudenspavasaris.id.lv/login?direct=1
+https://vieta.rudenspavasaris.id.lv/login?direct=1
