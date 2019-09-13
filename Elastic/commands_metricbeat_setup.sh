@@ -20,3 +20,24 @@ curl -u elastic:changeme -X POST "kibana:5601/api/saved_objects/index-pattern/te
 {"attributes": {
   "title": "test-*"
 }}'
+
+
+
+
+##### ILM
+curl -u elastic:changeme -X DELETE "elasticsearch:9200/test-metricbeat-*"
+metricbeat setup \
+-E output.elasticsearch.username="elastic" \
+-E output.elasticsearch.password="changeme" \
+-E output.elasticsearch.hosts=["elasticsearch:9200"] \
+-E output.elasticsearch.index="test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}" \
+-E setup.template.name="test" \
+-E setup.template.pattern="test-*" \
+-E setup.dashboards.index="test-*" \
+-E setup.ilm.enabled=true \
+-E setup.ilm.rollover_alias="test-metricbeat" \
+-E setup.ilm.policy_name="test" \
+-E setup.kibana.host='kibana:5601'
+curl -u elastic:changeme -X DELETE "kibana:5601/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
+
+-E setup.ilm.pattern='\{now\/d\}-000001' \

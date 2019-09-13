@@ -27,16 +27,19 @@ data:
 
     setup.template.name: 'test-metricbeat'
     setup.template.pattern: 'test-metricbeat-*'
-    setup.ilm.enabled: false
+    setup.ilm.enabled: true
+    setup.ilm.rollover_alias: "test-metricbeat"
+    # -${agent.version} -{agent.version} -%{[agent.version]}
+    setup.ilm.policy_name: "test"
+    # setup.ilm.pattern: "{now/d}-000001"
 
-    # output.elasticsearch:
-    #   hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
     # output.logstash:
     #   hosts: logstash:5000
     #   index: 'test-metricbeat'
     output.elasticsearch:
-      hosts: ['rudenspavasaris.id.lv:3045']
-      index: 'test-metricbeat'
+      hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+      # hosts: ['rudenspavasaris.id.lv:3045']
+      # index: 'test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}'
       username: elastic
       password: changeme
 ---
@@ -112,7 +115,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: metricbeat
-        image: docker.elastic.co/beats/metricbeat:7.3.1
+        image: docker.elastic.co/beats/metricbeat:7.3.2
         args: [
           "-c", "/etc/metricbeat.yml",
           "-e",
