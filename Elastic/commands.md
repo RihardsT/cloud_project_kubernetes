@@ -4,6 +4,11 @@
 - [ ] Eventually rewrite using official operators? https://www.elastic.co/elasticsearch-kubernetes
 - [ ] Security: https://www.elastic.co/guide/en/x-pack/current/security-getting-started.html
 
+###
+kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
+
+
+
 Setup dashboards
 ```
 filebeat setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"]

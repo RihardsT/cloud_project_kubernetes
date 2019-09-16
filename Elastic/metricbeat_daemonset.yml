@@ -28,16 +28,16 @@ data:
     setup.template.name: 'test-metricbeat'
     setup.template.pattern: 'test-metricbeat-*'
     setup.ilm.enabled: true
-    setup.ilm.rollover_alias: "test-metricbeat"
+    setup.ilm.rollover_alias: "test-metricbeat-7.3.2"
     # -${agent.version} -{agent.version} -%{[agent.version]}
     setup.ilm.policy_name: "test"
-    # setup.ilm.pattern: "{now/d}-000001"
+    setup.ilm.pattern: "{now/d}-000001"
 
     # output.logstash:
     #   hosts: logstash:5000
     #   index: 'test-metricbeat'
     output.elasticsearch:
-      hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+      hosts: ['elasticsearch-ingest:9200']
       # hosts: ['rudenspavasaris.id.lv:3045']
       # index: 'test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}'
       username: elastic
@@ -122,10 +122,6 @@ spec:
           "-system.hostfs=/hostfs",
         ]
         env:
-        - name: ELASTICSEARCH_HOST
-          value: elasticsearch
-        - name: ELASTICSEARCH_PORT
-          value: "9200"
         - name: NODE_NAME
           valueFrom:
             fieldRef:
