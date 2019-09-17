@@ -39,6 +39,10 @@ metricbeat setup \
 -E setup.ilm.policy_name="test" \
 -E setup.ilm.pattern='\{now\/d\}-000001' \
 -E setup.kibana.host='kibana:5601'
+
+# OR:
+metricbeat setup -c /etc/metricbeat.yml
+
 curl -u elastic:changeme -X DELETE "kibana:5601/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
 curl -u elastic:changeme -X POST "kibana:5601/api/saved_objects/index-pattern/test-*" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
 {"attributes": {
@@ -57,8 +61,7 @@ curl -u elastic:changeme -X PUT "elasticsearch:9200/_ilm/policy/test?pretty" -H 
         }
       },
       "warm": {
-        "actions": {
-        }
+        "actions": {}
       }
     }
   }

@@ -27,6 +27,7 @@ data:
     # node.ml: true
     # xpack.ml.enabled: true
     # cluster.remote.connect: false
+    # xpack.monitoring.collection.enabled: true
 
 ---
 apiVersion: extensions/v1beta1

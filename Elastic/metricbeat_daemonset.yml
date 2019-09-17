@@ -28,10 +28,15 @@ data:
     setup.template.name: 'test-metricbeat'
     setup.template.pattern: 'test-metricbeat-*'
     setup.ilm.enabled: true
+    setup.ilm.overwrite: false
+    setup.ilm.check_exists: false
     setup.ilm.rollover_alias: "test-metricbeat-7.3.2"
     # -${agent.version} -{agent.version} -%{[agent.version]}
     setup.ilm.policy_name: "test"
     setup.ilm.pattern: "{now/d}-000001"
+    setup.kibana.host: 'kibana:5601'
+    setup.dashboards.index: "test-*"
+    # setup.kibana.space.id: "testspace"
 
     # output.logstash:
     #   hosts: logstash:5000
