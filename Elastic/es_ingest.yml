@@ -14,12 +14,10 @@ data:
     node.master: false
     node.data: false
     node.ingest: true
-    # discovery.zen.ping.unicast.hosts: "elasticsearch" # deprecated
-    # And these do not work:
-    # discovery.seed_hosts:
-    #   - elasticsearch:9200
-    # cluster.initial_master_nodes:
-    #   - elasticsearch
+    discovery.seed_hosts:
+      - elasticsearch:9300
+    cluster.initial_master_nodes:
+      - elasticsearch-master1
 
 ---
 apiVersion: extensions/v1beta1
@@ -40,8 +38,8 @@ spec:
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx256m -Xms256m
-        - name: discovery.type
-          value: single-node
+        # - name: discovery.type
+        #   value: single-node
         - name: xpack.security.enabled
           value: "true"
         - name: ELASTICSEARCH_USERNAME
@@ -71,3 +69,17 @@ spec:
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-ingest
+  namespace: elastic
+spec:
+  ports:
+    - name: http
+      port: 9200
+      targetPort: 9200
+      protocol: TCP
+  selector:
+    name: es-ingest

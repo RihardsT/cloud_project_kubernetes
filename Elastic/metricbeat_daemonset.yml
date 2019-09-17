@@ -37,7 +37,7 @@ data:
     #   hosts: logstash:5000
     #   index: 'test-metricbeat'
     output.elasticsearch:
-      hosts: ['elasticsearch-ingest:9200']
+      hosts: ['es-ingest:9200']
       # hosts: ['rudenspavasaris.id.lv:3045']
       # index: 'test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}'
       username: elastic

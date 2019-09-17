@@ -4,8 +4,11 @@
 - [ ] Eventually rewrite using official operators? https://www.elastic.co/elasticsearch-kubernetes
 - [ ] Security: https://www.elastic.co/guide/en/x-pack/current/security-getting-started.html
 
-###
+### Up
 kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
+
+Set virtual memory on host for Elasticsearch production mode
+`sysctl -w vm.max_map_count=262144`
 
 
 

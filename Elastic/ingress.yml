@@ -33,20 +33,6 @@ spec:
     certResolver: default
 ######### Elasticsearch
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: elasticsearch-ingest
-  namespace: elastic
-spec:
-  ports:
-    - name: http
-      port: 9200
-      targetPort: 9200
-      protocol: TCP
-  selector:
-    name: elasticsearch-ingest
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -59,7 +45,7 @@ spec:
   - match: Host(`mon2.rudenspavasaris.id.lv`)
     kind: Rule
     services:
-    - name: elasticsearch-ingest
+    - name: es-ingest
       port: 9200
   tls:
     certResolver: default

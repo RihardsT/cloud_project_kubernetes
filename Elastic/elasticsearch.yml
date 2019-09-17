@@ -19,14 +19,10 @@ data:
     node.master: true
     node.data: true
     node.ingest: false
-    # discovery.zen.ping.unicast.hosts: "elasticsearch" # deprecated
-    # discovery.zen.minimum_master_nodes: 1
-    # Don't know how to set discovery.type properly. What are allowed values? Who knows.
-    # And these do not work:
-    # discovery.seed_hosts:
-    #   - elasticsearch:9200
-    # cluster.initial_master_nodes:
-    #   - elasticsearch-master1
+    discovery.seed_hosts:
+      - elasticsearch:9200
+    cluster.initial_master_nodes:
+      - elasticsearch-master1
     # node.voting_only: false
     # node.ml: true
     # xpack.ml.enabled: true
@@ -51,8 +47,8 @@ spec:
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx256m -Xms256m
-        - name: discovery.type
-          value: single-node
+        # - name: discovery.type
+        #   value: single-node
         - name: xpack.security.enabled
           value: "true"
         - name: ELASTICSEARCH_USERNAME
@@ -93,6 +89,10 @@ spec:
     - name: http
       port: 9200
       targetPort: 9200
+      protocol: TCP
+    - name: cluster-comms
+      port: 9300
+      targetPort: 9300
       protocol: TCP
   selector:
     name: elasticsearch
