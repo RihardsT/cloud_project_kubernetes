@@ -15,7 +15,7 @@ spec:
         app: keycloak
     spec:
       containers:
-        - image: jboss/keycloak:6.0.1
+        - image: jboss/keycloak:7.0.0
           name: keycloak
           imagePullPolicy: Always
           # resources:
@@ -63,6 +63,19 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+data:
+  admin_user: "admin"
+  postgres_user: "keycloak"
+  postgres_database: "keycloak"
+  db_vendor: "postgres"
 
 ---
 apiVersion: v1
@@ -101,17 +114,20 @@ spec:
         backend:
           serviceName: keycloak
           servicePort: 80
-
 ---
-apiVersion: v1
-kind: ConfigMap
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: keycloak
   namespace: keycloak
-  labels:
-    app: keycloak
-data:
-  admin_user: "admin"
-  postgres_user: "keycloak"
-  postgres_database: "keycloak"
-  db_vendor: "postgres"
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`parb.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: keycloak
+      port: 80
+  tls:
+    certResolver: default
