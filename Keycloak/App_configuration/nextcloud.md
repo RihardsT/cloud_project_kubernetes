@@ -46,6 +46,7 @@ Check there is a Metadata valid beside the Download metadata XML-Button
 ```
 Clients -> Add Client -> Import File
   Client SAML Endpoint: https://parb.rudenspavasaris.id.lv/auth/realms/Rudens
+  https://vieta.rudenspavasaris.id.lv/apps/user_saml/saml
   Save
   Mappers -> Create
     Name: username

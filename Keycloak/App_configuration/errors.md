@@ -4,6 +4,12 @@ Your account is not provisioned, access to this service is thus not possible.
 ```
 Enable Nextcloud debug mode, get:
 ```
+sudo vi /data/nextcloud_data/config/config.php
+'debug' => true,
+```
+Kill/restart the container
+
+```
 Signature validation failed. SAML Response rejected
 ```
 Copied the cert from Keycloak `Realm -> Keys -> RSA Certificate` to Nextcloud
@@ -19,3 +25,5 @@ Client Scopes -> role_list -> Mappers
   Enable Single Role Attribute
   Save
 ```
+
+### Invalid requester
