@@ -96,8 +96,13 @@ data:
             source => "message"
             target => "parsedJson"
             id => "%{[parsedJson][index]}"
-            add_field => { "index_name" => "%{[parsedJson][index]}"}
+            add_field => { "index_name" => "%{[parsedJson][index]}" }
             remove_field => [ "parsedJson" ]
+        }
+        if [index_name] == '%{[parsedJson][index]}' {
+          mutate {
+            update => { "index_name" => "http-%{+YYYY.MM.dd}" }
+          }
         }
       }
     }
@@ -105,8 +110,6 @@ data:
       if "input-http" in [tags] {
         elasticsearch {
             hosts => "elasticsearch:9200"
-            # index => "http-%{+YYYY.MM.dd}"
-            # index => "%{[parsedJson][index]}"
             index => "%{index_name}"
             # pipeline => "filebeat-7.2.0-haproxy-log-pipeline"
             user => "elastic"
