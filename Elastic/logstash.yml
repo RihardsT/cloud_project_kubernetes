@@ -90,16 +90,29 @@ data:
       }
     }
 
+    filter {
+      if "input-http" in [tags] {
+        json {
+            source => "message"
+            target => "parsedJson"
+            id => "%{[parsedJson][index]}"
+            add_field => { "index_name" => "%{[parsedJson][index]}"}
+            remove_field => [ "parsedJson" ]
+        }
+      }
+    }
     output {
       if "input-http" in [tags] {
         elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "http-%{+YYYY.MM.dd}"
+            # index => "http-%{+YYYY.MM.dd}"
+            # index => "%{[parsedJson][index]}"
+            index => "%{index_name}"
             # pipeline => "filebeat-7.2.0-haproxy-log-pipeline"
             user => "elastic"
             password => "changeme"
         }
-        # For debug - check what medata is in data
+        # For debug - check what metadata is in data
         # stdout {
         #   codec  => rubydebug {
         #     metadata => true

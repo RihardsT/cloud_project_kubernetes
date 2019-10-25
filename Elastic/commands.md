@@ -77,7 +77,7 @@ curl -X POST https://mon2.rudenspavasaris.id.lv/ \
 TODO: Find out how to filter out index from the message and send data to specified index in Logstash.
 curl -X POST http://logstash:8080/ \
   -H 'content-type: content-type: application/json' \
-  -d '{"message": "hello world", "index": "INDEX_NAME"}'
+  -d '{"message": "hello world", "index": "test-index"}'
 
 BASE64_USER_PASS=$(echo -n "username:password" | base64)
 curl -X POST http://rudenspavasaris.id.lv:3046/ \
