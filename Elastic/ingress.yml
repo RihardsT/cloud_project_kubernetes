@@ -112,7 +112,7 @@ spec:
 ################### Traefik V1
 ######### Kibana
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: kibana-mon1
@@ -131,7 +131,7 @@ spec:
           servicePort: http
 ######### Elasticsearch
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: elasticsearch
@@ -150,7 +150,7 @@ spec:
           servicePort: http
 ######### Logstash
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: logstash

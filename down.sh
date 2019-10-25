@@ -5,3 +5,5 @@ kubectl delete -f ./Nextcloud
 kubectl delete -f ./Traefik
 kubectl delete deployments. blog
 kubectl delete service blog
+
+kubectl delete -f ./Minecraft

@@ -47,7 +47,7 @@ data:
       # http-request deny deny_status 429 if { sc_http_req_rate(0) gt 15 }
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: haproxy
@@ -58,6 +58,9 @@ spec:
   replicas: 1
   strategy:
     type: Recreate
+  selector:
+    matchLabels:
+      name: haproxy
   template:
     metadata:
       labels:

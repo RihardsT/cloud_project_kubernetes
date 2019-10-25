@@ -30,12 +30,15 @@ data:
     # xpack.monitoring.collection.enabled: true
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elasticsearch
   namespace: elastic
 spec:
+  selector:
+    matchLabels:
+      name: elasticsearch
   replicas: 1
   template:
     metadata:
