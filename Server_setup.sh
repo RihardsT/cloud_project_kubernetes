@@ -84,4 +84,4 @@ sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.21
 
 ####### Kubernetes upgrade
 sudo kubeadm upgrade plan
-sudo kubeadm upgrade apply v1.15.X
+sudo kubeadm upgrade apply v1.16.1
