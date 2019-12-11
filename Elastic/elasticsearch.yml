@@ -18,7 +18,7 @@ data:
     network.host: 0.0.0.0
     node.master: true
     node.data: true
-    node.ingest: false
+    node.ingest: true
     discovery.seed_hosts:
       - elasticsearch:9200
     cluster.initial_master_nodes:
@@ -26,8 +26,9 @@ data:
     # node.voting_only: false
     # node.ml: true
     # xpack.ml.enabled: true
-    # cluster.remote.connect: false
-    # xpack.monitoring.collection.enabled: true
+    cluster.remote.connect: false
+    xpack.monitoring.collection.enabled: true
+    xpack.security.enabled: true
 
 ---
 apiVersion: apps/v1

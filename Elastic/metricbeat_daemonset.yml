@@ -34,19 +34,19 @@ data:
     # -${agent.version} -{agent.version} -%{[agent.version]}
     setup.ilm.policy_name: "test"
     setup.ilm.pattern: "{now/d}-000001"
-    setup.kibana.host: 'kibana:5601'
-    setup.dashboards.index: "test-*"
+    # setup.kibana.host: 'kibana:5601'
+    # setup.dashboards.index: "test-*"
     # setup.kibana.space.id: "testspace"
 
-    # output.logstash:
-    #   hosts: logstash:5000
-    #   index: 'test-metricbeat'
-    output.elasticsearch:
-      hosts: ['es-ingest:9200']
-      # hosts: ['rudenspavasaris.id.lv:3045']
-      # index: 'test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}'
-      username: elastic
-      password: changeme
+    output.logstash:
+      hosts: logstash:5000
+      index: 'test-metricbeat'
+    # output.elasticsearch:
+    #   hosts: ['es-ingest:9200']
+    #   # hosts: ['rudenspavasaris.id.lv:3045']
+    #   # index: 'test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}'
+    #   username: elastic
+    #   password: changeme
 ---
 apiVersion: v1
 kind: ConfigMap

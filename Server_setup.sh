@@ -85,3 +85,9 @@ sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.21
 ####### Kubernetes upgrade
 sudo kubeadm upgrade plan
 sudo kubeadm upgrade apply v1.16.1
+
+
+# For upgrade to v1.17.0 had to use --ignore-preflight-errors=all
+# Likely because I only have single master node
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml

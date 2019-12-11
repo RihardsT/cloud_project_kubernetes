@@ -35,6 +35,8 @@ data:
       timeout: 15
     # output.elasticsearch:
     #   hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+    #   username: elastic
+    #   password: changeme
 
   haproxy.yml: |-
     # Docs: https://www.elastic.co/guide/en/beats/filebeat/7.2/filebeat-module-haproxy.html
@@ -82,6 +84,9 @@ metadata:
   labels:
     k8s-app: filebeat
 spec:
+  selector:
+    matchLabels:
+      k8s-app: filebeat
   template:
     metadata:
       labels:

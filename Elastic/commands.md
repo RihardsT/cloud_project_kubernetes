@@ -9,7 +9,7 @@ kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_
 
 Set virtual memory on host for Elasticsearch production mode
 `sysctl -w vm.max_map_count=262144`
-
+echo 'vm.max_map_count=262144' | sudo tee -a /etc/sysctl.conf
 
 
 Setup dashboards
