@@ -22,8 +22,6 @@ curl -u elastic:changeme -X POST "kibana:5601/api/saved_objects/index-pattern/te
 }}'
 
 
-
-
 ##### ILM
 curl -u elastic:changeme -X DELETE "elasticsearch:9200/test-metricbeat-*"
 metricbeat setup \

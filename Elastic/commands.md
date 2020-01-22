@@ -7,6 +7,8 @@
 ### Up
 kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
 
+kubectl apply -f elasticsearch.yml -f es_data.yml -f es_ingest.yml -f kibana.yml -f ingress.yml -f metricbeat_daemonset.yml
+
 Minimal:
 kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml
 
