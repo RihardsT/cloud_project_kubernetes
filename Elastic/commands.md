@@ -15,7 +15,7 @@ kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml
 ### Deps
 Set virtual memory on host for Elasticsearch production mode
 `sysctl -w vm.max_map_count=262144`
-
+echo 'vm.max_map_count=262144' | sudo tee -a /etc/sysctl.conf
 
 
 Setup dashboards
