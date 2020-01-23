@@ -7,6 +7,12 @@
 ### Up
 kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
 
+kubectl apply -f elasticsearch.yml -f es_data.yml -f es_ingest.yml -f kibana.yml -f ingress.yml -f metricbeat_daemonset.yml
+
+Minimal:
+kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml
+
+### Deps
 Set virtual memory on host for Elasticsearch production mode
 `sysctl -w vm.max_map_count=262144`
 echo 'vm.max_map_count=262144' | sudo tee -a /etc/sysctl.conf
@@ -86,6 +92,16 @@ curl -X POST http://rudenspavasaris.id.lv:3046/ \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 ```
 
+### Logs straight to Elasticsearch
+```
+curl -X POST "https://mon2.rudenspavasaris.id.lv/twitter/_doc/?pretty" -H 'Content-Type: application/json' -d'
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+'
+```
 
 
 ### Kubernetes volume - hostPath

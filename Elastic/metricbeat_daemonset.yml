@@ -1,3 +1,11 @@
+### After setup run this in metricbeat container:
+# kubectl exec -ti -n elastic metricbeat-TAB bash
+# curl -u elastic:changeme -X DELETE "kibana:5601/api/saved_objects/index-pattern/metricbeat-*" -H 'kbn-xsrf: true'
+# curl -u elastic:changeme -X POST "kibana:5601/api/saved_objects/index-pattern/test-*" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d'
+# {"attributes": {
+#   "title": "test-*"
+# }}'
+
 ### All of this should be run in kube-system namespace instead of elastic
 ---
 apiVersion: v1

@@ -45,8 +45,10 @@ spec:
   - match: Host(`mon2.rudenspavasaris.id.lv`)
     kind: Rule
     services:
-    - name: elasticsearch
+    # - name: elasticsearch
+    - name: es-ingest
       port: 9200
+      targetPort: 9200
   tls:
     certResolver: default
 ######### Logstash
@@ -111,59 +113,59 @@ spec:
 
 ################### Traefik V1
 ######### Kibana
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: kibana-mon1
-  namespace: elastic
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
-spec:
-  rules:
-  - host: mon1.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kibana
-          servicePort: http
-######### Elasticsearch
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: elasticsearch
-  namespace: elastic
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
-spec:
-  rules:
-  - host: mon2.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: elasticsearch
-          servicePort: http
-######### Logstash
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: logstash
-  namespace: elastic
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
-spec:
-  rules:
-  - host: mon3.rudenspavasaris.id.lv
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: logstash
-          servicePort: http
+# ---
+# apiVersion: networking.k8s.io/v1beta1
+# kind: Ingress
+# metadata:
+#   name: kibana-mon1
+#   namespace: elastic
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: mon1.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: kibana
+#           servicePort: http
+# ######### Elasticsearch
+# ---
+# apiVersion: networking.k8s.io/v1beta1
+# kind: Ingress
+# metadata:
+#   name: elasticsearch
+#   namespace: elastic
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: mon2.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: elasticsearch
+#           servicePort: http
+# ######### Logstash
+# ---
+# apiVersion: networking.k8s.io/v1beta1
+# kind: Ingress
+# metadata:
+#   name: logstash
+#   namespace: elastic
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.frontend.rule.type: PathPrefixStrip
+# spec:
+#   rules:
+#   - host: mon3.rudenspavasaris.id.lv
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: logstash
+#           servicePort: http

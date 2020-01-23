@@ -1,0 +1,125 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es-data-config
+  namespace: elastic
+  labels:
+    k8s-app: es-data
+data:
+  elasticsearch.yml: |-
+    node.name: "elasticsearch-data1"
+    cluster.name: "test-cluster"
+    network.host: 0.0.0.0
+    node.master: false
+    node.data: true
+    discovery.seed_hosts:
+      - elasticsearch:9300
+    cluster.initial_master_nodes:
+      - elasticsearch-master1
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-data
+  namespace: elastic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: es-data
+  template:
+    metadata:
+      labels:
+        name: es-data
+    spec:
+      containers:
+      - name: elasticsearch-data1
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+        env:
+        - name: ES_JAVA_OPTS
+          value: -Xmx256m -Xms256m
+        # - name: discovery.type
+        #   value: single-node
+        - name: xpack.security.enabled
+          value: "true"
+        - name: ELASTICSEARCH_USERNAME
+          value: elastic
+        - name: ELASTIC_PASSWORD
+          value: changeme
+        - name: xpack.license.self_generated.type
+          value: basic
+        volumeMounts:
+        - name: elasticsearch-data
+          mountPath: /usr/share/elasticsearch/data
+        - name: config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          readOnly: true
+          subPath: elasticsearch.yml
+      volumes:
+          ##### Requires setting permissions on host, for this to work
+        # - name: elasticsearch-data
+        #   hostPath:
+        #     path: "/data/elasticsearch_data"
+        - name: elasticsearch-data
+          persistentVolumeClaim:
+            claimName: elastic-pv-claim
+        - name: config
+          configMap:
+            defaultMode: 0777
+            name: es-data-config
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: "htz1"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: elastic-pv
+  namespace: elastic
+spec:
+  capacity:
+    storage: 10Mi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /data/elasticsearch_data_volume
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - htz1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elastic-pv-claim
+  namespace: elastic
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: es-data
+#   namespace: elastic
+# spec:
+#   ports:
+#     - name: http
+#       port: 9200
+#       targetPort: 9200
+#       protocol: TCP
+#   selector:
+#     name: es-data

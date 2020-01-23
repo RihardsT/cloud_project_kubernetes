@@ -17,8 +17,8 @@ data:
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
     node.master: true
-    node.data: true
-    node.ingest: true
+    node.data: false
+    node.ingest: false
     discovery.seed_hosts:
       - elasticsearch:9200
     cluster.initial_master_nodes:
@@ -26,9 +26,10 @@ data:
     # node.voting_only: false
     # node.ml: true
     # xpack.ml.enabled: true
-    cluster.remote.connect: false
-    xpack.monitoring.collection.enabled: true
-    xpack.security.enabled: true
+    # cluster.remote.connect: false
+    # xpack.monitoring.collection.enabled: true
+    # xpack.security.enabled: true
+    xpack.license.self_generated.type: basic
 
 ---
 apiVersion: apps/v1
@@ -54,14 +55,10 @@ spec:
           value: -Xmx256m -Xms256m
         # - name: discovery.type
         #   value: single-node
-        # - name: xpack.security.enabled
-        #   value: "true"
         - name: ELASTICSEARCH_USERNAME
           value: elastic
         - name: ELASTIC_PASSWORD
           value: changeme
-        - name: xpack.license.self_generated.type
-          value: basic
       #   volumeMounts:
       #   - mountPath: /usr/share/elasticsearch/data
       #     name: elasticsearch-data

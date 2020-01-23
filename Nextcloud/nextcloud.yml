@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextcloud
   labels:
     app: nextcloud
 spec:
+  selector:
+    matchLabels:
+      app: nextcloud
   replicas: 1
   strategy:
     type: Recreate
@@ -15,7 +18,7 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:17.0.0RC2-apache
+        image: nextcloud:17.0.1-apache
         ports:
         - containerPort: 80
           protocol: TCP
