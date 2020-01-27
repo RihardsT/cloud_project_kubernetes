@@ -93,15 +93,16 @@ data:
     filter {
       if "input-http" in [tags] {
         json {
-            source => "message"
-            target => "parsedJson"
-            id => "%{[parsedJson][index]}"
-            add_field => { "index_name" => "%{[parsedJson][index]}" }
-            remove_field => [ "parsedJson" ]
+          skip_on_invalid_json => true
+          source => "message"
+          target => "parsedJson"
+          id => "%{[parsedJson][index]}"
+          add_field => { "index" => "%{[parsedJson][index]}" }
+          remove_field => [ "parsedJson" ]
         }
-        if [index_name] == '%{[parsedJson][index]}' {
+        if [index] == '%{[parsedJson][index]}' {
           mutate {
-            update => { "index_name" => "http-%{+YYYY.MM.dd}" }
+            update => { "index" => "http-%{+YYYY.MM}" }
           }
         }
       }
@@ -110,10 +111,7 @@ data:
       if "input-http" in [tags] {
         elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "%{index_name}"
-            # pipeline => "filebeat-7.2.0-haproxy-log-pipeline"
-            user => "elastic"
-            password => "changeme"
+            index => "%{index}"
         }
         # For debug - check what metadata is in data
         # stdout {
@@ -125,8 +123,6 @@ data:
           elasticsearch {
             hosts => "elasticsearch:9200"
             index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-            user => "elastic"
-            password => "changeme"
           }
       }
     }

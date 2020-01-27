@@ -42,12 +42,12 @@ spec:
           value: -Xmx256m -Xms256m
         # - name: discovery.type
         #   value: single-node
-        - name: xpack.security.enabled
-          value: "true"
-        - name: ELASTICSEARCH_USERNAME
-          value: elastic
-        - name: ELASTIC_PASSWORD
-          value: changeme
+        # - name: xpack.security.enabled
+        #   value: "true"
+        # - name: ELASTICSEARCH_USERNAME
+        #   value: elastic
+        # - name: ELASTIC_PASSWORD
+        #   value: changeme
         - name: xpack.license.self_generated.type
           value: basic
         volumeMounts:
