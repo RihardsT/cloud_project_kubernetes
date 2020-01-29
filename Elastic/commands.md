@@ -75,15 +75,15 @@ Add the " double quotes where necessary.
 ### Sending logs to Logstash via http
 ```
 curl -X POST http://logstash:8080/ \
-  -H 'content-type: content-type: application/json' \
+  -H 'content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 curl -X POST https://mon2.rudenspavasaris.id.lv/ \
-  -H 'content-type: content-type: application/json' \
+  -H 'content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 
 TODO: Find out how to filter out index from the message and send data to specified index in Logstash.
 curl -X POST http://logstash:8080/ \
-  -H 'content-type: content-type: application/json' \
+  -H 'content-type: application/json' \
   -d '{"message": "hello world", "index": "test-index"}'
 
 BASE64_USER_PASS=$(echo -n "username:password" | base64)
@@ -200,3 +200,7 @@ curl -u elastic:changeme -X POST "kibana:5601/s/testspace/api/saved_objects/inde
 }}'
 
 ```
+
+
+
+bin/logstash --config.test_and_exit
