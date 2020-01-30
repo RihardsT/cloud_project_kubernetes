@@ -164,7 +164,12 @@ data:
         }
         output {
           pipeline {
-            send_to => [myVirtualAddress]
+            if [@metadata][beat] in [pipeline.id] {
+              send_to => [@metadata][beat]
+            }
+            else {
+              send_to => [myVirtualAddress]
+            }
           }
         }
     - pipeline.id: downstream
@@ -192,7 +197,7 @@ data:
         output {
           elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "%{index}-2"
+            index => "%{index}"
           }
           stdout {
             codec  => rubydebug {
@@ -209,7 +214,15 @@ data:
         }
         output {
           pipeline {
-            send_to => [beatsAddress]
+            if "metric" in [agent.type] {
+              send_to => [metricbeatPipe]
+            }
+            if [agent.type] in [pipeline.id] {
+              send_to => [beatsPipeLine]
+            }
+            else {
+              send_to => [beatsAddress]
+            }
           }
         }
     - pipeline.id: beatsDownstream
@@ -228,5 +241,41 @@ data:
           elasticsearch {
             hosts => "elasticsearch:9200"
             index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM}"
+          }
+        }
+    - pipeline.id: testmetricbeat
+      config.string: |
+        input {
+          pipeline {
+            address => metricbeatPipe
+          }
+        }
+        filter {
+          mutate {
+            lowercase => [ "[@metadata][beat]" ]
+          }
+        }
+        output {
+          elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "%{[@metadata][beat]}-metricbeatPipe"
+          }
+        }
+    - pipeline.id: metricbeat
+      config.string: |
+        input {
+          pipeline {
+            address => beatsPipeLine
+          }
+        }
+        filter {
+          mutate {
+            lowercase => [ "[@metadata][beat]" ]
+          }
+        }
+        output {
+          elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "%{[@metadata][beat]}-from-beatsPipeLine"
           }
         }
