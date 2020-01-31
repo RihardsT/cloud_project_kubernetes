@@ -200,7 +200,3 @@ curl -u elastic:changeme -X POST "kibana:5601/s/testspace/api/saved_objects/inde
 }}'
 
 ```
-
-
-
-bin/logstash --config.test_and_exit

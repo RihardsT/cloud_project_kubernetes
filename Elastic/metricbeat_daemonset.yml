@@ -48,7 +48,7 @@ data:
 
     output.logstash:
       hosts: logstash:5000
-      index: 'Test-metricbeat'
+      index: 'test-metricbeat'
     # output.elasticsearch:
     #   hosts: ['es-ingest:9200']
     #   # hosts: ['rudenspavasaris.id.lv:3045']

@@ -153,58 +153,6 @@ data:
     # xpack.monitoring.elasticsearch.username: elastic
     # xpack.monitoring.elasticsearch.password: changeme
   pipelines.yml: |-
-    - pipeline.id: upstream
-      config.string: |
-        input {
-          http {
-            codec => line
-            host => "0.0.0.0"
-            port => "8080"
-          }
-        }
-        output {
-          pipeline {
-            if [@metadata][beat] in [pipeline.id] {
-              send_to => [@metadata][beat]
-            }
-            else {
-              send_to => [myVirtualAddress]
-            }
-          }
-        }
-    - pipeline.id: downstream
-      config.string: |
-        input {
-          pipeline {
-            address => myVirtualAddress
-          }
-        }
-        filter {
-          json {
-            skip_on_invalid_json => true
-            source => "message"
-            target => "parsedJson"
-            id => "%{[parsedJson][index]}"
-            add_field => { "index" => "%{[parsedJson][index]}" }
-            remove_field => [ "parsedJson" ]
-          }
-          if [index] == '%{[parsedJson][index]}' {
-            mutate {
-              update => { "index" => "http-%{+YYYY.MM}" }
-            }
-          }
-        }
-        output {
-          elasticsearch {
-            hosts => "elasticsearch:9200"
-            index => "%{index}"
-          }
-          stdout {
-            codec  => rubydebug {
-              metadata => true
-            }
-          }
-        }
     - pipeline.id: beats
       config.string: |
         input {
@@ -213,14 +161,23 @@ data:
           }
         }
         output {
-          pipeline {
-            if "metric" in [agent.type] {
+          if "metricbeat" in [agent.type] {
+            pipeline {
               send_to => [metricbeatPipe]
             }
-            if [agent.type] in [pipeline.id] {
+          }
+          if [agent.type] == "metricbeat" {
+            pipeline {
+              send_to => [metricbeatPipeTwo]
+            }
+          }
+          if [agent.type] in [pipeline.id] {
+            pipeline {
               send_to => [beatsPipeLine]
             }
-            else {
+          }
+          else {
+            pipeline {
               send_to => [beatsAddress]
             }
           }
@@ -232,15 +189,23 @@ data:
             address => beatsAddress
           }
         }
-        filter {
-          mutate {
-            lowercase => [ "[@metadata][beat]" ]
+        output {
+          elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM}"
+          }
+        }
+    - pipeline.id: beatsDownstreamTwo
+      config.string: |
+        input {
+          pipeline {
+            address => metricbeatPipeTwo
           }
         }
         output {
           elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM}"
+            index => "%{[@metadata][beat]}-test1"
           }
         }
     - pipeline.id: testmetricbeat
@@ -248,11 +213,6 @@ data:
         input {
           pipeline {
             address => metricbeatPipe
-          }
-        }
-        filter {
-          mutate {
-            lowercase => [ "[@metadata][beat]" ]
           }
         }
         output {
@@ -266,11 +226,6 @@ data:
         input {
           pipeline {
             address => beatsPipeLine
-          }
-        }
-        filter {
-          mutate {
-            lowercase => [ "[@metadata][beat]" ]
           }
         }
         output {
