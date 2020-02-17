@@ -153,84 +153,143 @@ data:
     # xpack.monitoring.elasticsearch.username: elastic
     # xpack.monitoring.elasticsearch.password: changeme
   pipelines.yml: |-
-    - pipeline.id: beats
+    - pipeline.id: upstream
       config.string: |
-        input {
-          beats {
-            port => 5000
-          }
-        }
+        input { http { codec => line
+          host => "0.0.0.0"
+          port => "8080" } }
         output {
-          if "metricbeat" in [agent.type] {
-            pipeline {
-              send_to => [metricbeatPipe]
-            }
-          }
-          if [agent.type] == "metricbeat" {
-            pipeline {
-              send_to => [metricbeatPipeTwo]
-            }
-          }
-          if [agent.type] in [pipeline.id] {
-            pipeline {
-              send_to => [beatsPipeLine]
-            }
-          }
-          else {
-            pipeline {
-              send_to => [beatsAddress]
-            }
+          if [index] in [pipeline.id] { pipeline { send_to => "%{[index]}" }}
+          if [index] == 'testindex' { pipeline { send_to => "%{index}" }}
+          # if [index] == 'testindex' { pipeline { send_to => [index] }}
+          if [index] in ['testindex', 'testindex2'] { pipeline { send_to => "%{index}" }}
+          # else { pipeline { send_to => [myVirtualAddress] }}
+        }
+    - pipeline.id: testindex
+      config.string: |
+        input { pipeline { address => "%{index}" } }
+        output {
+          elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "%{index}-testindex"
           }
         }
-    - pipeline.id: beatsDownstream
+    - pipeline.id: testindex2
       config.string: |
-        input {
-          pipeline {
-            address => beatsAddress
+        input { pipeline { address => "testindex2" } }
+        output {
+          elasticsearch {
+            hosts => "elasticsearch:9200"
+            index => "%{index}-testindex2"
+          }
+        }
+    ### Default
+    - pipeline.id: downstream
+      config.string: |
+        input { pipeline { address => [myVirtualAddress] } }
+        filter {
+          json {
+            skip_on_invalid_json => true
+            source => "message"
+            target => "parsedJson"
+            id => "%{[parsedJson][index]}"
+            add_field => { "index" => "%{[parsedJson][index]}" }
+            remove_field => [ "parsedJson" ]
+          }
+          if [index] == '%{[parsedJson][index]}' {
+            mutate {
+              update => { "index" => "http-%{+YYYY.MM}" }
+            }
           }
         }
         output {
           elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM}"
+            index => "%{[index]}"
           }
+          # stdout { codec  => rubydebug { metadata => true } }
         }
-    - pipeline.id: beatsDownstreamTwo
-      config.string: |
-        input {
-          pipeline {
-            address => metricbeatPipeTwo
-          }
-        }
-        output {
-          elasticsearch {
-            hosts => "elasticsearch:9200"
-            index => "%{[@metadata][beat]}-test1"
-          }
-        }
-    - pipeline.id: testmetricbeat
-      config.string: |
-        input {
-          pipeline {
-            address => metricbeatPipe
-          }
-        }
-        output {
-          elasticsearch {
-            hosts => "elasticsearch:9200"
-            index => "%{[@metadata][beat]}-metricbeatPipe"
-          }
-        }
-    - pipeline.id: metricbeat
-      config.string: |
-        input {
-          pipeline {
-            address => beatsPipeLine
-          }
-        }
-        output {
-          elasticsearch {
-            hosts => "elasticsearch:9200"
-            index => "%{[@metadata][beat]}-from-beatsPipeLine"
-          }
-        }
+
+
+    ##### Tests with Beats
+    # - pipeline.id: beats
+    #   config.string: |
+    #     input {
+    #       beats {
+    #         port => 5000
+    #       }
+    #     }
+    #     output {
+    #       if "metricbeat" in [agent.type] {
+    #         pipeline {
+    #           send_to => [metricbeatPipe]
+    #         }
+    #       }
+    #       if [agent.type] == "metricbeat" {
+    #         pipeline {
+    #           send_to => [metricbeatPipeTwo]
+    #         }
+    #       }
+    #       if [agent.type] in [pipeline.id] {
+    #         pipeline {
+    #           send_to => [beatsPipeLine]
+    #         }
+    #       }
+    #       else {
+    #         pipeline {
+    #           send_to => [beatsAddress]
+    #         }
+    #       }
+    #     }
+    # - pipeline.id: beatsDownstream
+    #   config.string: |
+    #     input {
+    #       pipeline {
+    #         address => beatsAddress
+    #       }
+    #     }
+    #     output {
+    #       elasticsearch {
+    #         hosts => "elasticsearch:9200"
+    #         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM}"
+    #       }
+    #     }
+    # - pipeline.id: beatsDownstreamTwo
+    #   config.string: |
+    #     input {
+    #       pipeline {
+    #         address => metricbeatPipeTwo
+    #       }
+    #     }
+    #     output {
+    #       elasticsearch {
+    #         hosts => "elasticsearch:9200"
+    #         index => "%{[@metadata][beat]}-test1"
+    #       }
+    #     }
+    # - pipeline.id: testmetricbeat
+    #   config.string: |
+    #     input {
+    #       pipeline {
+    #         address => metricbeatPipe
+    #       }
+    #     }
+    #     output {
+    #       elasticsearch {
+    #         hosts => "elasticsearch:9200"
+    #         index => "%{[@metadata][beat]}-metricbeatPipe"
+    #       }
+    #     }
+    # - pipeline.id: metricbeat
+    #   config.string: |
+    #     input {
+    #       pipeline {
+    #         address => beatsPipeLine
+    #       }
+    #     }
+    #     output {
+    #       elasticsearch {
+    #         hosts => "elasticsearch:9200"
+    #         index => "%{[@metadata][beat]}-from-beatsPipeLine"
+    #       }
+    #     }
