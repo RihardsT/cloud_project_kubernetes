@@ -84,8 +84,7 @@ sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.21
 
 ####### Kubernetes upgrade
 sudo kubeadm upgrade plan
-sudo kubeadm upgrade apply v1.16.1
-
+sudo kubeadm upgrade apply v1.17.0
 
 # For upgrade to v1.17.0 had to use --ignore-preflight-errors=all
 # Likely because I only have single master node

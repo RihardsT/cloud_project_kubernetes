@@ -32,11 +32,24 @@ spec:
           mountPath: /usr/share/logstash/config/logstash.yml
           readOnly: true
           subPath: logstash.yml
+        # - name: pipelines-yml
+        #   mountPath: /usr/share/logstash/config
+        #   # mountPath: /usr/share/logstash/config/pipelines.yml
+        #   # subPath: pipelines.yml
       volumes:
       - name: logstash-yml
         configMap:
           defaultMode: 0666
           name: logstash-yml
+      # - name: pipelines-yml
+      #   configMap:
+      #     defaultMode: 0666
+      #     name: pipelines-yml
+      #     items:
+      #     - key: pipelines.yml
+      #       path: pipelines.yml
+      #     - key: logstash.yml
+      #       path: logstash.yml
       - name: config
         configMap:
           name: logstash-config
@@ -56,8 +69,8 @@ data:
   logstash.yml: |-
     http.host: "0.0.0.0"
     xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
-    xpack.monitoring.elasticsearch.username: elastic
-    xpack.monitoring.elasticsearch.password: changeme
+    # xpack.monitoring.elasticsearch.username: elastic
+    # xpack.monitoring.elasticsearch.password: changeme
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -93,15 +106,22 @@ data:
     filter {
       if "input-http" in [tags] {
         json {
-            source => "message"
-            target => "parsedJson"
-            id => "%{[parsedJson][index]}"
-            add_field => { "index_name" => "%{[parsedJson][index]}" }
-            remove_field => [ "parsedJson" ]
+          skip_on_invalid_json => true
+          source => "message"
+          target => "parsedJson"
+          id => "%{[parsedJson][index]}"
+          add_field => { "index" => "%{[parsedJson][index]}" }
+          remove_field => [ "parsedJson" ]
         }
-        if [index_name] == '%{[parsedJson][index]}' {
+        ## Not necessary anymore, because of skip_on_invalid_json
+        # if [index] == '%{[parsedJsoindex}'{
+        #   mutate {
+        #     update => { "index" => "http-%{+YYYY.MM}" }
+        #   }
+        # }
+        if ![index] {
           mutate {
-            update => { "index_name" => "http-%{+YYYY.MM.dd}" }
+            add_field => { "index" => "http-%{+YYYY.MM}" }
           }
         }
       }
@@ -110,23 +130,171 @@ data:
       if "input-http" in [tags] {
         elasticsearch {
             hosts => "elasticsearch:9200"
-            index => "%{index_name}"
-            # pipeline => "filebeat-7.2.0-haproxy-log-pipeline"
-            user => "elastic"
-            password => "changeme"
+            index => "%{index}"
         }
         # For debug - check what metadata is in data
-        # stdout {
-        #   codec  => rubydebug {
-        #     metadata => true
-        #   }
-        # }
+        stdout {
+          codec  => rubydebug {
+            metadata => true
+          }
+        }
       } else {
           elasticsearch {
             hosts => "elasticsearch:9200"
             index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-            user => "elastic"
-            password => "changeme"
           }
       }
     }
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: pipelines-yml
+#   namespace: elastic
+# data:
+#   logstash.yml: |-
+#     http.host: "0.0.0.0"
+#     xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+#     # xpack.monitoring.elasticsearch.username: elastic
+#     # xpack.monitoring.elasticsearch.password: changeme
+#   pipelines.yml: |-
+#     - pipeline.id: upstream
+#       config.string: |
+#         input { http { codec => line
+#           host => "0.0.0.0"
+#           port => "8080" } }
+#         output {
+#           if [index] in [pipeline.id] { pipeline { send_to => "%{[index]}" }}
+#           if [index] == 'testindex' { pipeline { send_to => "%{index}" }}
+#           # if [index] == 'testindex' { pipeline { send_to => [index] }}
+#           if [index] in ['testindex', 'testindex2'] { pipeline { send_to => "%{index}" }}
+#           # else { pipeline { send_to => [myVirtualAddress] }}
+#         }
+#     - pipeline.id: testindex
+#       config.string: |
+#         input { pipeline { address => "%{index}" } }
+#         output {
+#           elasticsearch {
+#             hosts => "elasticsearch:9200"
+#             index => "%{index}-testindex"
+#           }
+#         }
+#     - pipeline.id: testindex2
+#       config.string: |
+#         input { pipeline { address => "testindex2" } }
+#         output {
+#           elasticsearch {
+#             hosts => "elasticsearch:9200"
+#             index => "%{index}-testindex2"
+#           }
+#         }
+#     ### Default
+#     - pipeline.id: downstream
+#       config.string: |
+#         input { pipeline { address => [myVirtualAddress] } }
+#         filter {
+#           json {
+#             skip_on_invalid_json => true
+#             source => "message"
+#             target => "parsedJson"
+#             id => "%{[parsedJson][index]}"
+#             add_field => { "index" => "%{[parsedJson][index]}" }
+#             remove_field => [ "parsedJson" ]
+#           }
+#           if [index] == '%{[parsedJson][index]}' {
+#             mutate {
+#               update => { "index" => "http-%{+YYYY.MM}" }
+#             }
+#           }
+#         }
+#         output {
+#           elasticsearch {
+#             hosts => "elasticsearch:9200"
+#             index => "%{[index]}"
+#           }
+#           # stdout { codec  => rubydebug { metadata => true } }
+#         }
+#
+#
+#     ##### Tests with Beats
+#     # - pipeline.id: beats
+#     #   config.string: |
+#     #     input {
+#     #       beats {
+#     #         port => 5000
+#     #       }
+#     #     }
+#     #     output {
+#     #       if "metricbeat" in [agent.type] {
+#     #         pipeline {
+#     #           send_to => [metricbeatPipe]
+#     #         }
+#     #       }
+#     #       if [agent.type] == "metricbeat" {
+#     #         pipeline {
+#     #           send_to => [metricbeatPipeTwo]
+#     #         }
+#     #       }
+#     #       if [agent.type] in [pipeline.id] {
+#     #         pipeline {
+#     #           send_to => [beatsPipeLine]
+#     #         }
+#     #       }
+#     #       else {
+#     #         pipeline {
+#     #           send_to => [beatsAddress]
+#     #         }
+#     #       }
+#     #     }
+#     # - pipeline.id: beatsDownstream
+#     #   config.string: |
+#     #     input {
+#     #       pipeline {
+#     #         address => beatsAddress
+#     #       }
+#     #     }
+#     #     output {
+#     #       elasticsearch {
+#     #         hosts => "elasticsearch:9200"
+#     #         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM}"
+#     #       }
+#     #     }
+#     # - pipeline.id: beatsDownstreamTwo
+#     #   config.string: |
+#     #     input {
+#     #       pipeline {
+#     #         address => metricbeatPipeTwo
+#     #       }
+#     #     }
+#     #     output {
+#     #       elasticsearch {
+#     #         hosts => "elasticsearch:9200"
+#     #         index => "%{[@metadata][beat]}-test1"
+#     #       }
+#     #     }
+#     # - pipeline.id: testmetricbeat
+#     #   config.string: |
+#     #     input {
+#     #       pipeline {
+#     #         address => metricbeatPipe
+#     #       }
+#     #     }
+#     #     output {
+#     #       elasticsearch {
+#     #         hosts => "elasticsearch:9200"
+#     #         index => "%{[@metadata][beat]}-metricbeatPipe"
+#     #       }
+#     #     }
+#     # - pipeline.id: metricbeat
+#     #   config.string: |
+#     #     input {
+#     #       pipeline {
+#     #         address => beatsPipeLine
+#     #       }
+#     #     }
+#     #     output {
+#     #       elasticsearch {
+#     #         hosts => "elasticsearch:9200"
+#     #         index => "%{[@metadata][beat]}-from-beatsPipeLine"
+#     #       }
+#     #     }

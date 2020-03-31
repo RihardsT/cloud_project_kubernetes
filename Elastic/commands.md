@@ -7,7 +7,8 @@
 ### Up
 kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
 
-kubectl apply -f elasticsearch.yml -f es_data.yml -f es_ingest.yml -f kibana.yml -f ingress.yml -f metricbeat_daemonset.yml
+kubectl apply -f elasticsearch.yml -f es_data.yml -f es_ingest.yml -f ingress.yml
+kubectl apply -f kibana.yml
 
 Minimal:
 kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml
@@ -74,15 +75,15 @@ Add the " double quotes where necessary.
 ### Sending logs to Logstash via http
 ```
 curl -X POST http://logstash:8080/ \
-  -H 'content-type: content-type: application/json' \
+  -H 'content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 curl -X POST https://mon2.rudenspavasaris.id.lv/ \
-  -H 'content-type: content-type: application/json' \
+  -H 'content-type: application/json' \
   -d '{"message": "hello world", "level": "info", "timestamp": "2019-07-11T17:15"}'
 
 TODO: Find out how to filter out index from the message and send data to specified index in Logstash.
 curl -X POST http://logstash:8080/ \
-  -H 'content-type: content-type: application/json' \
+  -H 'content-type: application/json' \
   -d '{"message": "hello world", "index": "test-index"}'
 
 BASE64_USER_PASS=$(echo -n "username:password" | base64)
