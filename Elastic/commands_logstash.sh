@@ -11,6 +11,15 @@ filter {
 curl -X POST http://logstash:8080/ \
   -H 'content-type: application/json' \
   -d '{"message": "testindex", "index": "testindex"}'
+curl -X POST http://logstash:8080/ \
+  -H 'content-type: application/json' \
+  -d '{"message": "testindex"}'
+curl -X POST http://logstash:8080/ \
+  -H 'content-type:content-type: application/json' \
+  -d '{"message": "testindex", "index": "testindex"}'
+curl -X POST http://logstash:8080/ \
+  -d 'Hello'
+
 
 
 
