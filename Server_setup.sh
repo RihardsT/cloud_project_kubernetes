@@ -11,6 +11,11 @@ docker run -ti --rm -v ~/Code/CloudProject/cloud_project_ansible:/d -v ~/Code/Cl
 eval "$(ssh-agent -s)"; ssh-add /root/.ssh/scaleway && \
 ansible-playbook -i ./Inventory --limit production --vault-password-file ../Secrets/ansible_vault_pass -u root --diff Playbook.yml -e ansible_port=22'
 
+ansible-playbook -i ./Inventory --limit production -u rihards --diff Playbook.yml
+
+sudo mkdir /data
+sudo mkdir /backups
+
 cd ~/Code/work_in_progress/Kubernetes
 SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
 mkdir .kube
@@ -84,7 +89,7 @@ sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.21
 
 ####### Kubernetes upgrade
 sudo kubeadm upgrade plan
-sudo kubeadm upgrade apply v1.18.0
+sudo kubeadm upgrade apply v1.18.2
 
 # For upgrade to v1.17.0 had to use --ignore-preflight-errors=all
 # Likely because I only have single master node

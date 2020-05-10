@@ -27,7 +27,7 @@ data:
     # node.ml: true
     # xpack.ml.enabled: true
     # cluster.remote.connect: false
-    # xpack.monitoring.collection.enabled: true
+    xpack.monitoring.collection.enabled: true
     # xpack.security.enabled: true
     xpack.license.self_generated.type: basic
 
@@ -59,20 +59,19 @@ spec:
           value: elastic
         - name: ELASTIC_PASSWORD
           value: changeme
-      #   volumeMounts:
-      #   - mountPath: /usr/share/elasticsearch/data
-      #     name: elasticsearch-data
-      # volumes:
-      #     ##### Requires setting permissions on host, for this to work
-      #   - name: elasticsearch-data
-      #     hostPath:
-      #       path: "/data/elasticsearch_data"
         volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
         - name: config
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           readOnly: true
           subPath: elasticsearch.yml
       volumes:
+        ##### Requires setting permissions on host, for this to work
+        ### chmod 775 or chown rihards:
+      - name: elasticsearch-data
+        hostPath:
+          path: "/data/elasticsearch_data"
       - name: config
         configMap:
           defaultMode: 0777

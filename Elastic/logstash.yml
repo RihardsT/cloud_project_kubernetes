@@ -133,11 +133,11 @@ data:
             index => "%{index}"
         }
         # For debug - check what metadata is in data
-        stdout {
-          codec  => rubydebug {
-            metadata => true
-          }
-        }
+        # stdout {
+        #   codec  => rubydebug {
+        #     metadata => true
+        #   }
+        # }
       } else {
           elasticsearch {
             hosts => "elasticsearch:9200"

@@ -22,3 +22,4 @@ Backend node running Nextcloud and Collabora services, that I care about.
 ## Still to do
 - Site to site openvpn connection, to be able to add RaspberryPi worker at home
 - Ideally multiple master nodes, for HA
+- [ ] https://www.scaleway.com/en/docs/install-and-configure-nextcloud-object-storage/
