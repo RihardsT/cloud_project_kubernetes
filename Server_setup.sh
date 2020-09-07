@@ -18,7 +18,7 @@ sudo mkdir /backups
 
 cd ~/Code/work_in_progress/Kubernetes
 SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
-mkdir .kube
+mkdir ~/.kube
 sudo cp /etc/kubernetes/admin.conf ~/.kube/config
 sudo chown $(id -u):$(id -g) ~/.kube/config
 echo "source <(kubectl completion bash)" >> ~/.bashrc
