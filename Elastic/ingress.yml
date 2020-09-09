@@ -45,8 +45,8 @@ spec:
   - match: Host(`mon2.rudenspavasaris.id.lv`)
     kind: Rule
     services:
-    # - name: elasticsearch
-    - name: es-ingest
+    - name: elasticsearch
+    # - name: es-ingest
       port: 9200
       targetPort: 9200
   tls:

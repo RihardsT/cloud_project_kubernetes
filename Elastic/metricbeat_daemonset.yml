@@ -38,7 +38,7 @@ data:
     setup.ilm.enabled: true
     setup.ilm.overwrite: false
     setup.ilm.check_exists: false
-    setup.ilm.rollover_alias: "test-metricbeat-7.3.2"
+    setup.ilm.rollover_alias: "test-metricbeat-7.9.0"
     # -${agent.version} -{agent.version} -%{[agent.version]}
     setup.ilm.policy_name: "test"
     setup.ilm.pattern: "{now/d}-000001"
@@ -46,15 +46,16 @@ data:
     # setup.dashboards.index: "test-*"
     # setup.kibana.space.id: "testspace"
 
-    output.logstash:
-      hosts: logstash:5000
-      index: 'test-metricbeat'
-    # output.elasticsearch:
-    #   hosts: ['es-ingest:9200']
+    # output.logstash:
+    #   hosts: logstash:5000
+    #   index: 'test-metricbeat'
+    output.elasticsearch:
+      # hosts: ['es-ingest:9200']
+      hosts: ['elasticsearch:9200']
     #   # hosts: ['rudenspavasaris.id.lv:3045']
     #   # index: 'test-metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}'
-    #   username: elastic
-    #   password: changeme
+      username: elastic
+      password: changeme
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -107,6 +108,23 @@ data:
       #bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       #ssl.certificate_authorities:
         #- /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+  elasticsearch-xpack.yml: |-
+    - module: elasticsearch
+      metricsets:
+        - ccr
+        - cluster_stats
+        - index
+        - index_recovery
+        - index_summary
+        - ml_job
+        - node_stats
+        - shard
+        - enrich
+      period: 10s
+      hosts: ["http://elasticsearch:9200"]
+      #username: "user"
+      #password: "secret"
+      xpack.enabled: true
 ---
 # Deploy a Metricbeat instance per node for node metrics retrieval
 apiVersion: apps/v1
@@ -131,7 +149,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: metricbeat
-        image: docker.elastic.co/beats/metricbeat:7.3.2
+        image: docker.elastic.co/beats/metricbeat:7.9.0
         args: [
           "-c", "/etc/metricbeat.yml",
           "-e",
