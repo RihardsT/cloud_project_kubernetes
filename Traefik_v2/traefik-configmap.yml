@@ -1,3 +1,4 @@
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -10,6 +11,11 @@ data:
     [entryPoints]
       [entryPoints.http]
         address = ":80"
+        [entryPoints.http.http]
+          [entryPoints.http.http.redirections]
+            [entryPoints.http.http.redirections.entryPoint]
+              to = "https"
+              scheme = "https"
       [entryPoints.https]
         address = ":443"
     [certificatesResolvers]

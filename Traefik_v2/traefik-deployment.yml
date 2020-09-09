@@ -1,6 +1,6 @@
 ---
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   namespace: default
   name: traefik
@@ -19,7 +19,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       containers:
       - name: traefik
-        image: traefik:v2.0
+        image: traefik:v2.2
         volumeMounts:
         - mountPath: /config
           name: config
