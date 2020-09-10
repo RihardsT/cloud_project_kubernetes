@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: collabora
   labels:
     app: collabora
 spec:
+  selector:
+    matchLabels:
+      app: collabora
   replicas: 1
   strategy:
     type: Recreate
@@ -15,7 +18,7 @@ spec:
     spec:
       containers:
       - name: collabora
-        image: collabora/code:4.0.5.2
+        image: collabora/code:4.2.6.2
         ports:
         - containerPort: 9980
           protocol: TCP
