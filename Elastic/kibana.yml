@@ -28,11 +28,18 @@ spec:
           mountPath: /usr/share/kibana/config/kibana.yml
           readOnly: true
           subPath: kibana.yml
+        - name: elasticsearch-ca
+          mountPath: /usr/share/kibana/config/elasticsearch-ca.pem
+          readOnly: true
+          subPath: elasticsearch-ca.pem
       volumes:
       - name: config
         configMap:
           defaultMode: 0666
           name: kibana-config
+      - name: elasticsearch-ca
+        secret:
+          secretName: elasticsearch-ca
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
@@ -46,8 +53,10 @@ data:
   kibana.yml: |-
     server.name: kibana
     server.host: "0"
-    elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+    elasticsearch.hosts: [ "https://elasticsearch:9200" ]
     xpack.monitoring.ui.container.elasticsearch.enabled: true
     xpack.security.enabled: true
     elasticsearch.username: "elastic"
     elasticsearch.password: "changeme"
+    elasticsearch.ssl.certificateAuthorities: [ "config/elasticsearch-ca.pem" ]
+    xpack.encryptedSavedObjects.encryptionKey: "pwpHw89wqzSAXBtMGMKJy4RLfwq3IVbsbTQDlBBdvkW8uvkIQaDnhA7UKFVTJDZ"

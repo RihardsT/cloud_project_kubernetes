@@ -16,9 +16,7 @@ data:
     node.name: "elasticsearch-master1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
-    node.master: true
-    node.data: true
-    node.ingest: true
+    node.roles: [master, data, ingest]
     discovery.seed_hosts:
       - elasticsearch:9200
     cluster.initial_master_nodes:
@@ -29,8 +27,9 @@ data:
     # cluster.remote.connect: false
     # xpack.monitoring.collection.enabled: true # use metricbeat instead
     xpack.security.enabled: true
-    xpack.license.self_generated.type: basic
-
+    xpack.license.self_generated.type: trial
+    xpack.security.http.ssl.enabled: true
+    xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,12 +59,20 @@ spec:
         - name: ELASTIC_PASSWORD
           value: changeme
         volumeMounts:
-        # - mountPath: /usr/share/elasticsearch/data
-        #   name: elasticsearch-data
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
         - name: config
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           readOnly: true
           subPath: elasticsearch.yml
+        - name: http-cert
+          mountPath: /usr/share/elasticsearch/config/http.p12
+          readOnly: true
+          subPath: http.p12
+        - name: http-cert
+          mountPath: /usr/share/elasticsearch/config/ca.p12
+          readOnly: true
+          subPath: ca.p12
       volumes:
         ##### Requires setting permissions on host, for this to work
         ### chmod 775 or chown rihards:
@@ -76,6 +83,9 @@ spec:
         configMap:
           defaultMode: 0777
           name: elasticsearch-config
+      - name: http-cert
+        secret:
+          secretName: http-cert
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
