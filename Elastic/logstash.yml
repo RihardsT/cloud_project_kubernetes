@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:7.9.0
+        image: docker.elastic.co/logstash/logstash:7.9.2
         env:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
@@ -143,7 +143,7 @@ data:
             hosts => "elasticsearch:9200"
             index => "%{[@metadata][beat]}-%{[@metadata][version]}-test2"
             # manage_template => true
-            ilm_rollover_alias => "filebeat-7.9.0-test2"
+            ilm_rollover_alias => "filebeat-7.9.2-test2"
             ilm_pattern => "000001"
             ilm_policy => "filebeat"
 

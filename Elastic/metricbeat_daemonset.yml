@@ -38,7 +38,7 @@ data:
     setup.ilm.enabled: true
     setup.ilm.overwrite: false
     setup.ilm.check_exists: false
-    setup.ilm.rollover_alias: "test-metricbeat-7.9.0"
+    setup.ilm.rollover_alias: "test-metricbeat-7.9.2"
     # -${agent.version} -{agent.version} -%{[agent.version]}
     setup.ilm.policy_name: "test"
     setup.ilm.pattern: "{now/d}-000001"
@@ -149,7 +149,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: metricbeat
-        image: docker.elastic.co/beats/metricbeat:7.9.0
+        image: docker.elastic.co/beats/metricbeat:7.9.2
         args: [
           "-c", "/etc/metricbeat.yml",
           "-e",
