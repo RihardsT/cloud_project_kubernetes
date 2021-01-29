@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:19.0.3-apache
+        image: nextcloud:20.0.5-apache
         ports:
         - containerPort: 80
           protocol: TCP
