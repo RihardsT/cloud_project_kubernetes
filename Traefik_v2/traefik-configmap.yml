@@ -18,6 +18,8 @@ data:
               scheme = "https"
       [entryPoints.https]
         address = ":443"
+      [entryPoints.tcp]
+        address = ":4443"
     [certificatesResolvers]
       [certificatesResolvers.default]
         [certificatesResolvers.default.acme]
