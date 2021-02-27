@@ -53,7 +53,7 @@ cd ~/Code/Kubes/nextcloud
 
 ### Add nodes
 SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
-kubeadm token create --print-join-command
+kubeadm token create --print-join-command --ttl 0
 exit
 
 echo "KUBELET_EXTRA_ARGS=--fail-swap-on=false" | sudo tee /etc/default/kubelet

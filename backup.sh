@@ -47,6 +47,7 @@ secret_key = SECRET_KEY_HERE
 " > ~/.s3cfg
 
 s3cmd ls s3://rudenspavasaris
+s3cmd la
 s3cmd put nextcloud_${backup_timestamp}.tar nextcloud_postgres_${backup_timestamp}.tar minecraft_${backup_timestamp}.tar s3://rudenspavasaris
 s3cmd get nextcloud_${backup_timestamp}.tar nextcloud_postgres_${backup_timestamp}.tar minecraft_${backup_timestamp}.tar
 

@@ -44,3 +44,13 @@ spec:
       port: 9980
   tls:
     certResolver: default
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: nextcloud-redirect-https
+# spec:
+#   permanent: true
+#   redirectRegex:
+#     regex: ^http://vieta.rudenspavasaris.id.lv/(.*)
+#     replacement: https://vieta.rudenspavasaris.id.lv/${1}
