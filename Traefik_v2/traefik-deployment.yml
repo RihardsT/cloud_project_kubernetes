@@ -39,6 +39,8 @@ spec:
           containerPort: 80
         - name: https
           containerPort: 443
+        - name: minecraft
+          containerPort: 25565
         - name: admin
           containerPort: 8080
       volumes:

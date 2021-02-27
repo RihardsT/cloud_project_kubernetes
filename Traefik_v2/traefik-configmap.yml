@@ -7,6 +7,8 @@ metadata:
 data:
   traefik.toml: |
     [api]
+      dashboard = true
+      insecure = true
     [accessLog]
     [entryPoints]
       [entryPoints.http]
@@ -18,8 +20,10 @@ data:
               scheme = "https"
       [entryPoints.https]
         address = ":443"
-      [entryPoints.tcp]
-        address = ":4443"
+      [entryPoints.minecraft-tcp]
+        address = ":25565"
+      [entryPoints.minecraft-udp]
+        address = ":25565/udp"
     [certificatesResolvers]
       [certificatesResolvers.default]
         [certificatesResolvers.default.acme]
