@@ -10,13 +10,16 @@ data:
     [plugins]
       cgroups = yes
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: netdata-pub
   labels:
     app: netdata-pub
 spec:
+  selector:
+    matchLabels:
+      app: netdata-pub
   replicas: 1
   strategy:
     type: Recreate
@@ -77,6 +80,22 @@ spec:
       protocol: TCP
   selector:
     app: netdata-pub
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: netdata-pub
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`netdata.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: netdata-pub
+      port: 19999
+  tls:
+    certResolver: default
 # ---
 # # Ingres is setup for Keycloak gatekeeper instead
 # apiVersion: extensions/v1beta1

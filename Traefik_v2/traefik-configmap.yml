@@ -10,8 +10,12 @@ data:
       dashboard = true
       insecure = true
     [accessLog]
+    # [experimental]
+      # http3 = true
+      # http3 shall be available in 2.5. This experimental likely only works from master release
     [entryPoints]
       [entryPoints.http]
+        # enableHTTP3 = true
         address = ":80"
         [entryPoints.http.http]
           [entryPoints.http.http.redirections]
@@ -19,6 +23,7 @@ data:
               to = "https"
               scheme = "https"
       [entryPoints.https]
+        # enableHTTP3 = true
         address = ":443"
       [entryPoints.minecraft-tcp]
         address = ":25565"
@@ -33,5 +38,22 @@ data:
             entryPoint = "http"
           [certificatesResolvers.default.acme.tlsChallenge]
     [providers.kubernetesCRD]
+    [tls.options]
+      [tls.options.default]
+        cipherSuites = [
+          "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        ]
+        minVersion = "VersionTLS12"
+      [tls.options.mintls13]
+        minVersion = "VersionTLS13"
     [log]
       # level = "DEBUG"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strict-transport-security-header
+spec:
+  headers:
+    stsSeconds: 15552000
+    stsIncludeSubdomains: true

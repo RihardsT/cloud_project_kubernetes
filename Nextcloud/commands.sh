@@ -42,6 +42,7 @@ Default encryption module
 ### OCC commands
 # in container
 apt update && apt install sudo
-sudo -u www-data ./occ COMMAND
+sudo -u www-data PHP_MEMORY_LIMIT=512M ./occ COMMAND
 # then restart container to get rid of the unnecessary sudo package
 # there must be a way to get it working without sudo, but eh for now.
+sudo -u www-data PHP_MEMORY_LIMIT=512M ./occ maintenance:mode --on # --off

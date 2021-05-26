@@ -21,3 +21,7 @@ spec:
       port: 80
   tls:
     certResolver: default
+
+
+
+https://observatory.mozilla.org/analyze/vieta.rudenspavasaris.id.lv
