@@ -3,3 +3,4 @@ secrets.yml
 secrets_*.yml
 Secrets/
 Elastic/certs
+__pycache__

@@ -109,7 +109,39 @@ spec:
       port: 8080
   tls:
     certResolver: default
-
+######### apm-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-server
+  namespace: elastic
+  labels:
+    name: apm-server
+spec:
+  ports:
+    - name: http
+      port: 8200
+      targetPort: 8200
+  selector:
+    name: apm-server
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: apm-server
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`apm.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: apm-server
+      port: 8200
+  tls:
+    certResolver: default
 
 ################### Traefik V1
 ######### Kibana

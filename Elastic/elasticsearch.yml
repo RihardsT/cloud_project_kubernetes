@@ -16,7 +16,7 @@ data:
     node.name: "elasticsearch-master1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
-    node.roles: [master, data, ingest]
+    node.roles: [master, data, ingest, transform, ml]
     discovery.seed_hosts:
       - elasticsearch:9200
     cluster.initial_master_nodes:
@@ -46,6 +46,10 @@ spec:
       labels:
         name: elasticsearch
     spec:
+      # securityContext:
+      #   sysctls:
+      #   - name: vm.max_map_count
+      #     value: "262144"
       initContainers:
       - name: increase-vm-max-map
         image: busybox
@@ -54,10 +58,11 @@ spec:
           privileged: true
       containers:
       - name: elasticsearch-master1
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
         env:
         - name: ES_JAVA_OPTS
-          value: -Xmx256m -Xms256m
+          # value: -Xmx256m -Xms256m
+          value: -Xmx2048m -Xms2048m
         # - name: discovery.type
         #   value: single-node
         - name: ELASTICSEARCH_USERNAME
@@ -94,7 +99,7 @@ spec:
       #     secretName: http-cert
       restartPolicy: Always
       nodeSelector:
-        kubernetes.io/hostname: "htz1"
+        kubernetes.io/hostname: "worker"
 ---
 apiVersion: v1
 kind: Service

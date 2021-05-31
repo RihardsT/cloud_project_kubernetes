@@ -1,0 +1,58 @@
+# https://www.elastic.co/guide/en/apm-server/current/docker.html
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apm-server
+  namespace: elastic
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: apm-server
+  template:
+    metadata:
+      labels:
+        name: apm-server
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 0
+      containers:
+      - name: apm-server
+        image: docker.elastic.co/apm/apm-server:7.13.0
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/apm-server/apm-server.yml
+          readOnly: true
+          subPath: apm-server.yml
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 0600
+          name: apm-config
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: "worker"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apm-config
+  namespace: elastic
+data:
+  apm-server.yml: |-
+    apm-server:
+      host: "0.0.0.0:8200"
+      rum:
+        enabled: true
+    output:
+      elasticsearch:
+        hosts: elasticsearch:9200
+        username: "elastic"
+        password: "changeme"
+    queue.mem.events: 4096
+    max_procs: 4
