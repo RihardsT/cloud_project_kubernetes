@@ -1,8 +1,8 @@
-pip3 install elastic-apm[flask]
+pip3 install flask elastic-apm[flask]
 
 flask run
 
 while true; do
   curl localhost:5000 &>/dev/null
-  sleep 1
+  sleep 2
 done
