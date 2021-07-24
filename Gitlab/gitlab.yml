@@ -1,3 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-configmap
+  labels:
+    k8s-app: gitlab
+data:
+  gitlab.rb: |-
+    ##! Check out the latest version of this file to know about the different
+    ##! settings that can be configured, when they were introduced and why:
+    ##! https://gitlab.com/gitlab-org/omnibus-gitlab/blame/master/files/gitlab-config-template/gitlab.rb.template
+
+    external_url "https://gitlab.rudenspavasaris.id.lv"
+    gitlab_rails['gitlab_shell_ssh_port'] = 4422
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,6 +42,10 @@ spec:
         - containerPort: 4422
           protocol: TCP
         volumeMounts:
+        - name: config
+          mountPath: /etc/gitlab/gitlab.rb
+          readOnly: true
+          subPath: gitlab.rb
         - mountPath: /etc/gitlab
           name: gitlab-config
         - mountPath: /var/log/gitlab
@@ -33,6 +54,10 @@ spec:
           name: gitlab-data
       restartPolicy: Always
       volumes:
+        - name: config
+          configMap:
+            defaultMode: 0600
+            name: gitlab-configmap
         - name: gitlab-config
           hostPath:
             path: "/data/gitlab_data/config"
@@ -54,6 +79,9 @@ spec:
   - name: https
     targetPort: 443
     port: 443
+  - name: http
+    targetPort: 80
+    port: 80
   - name: ssh
     targetPort: 4422
     port: 4422
@@ -78,3 +106,19 @@ spec:
     #   port: 4422
   tls:
     passthrough: true
+# http ingress should be only for acme challenge
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gitlab-http
+spec:
+  entryPoints:
+    - http
+  routes:
+  - match: Host(`gitlab.rudenspavasaris.id.lv`)
+    priority: 1001
+    kind: Rule
+    services:
+    - name: gitlab
+      port: 80

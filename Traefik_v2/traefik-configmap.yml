@@ -14,14 +14,16 @@ data:
       # http3 = true
       # http3 shall be available in 2.5. This experimental likely only works from master release
     [entryPoints]
+      [entryPoints.acme]
+        address = ":81"
       [entryPoints.http]
         # enableHTTP3 = true
         address = ":80"
-        [entryPoints.http.http]
-          [entryPoints.http.http.redirections]
-            [entryPoints.http.http.redirections.entryPoint]
-              to = "https"
-              scheme = "https"
+        # [entryPoints.http.http]
+        #   [entryPoints.http.http.redirections]
+        #     [entryPoints.http.http.redirections.entryPoint]
+        #       to = "https"
+        #       scheme = "https"
       [entryPoints.https]
         # enableHTTP3 = true
         address = ":443"
@@ -35,11 +37,26 @@ data:
           email = "rihards.teteris@outlook.com"
           storage = "/acme/acme.json"
           [certificatesResolvers.default.acme.httpChallenge]
-            entryPoint = "http"
+            entryPoint = "acme"
           [certificatesResolvers.default.acme.tlsChallenge]
     [providers.kubernetesCRD]
     [log]
       # level = "DEBUG"
+
+    [backends]
+      [backends.acme]
+        [backends.acme.servers]
+          [backends.acme.servers.server0]
+            url = "http://127.0.0.1:81/"
+    [frontends]
+      [frontends.acme]
+        entryPoints = ["http"]
+        backend = "acme"
+        passHostHeader = true
+        priority = 1000
+        [frontends.acme.routes]
+          [frontends.acme.routes.route0]
+            rule = "PathPrefix:/.well-known/acme-challenge/"
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
