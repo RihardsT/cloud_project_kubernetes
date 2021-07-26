@@ -60,13 +60,13 @@ spec:
             name: gitlab-configmap
         - name: gitlab-config
           hostPath:
-            path: "/data/gitlab_data/config"
+            path: "/data/gitlab/config"
         - name: gitlab-logs
           hostPath:
-            path: "/data/gitlab_data/logs"
+            path: "/data/gitlab/logs"
         - name: gitlab-data
           hostPath:
-            path: "/data/gitlab_data/data"
+            path: "/data/gitlab/data"
       nodeSelector:
         kubernetes.io/hostname: "gitlab"
 ---
