@@ -36,11 +36,6 @@ spec:
       containers:
       - name: gitlab
         image: gitlab/gitlab-ce:latest
-        ports:
-        - containerPort: 443
-          protocol: TCP
-        - containerPort: 4422
-          protocol: TCP
         volumeMounts:
         - name: config
           mountPath: /etc/gitlab/gitlab.rb
