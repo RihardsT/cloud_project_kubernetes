@@ -65,7 +65,7 @@ sudo apt-get install -y kubeadm=1.13.3-00 kubectl=1.13.3-00 kubelet=1.13.3-00 ku
 sudo kubeadm reset -f
 sudo \
 \
---ignore-preflight-errors="all"
+--ignore-preflight-errors="swap"
 
 ### Reset and delete resources
 sudo kubeadm reset -f
@@ -89,7 +89,7 @@ sshuttle -e 'ssh -i ~/.ssh/hetzner' --python '/usr/bin/python3' -r rihards@95.21
 
 ####### Kubernetes upgrade
 sudo kubeadm upgrade plan
-sudo kubeadm upgrade apply v1.21.3
+sudo kubeadm upgrade apply v1.22.1
 
 # For upgrade to v1.17.0 had to use --ignore-preflight-errors=all
 # Likely because I only have single master node
