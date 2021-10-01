@@ -46,3 +46,11 @@ sudo -u www-data PHP_MEMORY_LIMIT=512M ./occ COMMAND
 # then restart container to get rid of the unnecessary sudo package
 # there must be a way to get it working without sudo, but eh for now.
 sudo -u www-data PHP_MEMORY_LIMIT=512M ./occ maintenance:mode --on # --off
+
+
+######### Postgres upgrade
+# Exec into the old versions container and dump
+pg_dumpall -U nextcloud > /var/lib/postgresql/data/nextcloud_postgres_11
+# Upgrade - update the contaienr version
+# Exec into new versions container and restore
+psql -U nextcloud -d postgres -f /var/lib/postgresql/data/nextcloud_postgres_11

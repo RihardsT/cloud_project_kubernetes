@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
   labels:
     app: postgres
 spec:
+  selector:
+    matchLabels:
+      app: postgres
   replicas: 1
   strategy:
     type: Recreate
@@ -15,7 +18,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:11.1-alpine
+        image: postgres:14.0-alpine
         env:
         - name: POSTGRES_USER
           value: nextcloud
@@ -33,7 +36,7 @@ spec:
       volumes:
       - name: postgres-data
         hostPath:
-          path: "/data/nextcloud_postgres"
+          path: "/data/nextcloud_postgres_14"
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
