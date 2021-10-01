@@ -1,4 +1,5 @@
 # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-licensing.html
+# Doesn't work lol
 ---
 apiVersion: v1
 kind: Secret
@@ -32,6 +33,8 @@ spec:
             requests:
               memory: 10Mi
               cpu: 0.1
+    config:
+     xpack.license.self_generated.type: trial
 ---
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
@@ -58,7 +61,7 @@ spec:
       selfSignedCertificate:
         disabled: true
   config:
-     server.publicBaseUrl: "https://mon1.rudenspavasaris.id.lv"
+   server.publicBaseUrl: "https://mon1.rudenspavasaris.id.lv"
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
