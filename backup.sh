@@ -3,26 +3,25 @@ SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
 sudo mkdir /backups
 sudo chown rihards:rihards /backups
 rm -f /backups/*
-backup_timestamp=$(date +%Y-%m-%d_%H.%M.%S); echo ${backup_timestamp} > /backups/backup_timestamp
-sudo tar -czf /backups/nextcloud_${backup_timestamp}.tar /data/nextcloud_data
-sudo tar -czf /backups/nextcloud_postgres_${backup_timestamp}.tar /data/nextcloud_postgres
-sudo tar -czf /backups/minecraft_${backup_timestamp}.tar /data/minecraft_data
+echo $(date +%Y-%m-%d_%H.%M.%S) > /backups/backup_timestamp
+sudo tar -czf /backups/nextcloud_$(cat /backups/backup_timestamp).tar /data/nextcloud_data
+sudo tar -czf /backups/nextcloud_postgres_$(cat /backups/backup_timestamp).tar /data/nextcloud_postgres
+sudo tar -czf /backups/minecraft_$(cat /backups/backup_timestamp).tar /data/minecraft_data
 
 # Extract
 cd /backups/
-backup_timestamp=$(cat /backups/backup_timestamp)
-sudo tar -xzf "nextcloud_${backup_timestamp}.tar" -C /
-sudo tar -xzf "nextcloud_postgres_${backup_timestamp}.tar" -C /
-sudo tar -xzf "minecraft_${backup_timestamp}.tar" -C /
+sudo tar -xzf "nextcloud_$(cat /backups/backup_timestamp).tar" -C /
+sudo tar -xzf "nextcloud_postgres_$(cat /backups/backup_timestamp).tar" -C /
+sudo tar -xzf "minecraft_$(cat /backups/backup_timestamp).tar" -C /
 
 
 # Copy over
 SERVER_IP="95.216.206.226"; ssh ${SERVER_IP} -p 3013
 rm -f /backups/*
-backup_timestamp=$(date +%Y-%m-%d_%H.%M.%S); echo ${backup_timestamp} > /backups/backup_timestamp
-sudo tar -czf /backups/nextcloud_${backup_timestamp}.tar /data/nextcloud_data
-sudo tar -czf /backups/nextcloud_postgres_${backup_timestamp}.tar /data/nextcloud_postgres
-sudo tar -czf /backups/minecraft_${backup_timestamp}.tar /data/minecraft_data
+echo $(date +%Y-%m-%d_%H.%M.%S) > /backups/backup_timestamp
+sudo tar -czf /backups/nextcloud_$(cat /backups/backup_timestamp).tar /data/nextcloud_data
+sudo tar -czf /backups/nextcloud_postgres_$(cat /backups/backup_timestamp).tar /data/nextcloud_postgres
+sudo tar -czf /backups/minecraft_$(cat /backups/backup_timestamp).tar /data/minecraft_data
 exit
 cd /media/1TB/Other/PC/Hetzner_backups
 SERVER_IP="95.216.206.226"; scp -P 3013 ${SERVER_IP}:/backups/* ./
@@ -48,21 +47,23 @@ secret_key = SECRET_KEY_HERE
 
 s3cmd ls s3://rudenspavasaris
 s3cmd la
-s3cmd put nextcloud_${backup_timestamp}.tar nextcloud_postgres_${backup_timestamp}.tar minecraft_${backup_timestamp}.tar s3://rudenspavasaris
-s3cmd get nextcloud_${backup_timestamp}.tar nextcloud_postgres_${backup_timestamp}.tar minecraft_${backup_timestamp}.tar
+s3cmd put nextcloud_$(cat /backups/backup_timestamp).tar nextcloud_postgres_$(cat /backups/backup_timestamp).tar minecraft_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
+s3cmd get nextcloud_$(cat /backups/backup_timestamp).tar nextcloud_postgres_$(cat /backups/backup_timestamp).tar minecraft_$(cat /backups/backup_timestamp).tar
 
 ### Full backup
+# Nextcloud
 rm -f /backups/*
-backup_timestamp=$(date +%Y-%m-%d_%H.%M.%S); echo ${backup_timestamp} > /backups/backup_timestamp
-sudo tar -czf /backups/nextcloud_${backup_timestamp}.tar /data/nextcloud_data
-sudo tar -czf /backups/nextcloud_postgres_${backup_timestamp}.tar /data/nextcloud_postgres
+echo $(date +%Y-%m-%d_%H.%M.%S) > /backups/backup_timestamp
+sudo tar -czf /backups/nextcloud_$(cat /backups/backup_timestamp).tar /data/nextcloud_data
+sudo tar -czf /backups/nextcloud_postgres_$(cat /backups/backup_timestamp).tar /data/nextcloud_postgres
 
 cd /backups
-s3cmd put nextcloud_${backup_timestamp}.tar nextcloud_postgres_${backup_timestamp}.tar s3://rudenspavasaris
+s3cmd put nextcloud_$(cat /backups/backup_timestamp).tar nextcloud_postgres_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
 
-backup_timestamp=$(date +%Y-%m-%d_%H.%M.%S); echo ${backup_timestamp} > /backups/backup_timestamp
-sudo tar -czf /backups/minecraft_${backup_timestamp}.tar /data/minecraft_data
-minecraft_${backup_timestamp}.tar
+# Minecraft
+echo $(date +%Y-%m-%d_%H.%M.%S) > /backups/backup_timestamp
+sudo tar -czf /backups/minecraft_$(cat /backups/backup_timestamp).tar /data/minecraft_data
+minecraft_$(cat /backups/backup_timestamp).tar
 
 cd /backups
-s3cmd put /backups/minecraft_${backup_timestamp}.tar s3://rudenspavasaris
+s3cmd put /backups/minecraft_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
