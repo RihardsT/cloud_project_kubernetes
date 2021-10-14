@@ -11,13 +11,12 @@ data:
     node.name: "elasticsearch-ingest1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
-    node.master: false
-    node.data: false
-    node.ingest: true
+    node.roles: [ingest]
     discovery.seed_hosts:
       - elasticsearch:9300
     cluster.initial_master_nodes:
       - elasticsearch-master1
+    xpack.security.enabled: true
 
 ---
 apiVersion: apps/v1
@@ -37,20 +36,14 @@ spec:
     spec:
       containers:
       - name: elasticsearch-ingest1
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx256m -Xms256m
-        # - name: discovery.type
-        #   value: single-node
-        # - name: xpack.security.enabled
-        #   value: "true"
-        # - name: ELASTICSEARCH_USERNAME
-        #   value: elastic
-        # - name: ELASTIC_PASSWORD
-        #   value: changeme
-        - name: xpack.license.self_generated.type
-          value: basic
+        - name: ELASTICSEARCH_USERNAME
+          value: elastic
+        - name: ELASTIC_PASSWORD
+          value: changeme
       #   volumeMounts:
       #   - mountPath: /usr/share/elasticsearch/data
       #     name: elasticsearch-data
@@ -83,6 +76,10 @@ spec:
     - name: http
       port: 9200
       targetPort: 9200
+      protocol: TCP
+    - name: cluster-comms
+      port: 9300
+      targetPort: 9300
       protocol: TCP
   selector:
     name: es-ingest

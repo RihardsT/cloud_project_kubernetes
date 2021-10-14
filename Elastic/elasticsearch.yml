@@ -25,11 +25,11 @@ data:
     # node.ml: true
     # xpack.ml.enabled: true
     # cluster.remote.connect: false
-    # xpack.monitoring.collection.enabled: true # use metricbeat instead
+    xpack.monitoring.collection.enabled: true # use metricbeat instead
     xpack.security.enabled: true
     xpack.license.self_generated.type: trial
-    # xpack.security.http.ssl.enabled: true
-    # xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
+    xpack.security.http.ssl.enabled: true
+    xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -76,10 +76,10 @@ spec:
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           readOnly: true
           subPath: elasticsearch.yml
-        # - name: http-cert
-        #   mountPath: /usr/share/elasticsearch/config/http.p12
-        #   readOnly: true
-        #   subPath: http.p12
+        - name: http-cert
+          mountPath: /usr/share/elasticsearch/config/http.p12
+          readOnly: true
+          subPath: http.p12
         # - name: http-cert
         #   mountPath: /usr/share/elasticsearch/config/ca.p12
         #   readOnly: true
@@ -97,9 +97,9 @@ spec:
       # - name: elasticsearch-volume
       #   persistentVolumeClaim:
       #     claimName: elastic-pvc
-      # - name: http-cert
-      #   secret:
-      #     secretName: http-cert
+      - name: http-cert
+        secret:
+          secretName: http-cert
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"

@@ -6,13 +6,21 @@
 
 ### Up
 Minimal:
-kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml
+kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml -f secrets.yml
 
 More elaborate:
 kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
 
 kubectl apply -f elasticsearch.yml -f es_data.yml -f es_ingest.yml -f ingress.yml
 kubectl apply -f kibana.yml
+
+Restart elasticsearch:
+kubectl scale deployment -n elastic elasticsearch --replicas=0
+kubectl scale deployment -n elastic elasticsearch --replicas=1
+kubectl scale deployment -n elastic kibana --replicas=0
+kubectl scale deployment -n elastic kibana --replicas=1
+
+
 
 ### Deps
 Set virtual memory on host for Elasticsearch production mode
@@ -96,13 +104,13 @@ curl -X POST http://rudenspavasaris.id.lv:3046/ \
 
 ### Logs straight to Elasticsearch
 ```
-curl -X POST "https://mon2.rudenspavasaris.id.lv/twitter/_doc/?pretty" -H 'Content-Type: application/json' -d'
-{
-    "user" : "kimchy",
-    "post_date" : "2009-11-15T14:12:12",
-    "message" : "trying out Elasticsearch"
-}
-'
+curl -X POST "https://mon2.rudenspavasaris.id.lv/twitter/_doc/?pretty" -H 'Content-Type: application/json' -d'{
+  "@timestamp" : "2021-10-14T14:53:12",
+  "message" : "trying out Elasticsearch"}'
+
+curl -X POST -u elastic:changeme "http://es-ingest:9200/test/_doc/?pretty" -H 'Content-Type: application/json' -d'{
+  "@timestamp" : "2021-10-14T12:00:00",
+  "message" : "trying out Elasticsearch"}'
 ```
 
 
