@@ -7,3 +7,7 @@ kubectl delete deployments. blog
 kubectl delete service blog
 
 kubectl delete -f ./Minecraft
+
+# Just scale down
+kubectl scale deployment collabora --replicas=0
+kubectl scale deployment nextcloud --replicas=0

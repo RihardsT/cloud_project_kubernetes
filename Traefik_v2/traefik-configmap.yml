@@ -27,6 +27,8 @@ data:
       [entryPoints.https]
         # enableHTTP3 = true
         address = ":443"
+      [entryPoints.gitlab-ssh]
+        address = ":4022"
       [entryPoints.minecraft-tcp]
         address = ":25565"
       [entryPoints.minecraft-udp]
