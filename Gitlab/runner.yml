@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runner
+  labels:
+    app: runner
+spec:
+  selector:
+    matchLabels:
+      app: runner
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: runner
+    spec:
+      containers:
+      - name: runner
+        image: gitlab/gitlab-runner:alpine
+        volumeMounts:
+        - mountPath: /etc/gitlab-runner
+          name: runner-config
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+        ports:
+        - name: session
+          containerPort: 8093
+      restartPolicy: Always
+      volumes:
+        - name: runner-config
+          hostPath:
+            path: "/data/runner/config"
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: "htz1"

@@ -1,3 +1,4 @@
+######### With Terraform and Ansible approach
 ### Backup
 kubectl exec -it $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab) -- bash -c 'gitlab-backup create'
 
@@ -16,3 +17,17 @@ kubectl exec -it $(kubectl get pods --no-headers -o custom-columns=":metadata.na
 # to re-trigger Letsencrypt
 kubectl exec -it $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab) -- bash -c 'rm /etc/gitlab/ssl/gitlab* && gitlab-ctl reconfigure'
 kubectl logs --follow $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab)
+
+
+######### Tests on the same single node
+# Get the initial root password
+kubectl exec $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab) -ti -- cat /etc/gitlab/initial_root_password
+
+
+# SSH clone by passing SSH through Traefik TCP works.
+git clone ssh://git@gitlab-ssh.rudenspavasaris.id.lv:4022/gitlab-instance-78aa14f2/Monitoring.git
+
+# Testing the SSH clone inside the Gitlab container, just for lulz.
+kubectl exec $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab) -ti -- bash
+ssh-keygen -t ed25519 -C "test_on_gitlab" # Add the generated public key to your Gitlab user too
+git clone ssh://git@localhost:22/gitlab-instance-04f68d12/Monitoring.git
