@@ -46,11 +46,38 @@ spec:
     kind: Rule
     services:
     - name: elasticsearch
-    # - name: es-ingest
       port: 9200
       targetPort: 9200
   tls:
     certResolver: default
+---
+# Can't yet figure out why this gives Bad Gateway. Shrug.
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: es-ingest
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`mon4.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: es-ingest
+      port: 9200
+      targetPort: 9200
+  tls:
+    certResolver: default
+    # passthrough: true
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: ServersTransport
+# metadata:
+#   name: es-ingest
+#   namespace: elastic
+# spec:
+#   insecureSkipVerify: true
 ######### Logstash
 ---
 apiVersion: v1

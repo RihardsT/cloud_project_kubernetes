@@ -17,6 +17,8 @@ data:
     cluster.initial_master_nodes:
       - elasticsearch-master1
     xpack.security.enabled: true
+    # xpack.security.http.ssl.enabled: true
+    # xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
 
 ---
 apiVersion: apps/v1
@@ -44,24 +46,23 @@ spec:
           value: elastic
         - name: ELASTIC_PASSWORD
           value: changeme
-      #   volumeMounts:
-      #   - mountPath: /usr/share/elasticsearch/data
-      #     name: elasticsearch-data
-      # volumes:
-      #     ##### Requires setting permissions on host, for this to work
-      #   - name: elasticsearch-data
-      #     hostPath:
-      #       path: "/data/elasticsearch_data"
         volumeMounts:
         - name: config
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           readOnly: true
           subPath: elasticsearch.yml
+        - name: http-cert
+          mountPath: /usr/share/elasticsearch/config/http.p12
+          readOnly: true
+          subPath: http.p12-es-ingest
       volumes:
       - name: config
         configMap:
           defaultMode: 0777
           name: es-ingest-config
+      - name: http-cert
+        secret:
+          secretName: http-cert
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
