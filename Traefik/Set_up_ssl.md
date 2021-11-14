@@ -16,6 +16,7 @@ Certificate was received successfully.
   - I didn't yet find a simple sample how to use configmap that holds the traefik.toml
   - How to have the configmap along with acme certs and such
 1. Got wildcard cert by using Manual "interactive" method.
+  - `docker run --rm -ti certbot/certbot certonly --manual`
   - With `acmeLogging = true` and `provider = "manual"` in traefik.toml
   - Follow traefik logs, find the text that has to be added to DNS record
   - `kubectl get all --all-namespaces`
