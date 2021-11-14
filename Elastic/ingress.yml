@@ -1,57 +1,6 @@
-######### Kibana
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kibana
-  namespace: elastic
-  labels:
-    name: kibana
-spec:
-  ports:
-    - name: http
-      port: 5601
-      targetPort: 5601
-  selector:
-    name: kibana
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: kibana
-  namespace: elastic
-spec:
-  entryPoints:
-    - https
-  routes:
-  - match: Host(`mon1.rudenspavasaris.id.lv`)
-    kind: Rule
-    services:
-    - name: kibana
-      port: 5601
-  tls:
-    certResolver: default
-######### Elasticsearch
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: elasticsearch
-  namespace: elastic
-spec:
-  entryPoints:
-    - https
-  routes:
-  - match: Host(`mon2.rudenspavasaris.id.lv`)
-    kind: Rule
-    services:
-    - name: elasticsearch
-      port: 9200
-      targetPort: 9200
-  tls:
-    certResolver: default
 ---
 # Can't yet figure out why this gives Bad Gateway. Shrug.
+# Don't know how to fix that yet.
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:

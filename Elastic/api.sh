@@ -1,5 +1,5 @@
 # Nodes
-curl -u elastic:changeme https://mon2.rudenspavasaris.id.lv/_cat/nodes
+curl -u elastic:changeme https://esi.rudenspavasaris.id.lv/_cat/nodes
 
 # Ingest data straight to Elasticsearch
 curl -X POST -u elastic:changeme "https://mon2.rudenspavasaris.id.lv/test/_doc/?pretty" -H 'Content-Type: application/json' -d'{

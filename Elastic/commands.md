@@ -6,7 +6,7 @@
 
 ### Up
 Minimal:
-kubectl apply -f elasticsearch.yml -f kibana.yml -f ingress.yml -f secrets.yml
+kubectl apply -f secrets.yml -f elasticsearch.yml -f kibana.yml
 
 More elaborate:
 kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
@@ -27,6 +27,8 @@ Set virtual memory on host for Elasticsearch production mode
 `sysctl -w vm.max_map_count=262144`
 echo 'vm.max_map_count=262144' | sudo tee -a /etc/sysctl.conf
 
+sudo mkdir /data/elasticsearch_data
+sudo chown 1000 /data/elasticsearch_data
 
 Setup dashboards
 ```
