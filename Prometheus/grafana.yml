@@ -1,0 +1,73 @@
+# https://medium.com/rahasak/monitor-elasticsearch-with-prometheus-and-grafana-687a0b6712
+# grafana:
+#     image: grafana/grafana:6.1.6
+#     container_name: grafana
+#     environment:
+#         - GF_SECURITY_ADMIN_PASSWORD=pass
+#     links:
+#         - prometheus
+#     ports:
+#         - "3000:3000"
+#
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: grafana-config
+#   labels:
+#     k8s-app: grafana
+# data:
+#   grafana.yml: |-
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  selector:
+    matchLabels:
+      name: grafana
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:main
+        env:
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: grafana
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: "htz1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    name: grafana
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`gr.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: grafana
+      port: 3000
+  tls:
+    certResolver: default

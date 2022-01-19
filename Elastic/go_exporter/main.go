@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-type GatewayLog struct {
+type MetricbeatStuff struct {
 	Timestamp             string  `json:"@timestamp"`
 	Env                   string  `json:"agent.hostname"`
 	StatusCode            int     `json:"system.cpu.cores"`
@@ -24,7 +24,7 @@ type GatewayLog struct {
 
 func main() {
   ESHost := "https://elastic:changeme@esi.rudenspavasaris.id.lv"
-	GatewayLogIndex := "metricbeat-7.15.1-2021.11.11-000001"
+	MetricbeatStuffIndex := "metricbeat*"
 	UpdateInterval := 30 * time.Second
 
 	ctx := context.Background()
@@ -68,7 +68,7 @@ func main() {
 	fetchDataFromElasticSearch(
 		ctx,
 		UpdateInterval,
-		GatewayLogIndex,
+		MetricbeatStuffIndex,
 		client,
 		statusCodeCollector,
 		responseTimeCollector,
@@ -85,7 +85,7 @@ func main() {
 func fetchDataFromElasticSearch(
 	ctx context.Context,
 	UpdateInterval time.Duration,
-	GatewayLogIndex string,
+	MetricbeatStuffIndex string,
 	client *elastic.Client,
 	statusCodeCollector *prometheus.CounterVec,
 	responseTimeCollector *prometheus.SummaryVec,
@@ -101,7 +101,7 @@ func fetchDataFromElasticSearch(
 				Lte(now)
 
 			log.Info("Fetching from ElasticSearch...")
-			scroll := client.Scroll(GatewayLogIndex).
+			scroll := client.Scroll(MetricbeatStuffIndex).
 				Query(rangeQuery).
 				Size(5000)
 
@@ -117,10 +117,11 @@ func fetchDataFromElasticSearch(
 				}
 				scrollIdx++
 				log.Infof("Query Executed, Hits: %d TookInMillis: %d ScrollIdx: %d", res.TotalHits(), res.TookInMillis, scrollIdx)
-				var typ GatewayLog
+				var typ MetricbeatStuff
 				for _, item := range res.Each(reflect.TypeOf(typ)) {
-					if l, ok := item.(GatewayLog); ok {
+					if l, ok := item.(MetricbeatStuff); ok {
 						handleLogResult(l, statusCodeCollector, responseTimeCollector)
+						log.Infof("Env: %s Cores: %d CPU: %f", l.Env, l.StatusCode, l.BackendProcessingTime)
 					}
 				}
 			}
@@ -128,19 +129,11 @@ func fetchDataFromElasticSearch(
 	}()
 }
 
-func handleLogResult(l GatewayLog, statusCodeCollector *prometheus.CounterVec, responseTimeCollector *prometheus.SummaryVec) {
+func handleLogResult(l MetricbeatStuff, statusCodeCollector *prometheus.CounterVec, responseTimeCollector *prometheus.SummaryVec) {
 	trackStatusCodes(statusCodeCollector, l.StatusCode, l.Env)
 	responseTimeCollector.WithLabelValues(l.Env).Observe(l.BackendProcessingTime)
 }
 
 func trackStatusCodes(statusCodeCollector *prometheus.CounterVec, statusCode int, env string) {
-	if statusCode >= 500 && statusCode <= 599 {
-		statusCodeCollector.WithLabelValues(env, strconv.Itoa(statusCode), "500").Inc()
-	} else if statusCode >= 200 && statusCode <= 299 {
-		statusCodeCollector.WithLabelValues(env, strconv.Itoa(statusCode), "200").Inc()
-	} else if statusCode >= 300 && statusCode <= 399 {
-		statusCodeCollector.WithLabelValues(env, strconv.Itoa(statusCode), "300").Inc()
-	} else if statusCode >= 400 && statusCode <= 499 {
-		statusCodeCollector.WithLabelValues(env, strconv.Itoa(statusCode), "400").Inc()
-	}
+	statusCodeCollector.WithLabelValues(env, strconv.Itoa(statusCode), "500").Inc()
 }

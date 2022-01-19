@@ -12,3 +12,6 @@ go build -v
 docker run --rm --name es-to-prom -p 8092:8092 -ti -v ${PWD}:/d -w /d golang:1.17.3-alpine3.14 /d/elastic-to-prometheus
 
 curl localhost:8092/metrics
+
+# Quick - build and run
+docker run --rm --name es-to-prom -ti -v ${PWD}:/d -w /d golang:1.17.3-alpine3.14 sh -c 'go build -v && /d/elastic-to-prometheus'

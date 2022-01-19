@@ -6,5 +6,5 @@ May 03 10:17:30 htz1 kubelet[4447]: F0503 10:17:30.426118    4447 server.go:274]
 Fix:
 One was to update certs, but unsure if this was actually necessary.
 `kubeadm alpha certs renew all`
-This bit seemed to do the trick - use existign kubelet.conf for bootstrap
+This bit seemed to do the trick - use existing kubelet.conf for bootstrap
 `cp /etc/kubernetes/kubelet.conf /etc/kubernetes/bootstrap-kubelet.conf`

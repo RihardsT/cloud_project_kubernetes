@@ -18,3 +18,16 @@ evictionHard:
   nodefs.available: 5%
   nodefs.inodesFree: 5%
 ```
+
+
+### Clear Kubernetes upgrade backups
+Looks like Kubeadm creates backup when upgrading Kubernetes.
+That was using a lot of space on my long living server,
+which led to that disk pressure.  
+But I think those old backups can be removed.  
+```
+du -sch /etc/kubernetes/tmp/*
+cd /etc/kubernetes/tmp
+ls -t /etc/kubernetes/tmp | sed -e '1,4d' | xargs rm -rf
+```
+`ls` by time and remove first 4 entries, to keep latest 2 backups. Remove other.

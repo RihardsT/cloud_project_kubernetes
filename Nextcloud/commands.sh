@@ -1,3 +1,12 @@
+# TODO:
+https://docs.nextcloud.com//server/latest/admin_manual/configuration_server/background_jobs_configuration.html#cron
+
+# I think have this run as cron outside the container - call this from the host
+su -s /bin/bash www-data -c 'PHP_MEMORY_LIMIT=512M php -f /var/www/html/cron.php'
+
+News App, RSS - https://github.com/nextcloud/news-updater
+
+#####
 echo -n "PASSWORD_GOES_HERE" > .env
 # echo -n '"PASSWORD_GOES_HERE"' > .env_nc # Using the same password, but with ""
 
@@ -37,16 +46,10 @@ End-to-end-encryption
 # Enable:
 Default encryption module
 
-
-
 ### OCC commands
 # in container
-apt update && apt install sudo
-sudo -u www-data PHP_MEMORY_LIMIT=512M ./occ COMMAND
-# then restart container to get rid of the unnecessary sudo package
-# there must be a way to get it working without sudo, but eh for now.
-sudo -u www-data PHP_MEMORY_LIMIT=512M ./occ maintenance:mode --on # --off
-
+su -s /bin/bash www-data PHP_MEMORY_LIMIT=512M ./occ COMMAND
+su -s /bin/bash www-data PHP_MEMORY_LIMIT=512M ./occ maintenance:mode --on # --off
 
 ######### Postgres upgrade
 # Exec into the old versions container and dump
