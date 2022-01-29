@@ -26,7 +26,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       containers:
       - name: traefik
-        image: traefik:v2.5.3
+        image: traefik:v2.6.0
         volumeMounts:
         - mountPath: /config
           name: config
@@ -35,6 +35,8 @@ spec:
         args:
         - --configfile=/config/traefik.toml
         ports:
+        - name: acme
+          containerPort: 81
         - name: http
           containerPort: 80
         - name: https
