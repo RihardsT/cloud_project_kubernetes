@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: collabora
-        image: collabora/code:6.4.11.3
+        image: collabora/code:21.11.3.4.1
         ports:
         - containerPort: 9980
           protocol: TCP
@@ -28,7 +28,7 @@ spec:
            add:
              - MKNOD
         volumeMounts:
-        - mountPath: /etc/loolwsd/loolwsd.xml
+        - mountPath: /etc/coolwsd/coolwsd.xml
           name: collabora-data
       restartPolicy: Always
       volumes:
