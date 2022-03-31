@@ -58,12 +58,9 @@ sudo tar -czf /backups/nextcloud_$(cat /backups/backup_timestamp).tar /data/next
 sudo tar -czf /backups/nextcloud_postgres_$(cat /backups/backup_timestamp).tar /data/nextcloud_postgres_14
 
 cd /backups
-s3cmd put nextcloud_$(cat /backups/backup_timestamp).tar nextcloud_postgres_14_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
+s3cmd put nextcloud_$(cat /backups/backup_timestamp).tar nextcloud_postgres_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
 
 # Minecraft
 echo $(date +%Y-%m-%d_%H.%M.%S) > /backups/backup_timestamp
 sudo tar -czf /backups/minecraft_$(cat /backups/backup_timestamp).tar /data/minecraft_data
-minecraft_$(cat /backups/backup_timestamp).tar
-
-cd /backups
 s3cmd put /backups/minecraft_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
