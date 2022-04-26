@@ -10,14 +10,12 @@ data:
       dashboard = true
       insecure = true
     [accessLog]
-    # [experimental]
-      # http3 = true
-      # http3 shall be available in 2.5. This experimental likely only works from master release
+    [experimental]
+      http3 = true
     [entryPoints]
       [entryPoints.acme]
         address = ":81"
       [entryPoints.http]
-        # enableHTTP3 = true
         address = ":80"
         # [entryPoints.http.http]
         #   [entryPoints.http.http.redirections]
@@ -25,8 +23,9 @@ data:
         #       to = "https"
         #       scheme = "https"
       [entryPoints.https]
-        # enableHTTP3 = true
         address = ":443"
+      [entryPoints.https.http3]
+        advertisedPort = 443
       [entryPoints.gitlab-ssh]
         address = ":4022"
       [entryPoints.minecraft-tcp]

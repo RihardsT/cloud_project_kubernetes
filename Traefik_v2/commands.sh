@@ -25,3 +25,6 @@ spec:
 
 
 https://observatory.mozilla.org/analyze/vieta.rudenspavasaris.id.lv
+
+# For HTTP3? https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
+sysctl -w net.core.rmem_max=2500000
