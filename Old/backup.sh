@@ -64,3 +64,12 @@ s3cmd put nextcloud_$(cat /backups/backup_timestamp).tar nextcloud_postgres_$(ca
 echo $(date +%Y-%m-%d_%H.%M.%S) > /backups/backup_timestamp
 sudo tar -czf /backups/minecraft_$(cat /backups/backup_timestamp).tar /data/minecraft_data
 s3cmd put /backups/minecraft_$(cat /backups/backup_timestamp).tar s3://rudenspavasaris
+
+# On the separate server
+ssh -o "StrictHostKeyChecking=no" $(terraform output -state=/home/rihards/Code/cloud_project/cloud_project_terraform_hetzner/terraform.tfstate minecraft | grep -oP '"\K[^"]+')
+
+ssh -o "StrictHostKeyChecking=no" $(terraform output -state=/home/rihards/Code/cloud_project/cloud_project_terraform_hetzner/terraform.tfstate minecraft | grep -oP '"\K[^"]+') sh -c '/data/minecraft_backup.sh'
+
+
+###### Backup to Nextcloud
+curl -T FILE http://vieta.rudenspavasaris.id.lv/remote.php/dav/files/rihards/FILE
