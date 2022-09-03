@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:7.16.3
+        image: docker.elastic.co/kibana/kibana:8.0.0
         env:
           - name: SERVER_NAME
             value: mon.rudenspavasaris.id.lv
@@ -56,14 +56,16 @@ data:
   kibana.yml: |-
     server.name: kibana
     server.host: 0.0.0.0
+    server.publicBaseUrl: "https://mon1.rudenspavasaris.id.lv"
     elasticsearch.hosts: [ "https://elasticsearch:9200" ]
     monitoring.ui.container.elasticsearch.enabled: true
-    xpack.security.enabled: true
-    elasticsearch.username: "elastic"
-    elasticsearch.password: "changeme"
+    # elasticsearch.username: "kibana_system"
+    # elasticsearch.password: "changeme"
+    elasticsearch.serviceAccountToken: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYV90b2tlbjppNFBVSllFcFFfMlhmVWw1ckN5amRB"
     elasticsearch.ssl.certificateAuthorities: [ "config/elasticsearch-ca.pem" ]
     xpack.encryptedSavedObjects.encryptionKey: "pwpHw89wqzSAXBtMGMKJy4RLfwq3IVbsbTQDlBBdvkW8uvkIQaDnhA7UKFVTJDZ"
-    server.publicBaseUrl: "https://mon1.rudenspavasaris.id.lv"
+    # xpack.security.encryptionKey:
+    # xpack.reporting.encryptionKey:
 ---
 apiVersion: v1
 kind: Service

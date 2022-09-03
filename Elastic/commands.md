@@ -21,6 +21,9 @@ kubectl scale deployment -n elastic kibana --replicas=0
 kubectl scale deployment -n elastic kibana --replicas=1
 
 
+sudo rm -rf /data/elasticsearch_data/
+sudo mkdir /data/elasticsearch_data/
+sudo chown 1000:1000 /data/elasticsearch_data/
 
 ### Deps
 Set virtual memory on host for Elasticsearch production mode

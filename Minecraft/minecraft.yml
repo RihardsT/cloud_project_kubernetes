@@ -19,7 +19,7 @@ spec:
         - name: EULA
           value: "true"
         - name: MEMORY
-          value: "1400M"
+          value: "1500M"
         ports:
         - containerPort: 25565
           name: main

@@ -8,19 +8,7 @@ kubectl scale deployment minecraft --replicas=0
 kubectl scale deployment minecraft --replicas=1
 
 kubectl logs --follow $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep minecraft)
-
 # And this is no longer necessary, as I set Ansible to pull the image before applying this
 
-
-
-#### On HTZ1
+#### On htz1
 kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Minecraft/minecraft.yml
-
-# Minecraft up
-kubectl scale deployment collabora --replicas=0
-kubectl scale deployment nextcloud --replicas=0
-kubectl scale deployment minecraft --replicas=1
-# Minecraft down
-kubectl scale deployment minecraft --replicas=0
-kubectl scale deployment collabora --replicas=1
-kubectl scale deployment nextcloud --replicas=1

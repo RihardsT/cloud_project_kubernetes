@@ -21,10 +21,13 @@ data:
     # xpack.ml.enabled: true
     # cluster.remote.connect: false
     xpack.monitoring.collection.enabled: true # use metricbeat instead
-    xpack.security.enabled: true
     xpack.license.self_generated.type: trial
+    xpack.security.enabled: true
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
     xpack.security.http.ssl.enabled: true
     xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
+    xpack.security.authc.api_key.enabled: true
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,7 +56,7 @@ spec:
           privileged: true
       containers:
       - name: elasticsearch-master1
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.0.0
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx1024m -Xms1024m
@@ -79,6 +82,10 @@ spec:
           mountPath: /usr/share/elasticsearch/config/ca.p12
           readOnly: true
           subPath: ca.p12
+        - name: service_tokens
+          mountPath: /usr/share/elasticsearch/config/service_tokens
+          readOnly: true
+          subPath: service_tokens
       volumes:
         ##### Requires setting permissions on host, for this to work
         ### chmod 775 or chown 1000 (the elastic user in the container):
@@ -95,6 +102,9 @@ spec:
       - name: http-cert
         secret:
           secretName: http-cert
+      - name: service_tokens
+        secret:
+          secretName: service_tokens
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
