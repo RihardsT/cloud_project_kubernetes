@@ -1,0 +1,158 @@
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: fleet-server
+  namespace: default
+spec:
+  version: 8.5.3
+  kibanaRef:
+    name: kibana
+  elasticsearchRefs:
+  - name: elasticsearch
+  mode: fleet
+  fleetServerEnabled: true
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        containers:
+        - name: fleet-server
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 0.1
+        volumes:
+        - name: fleet-server-data
+          emptyDir: {}
+---
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: elastic-agent
+  namespace: default
+spec:
+  version: 8.5.3
+  kibanaRef:
+    name: kibana
+  fleetServerRef:
+    name: fleet-server
+  mode: fleet
+  daemonSet:
+    podTemplate:
+      spec:
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        containers:
+        - name: elastic-agent
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 0.1
+        volumes:
+        - name: agent-data
+          emptyDir: {}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elastic-agent
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources:
+  - pods
+  - nodes
+  - namespaces
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups: ["coordination.k8s.io"]
+  resources:
+  - leases
+  verbs:
+  - get
+  - create
+  - update
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elastic-agent
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: elastic-agent
+subjects:
+- kind: ServiceAccount
+  name: elastic-agent
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: elastic-agent
+  apiGroup: rbac.authorization.k8s.io
+
+# ---
+# apiVersion: agent.k8s.elastic.co/v1alpha1
+# kind: Agent
+# metadata:
+#   name: fleet-server
+# spec:
+#   version: 8.5.3
+  # daemonSet:
+  #   podTemplate:
+  #     spec:
+  #       containers:
+  #       - name: fleet-server
+  #         resources:
+  #           requests:
+  #             memory: 10Mi
+  #             cpu: 0.1
+  #       volumes:
+  #       - name: agent-data
+  #         emptyDir: {}
+#   mode: fleet
+#   fleetServerEnabled: true
+#   kibanaRef:
+#     name: kibana
+#   elasticsearchRefs:
+#     - name: elasticsearch
+# ---
+# apiVersion: agent.k8s.elastic.co/v1alpha1
+# kind: Agent
+# metadata:
+#   name: fleet-agent
+# spec:
+#   version: 8.5.3
+#   daemonSet:
+#     podTemplate:
+#       spec:
+#         containers:
+#         - name: fleet-agent
+#           resources:
+#             requests:
+#               memory: 10Mi
+#               cpu: 0.1
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fleet-server
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`fleet.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: fleet-server
+      port: 8220
+  tls:
+    certResolver: default

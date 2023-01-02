@@ -12,8 +12,8 @@ data:
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
     node.roles: [master, data, ingest, transform, ml]
-    discovery.seed_hosts:
-      - elasticsearch:9200
+    # discovery.seed_hosts:
+    #   - elasticsearch:9200
     cluster.initial_master_nodes:
       - elasticsearch-master1
     # node.voting_only: false
@@ -56,7 +56,7 @@ spec:
           privileged: true
       containers:
       - name: elasticsearch-master1
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.0.0
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx1024m -Xms1024m
@@ -82,16 +82,18 @@ spec:
           mountPath: /usr/share/elasticsearch/config/ca.p12
           readOnly: true
           subPath: ca.p12
-        - name: service_tokens
+        - name: service-tokens
           mountPath: /usr/share/elasticsearch/config/service_tokens
           readOnly: true
-          subPath: service_tokens
+          subPath: service-tokens
       volumes:
         ##### Requires setting permissions on host, for this to work
         ### chmod 775 or chown 1000 (the elastic user in the container):
       - name: elasticsearch-data
-        hostPath:
-          path: "/data/elasticsearch_data"
+        # hostPath:
+        #   path: "/data/elasticsearch_data"
+        emptyDir:
+          sizeLimit: 500Mi
       - name: config
         configMap:
           defaultMode: 0777
@@ -102,9 +104,9 @@ spec:
       - name: http-cert
         secret:
           secretName: http-cert
-      - name: service_tokens
+      - name: service-tokens
         secret:
-          secretName: service_tokens
+          secretName: service-tokens
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
@@ -114,9 +116,11 @@ kind: Service
 metadata:
   name: elasticsearch
   namespace: elastic
+  labels:
+    name: elasticsearch
 spec:
   ports:
-    - name: http
+    - name: https
       port: 9200
       targetPort: 9200
       protocol: TCP
@@ -126,8 +130,10 @@ spec:
       protocol: TCP
   selector:
     name: elasticsearch
-### With the HTTP certs internally, Traefik gives Bad Gateway.
+### With the HTTP certs internally, Traefik gives Bad Gateway Internal server error.
 # Need to investigate, if Traefik can load custom CA cert so it works internally
+# Doesn't seem like that would work, as it looks like Traefik uses service IP directly,
+# instead of service name, so the cert would need to be generated for IP's too.
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute

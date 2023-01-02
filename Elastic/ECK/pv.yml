@@ -9,11 +9,12 @@ provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: Immediate
 # Add annotation to set the storage class as default
 # kubectl patch storageclass local-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+# mkdir /data/elasticsearch_data
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: elastic-pv
+  name: elastic-data
 spec:
   capacity:
     storage: 1Gi
