@@ -1,0 +1,14 @@
+gitlabUrl: https://gitlab.com/
+runnerRegistrationToken: GR13489418WvZ2VVKMzoEgNpWfqs6
+rbac:
+  create: true
+runners:
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+        image = "ubuntu:22.04"
+        [[runners.kubernetes.volumes.config_map]]
+          name = "gitlab-runner-files"
+          mount_path = "/files/"
+          read_only = true

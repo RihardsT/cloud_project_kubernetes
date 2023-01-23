@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab-runner
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-runner-files
+  namespace: gitlab-runner
+data:
+  file1.yml: |-
+    file1 contents
+  file2.yml: |-
+    file2 contents
