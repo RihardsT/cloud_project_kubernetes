@@ -1,0 +1,14 @@
+image:
+  repository: sonarqube
+  # tag: 8.9.10-community
+resources:
+  limits:
+    cpu: 800m
+    memory: 4Gi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+plugins:
+  install:
+    # - URL
+  netrcCreds: sonarqube-netrc

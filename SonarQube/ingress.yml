@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sonarqube
+  namespace: sonarqube
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`vieta.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: sonarqube-sonarqube
+      port: 9000
+  tls:
+    certResolver: default
