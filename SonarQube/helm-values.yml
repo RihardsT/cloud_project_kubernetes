@@ -1,10 +1,9 @@
 image:
   repository: sonarqube
-  # tag: 8.9.10-community
 resources:
   limits:
     cpu: 800m
-    memory: 4Gi
+    memory: 3Gi
   requests:
     cpu: 100m
     memory: 100Mi
@@ -12,3 +11,16 @@ plugins:
   install:
     # - URL
   netrcCreds: sonarqube-netrc
+  jvmOpts: "-Djdk.xml.xpathExprGrpLimit=0 -Djdk.xml.xpathExprOpLimit=0 -Djdk.xml.xpathTotalOpLimit=0"
+  jvmCeOpts: "-Djdk.xml.xpathExprGrpLimit=0 -Djdk.xml.xpathExprOpLimit=0 -Djdk.xml.xpathTotalOpLimit=0"
+persistence:
+  volumes:
+    - name: jaxp
+      configMap:
+        defaultMode: 0666
+        name: sonarqube-jaxp-properties
+  mounts:
+    - name: jaxp
+      mountPath: /opt/java/openjdk/conf/jaxp.properties
+      readOnly: true
+      subPath: jaxp.properties

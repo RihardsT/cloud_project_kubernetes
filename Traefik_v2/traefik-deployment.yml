@@ -26,7 +26,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       containers:
       - name: traefik
-        image: traefik:v2.9.6
+        image: traefik:v2.9.10
         volumeMounts:
         - mountPath: /config
           name: config

@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-jaxp-properties
+  namespace: sonarqube
+data:
+  jaxp.properties: |-
+    jdk.xml.xpathExprGrpLimit=0
+    jdk.xml.xpathExprOpLimit=0
+    jdk.xml.xpathTotalOpLimit=0
