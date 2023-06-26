@@ -11,22 +11,23 @@ data:
     node.name: "elasticsearch-master1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
-    node.roles: [master, data, ingest, transform, ml]
-    # discovery.seed_hosts:
-    #   - elasticsearch:9200
+    node.roles: [master, data, ingest, transform, ml, remote_cluster_client]
     cluster.initial_master_nodes:
       - elasticsearch-master1
-    # node.voting_only: false
-    # node.ml: true
-    # xpack.ml.enabled: true
-    # cluster.remote.connect: false
     xpack.monitoring.collection.enabled: true # use metricbeat instead
     xpack.license.self_generated.type: trial
     xpack.security.enabled: true
+
     xpack.security.transport.ssl.enabled: true
     xpack.security.transport.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
+    # xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/ssl/mon2.rudenspavasaris.id.lv.cert
+    # xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/ssl/mon2.rudenspavasaris.id.lv.key
+
     xpack.security.http.ssl.enabled: true
     xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
+    # xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/ssl/mon2.rudenspavasaris.id.lv.cert
+    # xpack.security.http.ssl.key: /usr/share/elasticsearch/config/ssl/mon2.rudenspavasaris.id.lv.key
+
     xpack.security.authc.api_key.enabled: true
 ---
 apiVersion: apps/v1
@@ -56,7 +57,7 @@ spec:
           privileged: true
       containers:
       - name: elasticsearch-master1
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx1024m -Xms1024m
@@ -86,6 +87,9 @@ spec:
           mountPath: /usr/share/elasticsearch/config/service_tokens
           readOnly: true
           subPath: service-tokens
+        - name: certificates
+          mountPath: /usr/share/elasticsearch/config/ssl
+          readOnly: true
       volumes:
         ##### Requires setting permissions on host, for this to work
         ### chmod 775 or chown 1000 (the elastic user in the container):
@@ -107,6 +111,9 @@ spec:
       - name: service-tokens
         secret:
           secretName: service-tokens
+      - name: certificates
+        hostPath:
+          path: /certs
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
@@ -149,9 +156,18 @@ spec:
     services:
     - name: elasticsearch
       port: 9200
-      targetPort: 9200
   tls:
     certResolver: default
+##### Don't yet understand how this ServersTransport can be utilized for routes
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: ServersTransport
+# metadata:
+#   name: elasticsearch
+#   namespace: elastic
+# spec:
+#   insecureSkipVerify: true
+
 # ---
 # apiVersion: v1
 # kind: PersistentVolume
