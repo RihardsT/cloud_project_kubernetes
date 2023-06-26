@@ -6,6 +6,8 @@ metadata:
   # namespace: kube-system
 data:
   traefik.toml: |
+    [serversTransport]
+      insecureSkipVerify = true
     [api]
       dashboard = true
       insecure = true

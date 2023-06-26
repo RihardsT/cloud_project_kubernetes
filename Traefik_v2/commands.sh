@@ -1,8 +1,6 @@
-kubectl apply -f traefik-customresources.yml
-kubectl apply -f traefik-configmap.yml
-kubectl apply -f traefik-deployment.yml
-kubectl apply -f cheese.yml
-
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Traefik_v2/
 
 # Further use IngressRoute like so:
 ---
