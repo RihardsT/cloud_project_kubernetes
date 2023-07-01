@@ -1,4 +1,4 @@
-pip3 install flask elastic-apm[flask]
+pip3 install -U flask elastic-apm[flask]
 
 flask run
 

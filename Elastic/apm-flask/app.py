@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import logging
 from elasticapm.contrib.flask import ElasticAPM
 
 app = Flask(__name__)
@@ -10,7 +11,7 @@ app.config['ELASTIC_APM'] = {
   'ENVIRONMENT': 'production',
 }
 
-apm = ElasticAPM(app)
+apm = ElasticAPM(app, logging=logging.INFO)
 
 @app.route("/")
 def home():

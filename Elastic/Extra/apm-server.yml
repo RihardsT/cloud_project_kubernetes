@@ -23,17 +23,24 @@ spec:
         runAsGroup: 0
       containers:
       - name: apm-server
-        image: docker.elastic.co/apm/apm-server:7.14.1
+        image: docker.elastic.co/apm/apm-server:8.8.1
         volumeMounts:
         - name: config
           mountPath: /usr/share/apm-server/apm-server.yml
           readOnly: true
           subPath: apm-server.yml
+        - name: elasticsearch-ca
+          mountPath: /usr/share/apm-server/elasticsearch-ca.pem
+          readOnly: true
+          subPath: elasticsearch-ca.pem
       volumes:
       - name: config
         configMap:
           defaultMode: 0600
           name: apm-config
+      - name: elasticsearch-ca
+        secret:
+          secretName: elasticsearch-ca
       restartPolicy: Always
       nodeSelector:
         kubernetes.io/hostname: "htz1"
@@ -54,8 +61,43 @@ data:
         allow_origins: ['*']
     output:
       elasticsearch:
-        hosts: elasticsearch:9200
+        hosts: https://elasticsearch:9200
         username: "elastic"
         password: "changeme"
+        ssl.certificate_authorities: ["/usr/share/apm-server/elasticsearch-ca.pem"]
     queue.mem.events: 4096
     max_procs: 4
+    monitoring:
+      enabled: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-server
+  namespace: elastic
+  labels:
+    name: apm-server
+spec:
+  ports:
+    - name: http
+      port: 8200
+      targetPort: 8200
+  selector:
+    name: apm-server
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: apm-server
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`apm.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: apm-server
+      port: 8200
+  tls:
+    certResolver: default
