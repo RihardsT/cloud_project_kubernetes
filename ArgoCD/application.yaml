@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apm-server
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/RihardsT/cloud_project_kubernetes
+    targetRevision: HEAD
+    path: Elastic/APM
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+

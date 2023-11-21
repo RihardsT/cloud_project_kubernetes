@@ -23,7 +23,7 @@ spec:
         runAsGroup: 0
       containers:
       - name: apm-server
-        image: docker.elastic.co/apm/apm-server:8.8.1
+        image: docker.elastic.co/apm/apm-server:8.11.1
         volumeMounts:
         - name: config
           mountPath: /usr/share/apm-server/apm-server.yml
@@ -51,6 +51,7 @@ metadata:
   name: apm-config
   namespace: elastic
 data:
+  # https://github.com/elastic/apm-server/blob/main/apm-server.yml
   apm-server.yml: |-
     apm-server:
       host: "0.0.0.0:8200"
@@ -59,12 +60,12 @@ data:
         event_rate.limit: 300
         event_rate.lru_size: 1000
         allow_origins: ['*']
-    output:
-      elasticsearch:
-        hosts: https://elasticsearch:9200
-        username: "elastic"
-        password: "changeme"
-        ssl.certificate_authorities: ["/usr/share/apm-server/elasticsearch-ca.pem"]
+    output.elasticsearch:
+      hosts: https://elasticsearch:9200
+      username: "elastic"
+      password: "changeme"
+      ssl.certificate_authorities: ["/usr/share/apm-server/elasticsearch-ca.pem"]
+      # index: "apm-%{+YYYY.MM.DD}"
     queue.mem.events: 4096
     max_procs: 4
     monitoring:

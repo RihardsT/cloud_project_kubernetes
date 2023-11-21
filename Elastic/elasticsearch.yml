@@ -57,7 +57,7 @@ spec:
           privileged: true
       containers:
       - name: elasticsearch-master1
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx1024m -Xms1024m
@@ -156,6 +156,7 @@ spec:
     services:
     - name: elasticsearch
       port: 9200
+      scheme: https
   tls:
     certResolver: default
 ##### Don't yet understand how this ServersTransport can be utilized for routes
