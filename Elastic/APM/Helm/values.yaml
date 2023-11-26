@@ -1,7 +1,7 @@
 ---
 # Allows you to add config files
 apmConfig:
-  apm-server.yml: |
+  apm-server.yaml: |
     apm-server:
       host: "0.0.0.0:8200"
       rum:

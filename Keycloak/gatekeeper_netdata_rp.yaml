@@ -48,7 +48,7 @@ spec:
           # - --upstream-url=http://netdata-pub:19999/
           # - --client-secret=$(CLIENT_SECRET)
           # - --encryption-key=$(ENCRYPTION_KEY)
-          - --config=/etc/secrets/secret_gatekeeper_netdata.yml
+          - --config=/etc/secrets/secret_gatekeeper_netdata.yaml
         volumeMounts:
           - name: secrets
             mountPath: /etc/secrets

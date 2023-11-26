@@ -11,8 +11,8 @@ kubectl -n elastic-system logs -f statefulset.apps/elastic-operator
 
 # Set up Elasticsearch
 cd ~/Code/cloud_project/cloud_project_kubernetes/Elastic/ECK
-kubectl apply -f pv.yml
-kubectl apply -f elasticsearch.yml
+kubectl apply -f pv.yaml
+kubectl apply -f elasticsearch.yaml
 
 kubectl get elasticsearch
 kubectl get pods --selector='elasticsearch.k8s.elastic.co/cluster-name=elasticsearch'
@@ -27,12 +27,12 @@ kubectl get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' |
 cd ~/Code/cloud_project/cloud_project_kubernetes/Elastic/ECK
 kubectl create -f https://download.elastic.co/downloads/eck/2.5.0/crds.yaml
 kubectl apply -f https://download.elastic.co/downloads/eck/2.5.0/operator.yaml
-kubectl apply -f pv.yml
-kubectl apply -f elasticsearch.yml
+kubectl apply -f pv.yaml
+kubectl apply -f elasticsearch.yaml
 
 # Clear:
-kubectl delete -f elasticsearch.yml
-kubectl delete -f pv.yml
+kubectl delete -f elasticsearch.yaml
+kubectl delete -f pv.yaml
 kubectl delete -f https://download.elastic.co/downloads/eck/2.5.0/operator.yaml
 kubectl delete -f https://download.elastic.co/downloads/eck/2.5.0/crds.yaml
 

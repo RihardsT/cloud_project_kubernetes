@@ -1,5 +1,5 @@
 Minimal:
-kubectl apply -f secrets.yml -f elasticsearch.yml -f kibana.yml
+kubectl apply -f secrets.yaml -f elasticsearch.yaml -f kibana.yaml
 
 - [x] Elastic cert for Traefik? !!! Very much needed to get elasticsearch api working outside. Which is very important to get working.
   Got it working by setting insecureSkipVerify to true for Traefik globally. Would like it better for single IngressRoute instead.

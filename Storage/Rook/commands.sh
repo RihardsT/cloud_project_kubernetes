@@ -9,6 +9,6 @@ kubectl create -f crds.yaml -f common.yaml -f operator.yaml
 
 # Clear
 cd ~/Code/cloud_project/cloud_project_kubernetes/Rook
-kubectl delete -f cluster-local-pv.yml
+kubectl delete -f cluster-local-pv.yaml
 cd ~/Code/Other_repos/rook/cluster/examples/kubernetes/ceph
 kubectl delete -f crds.yaml -f common.yaml -f operator.yaml

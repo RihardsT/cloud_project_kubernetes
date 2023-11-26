@@ -7,7 +7,7 @@ metadata:
   labels:
     k8s-app: elastic-agent-standalone
 data:
-  agent.yml: |-
+  agent.yaml: |-
     outputs:
       default:
         type: elasticsearch
@@ -323,7 +323,7 @@ data:
           - data_stream:
               dataset: kubernetes.container_logs
               type: logs
-            prospector.scanner.symlinks: true
+            prospector.scanner.syamlinks: true
             parsers:
               - container: ~
               # - ndjson:
@@ -670,7 +670,7 @@ spec:
         - name: elastic-agent-standalone
           image: docker.elastic.co/beats/elastic-agent:8.11.1
           args: [
-            "-c", "/etc/elastic-agent/agent.yml",
+            "-c", "/etc/elastic-agent/agent.yaml",
             "-e",
           ]
           env:
@@ -704,9 +704,9 @@ spec:
               memory: 400Mi
           volumeMounts:
             - name: datastreams
-              mountPath: /etc/elastic-agent/agent.yml
+              mountPath: /etc/elastic-agent/agent.yaml
               readOnly: true
-              subPath: agent.yml
+              subPath: agent.yaml
             # Uncomment if using hints feature
             #- name: external-inputs
             #  mountPath: /etc/elastic-agent/inputs.d

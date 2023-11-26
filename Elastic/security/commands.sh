@@ -15,4 +15,4 @@ base64 -w0 elasticsearch-ssl-http/elasticsearch/http.p12
 base64 -w0 elasticsearch-ssl-http/kibana/elasticsearch-ca.pem
 base64 -w0 elasticsearch-ssl-http/ca/ca.p12 # can skip this one. Seems unused
 
-# put those in secrets.yml following the secrets_template.yml
+# put those in secrets.yaml following the secrets_template.yaml

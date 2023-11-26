@@ -10,7 +10,7 @@ metadata:
   name: gitlab-runner-files
   namespace: gitlab-runner
 data:
-  file1.yml: |-
+  file1.yaml: |-
     file1 contents
-  file2.yml: |-
+  file2.yaml: |-
     file2 contents

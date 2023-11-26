@@ -8,13 +8,13 @@ metadata:
   labels:
     k8s-app: filebeat
 data:
-  filebeat.yml: |-
+  filebeat.yaml: |-
     filebeat.config:
       inputs:
-        path: ${path.config}/inputs.d/*.yml
+        path: ${path.config}/inputs.d/*.yaml
         reload.enabled: true
       modules:
-        path: ${path.config}/modules.d/*.yml
+        path: ${path.config}/modules.d/*.yaml
         reload.enabled: true
 
     # filebeat.autodiscover:
@@ -32,7 +32,7 @@ data:
       username: elastic
       password: changeme
 
-  haproxy.yml: |-
+  haproxy.yaml: |-
     # Docs: https://www.elastic.co/guide/en/beats/filebeat/7.2/filebeat-module-haproxy.html
     # https://discuss.elastic.co/t/filebeat-6-apache2-module-fields-not-exported-to-logstash/109402
     - module: haproxy
@@ -50,12 +50,12 @@ metadata:
   labels:
     k8s-app: filebeat
 data:
-  kubernetes.yml: |-
+  kubernetes.yaml: |-
     # - type: log
     #   paths:
     #     - "/var/log/containers/*.log"
     #   exclude_files: ['filebeat.*log','kube.*log']
-    #   symlinks: true
+    #   syamlinks: true
     #   json.message_key: log
     #   # json.keys_under_root: true
     #   # json.add_error_key: true
@@ -114,7 +114,7 @@ spec:
       - name: filebeat
         image: docker.elastic.co/beats/filebeat:7.9.2
         args: [
-          "-c", "/etc/filebeat.yml",
+          "-c", "/etc/filebeat.yaml",
           "-e",
         ]
         env:
@@ -132,13 +132,13 @@ spec:
             memory: 100Mi
         volumeMounts:
         - name: config
-          mountPath: /etc/filebeat.yml
+          mountPath: /etc/filebeat.yaml
           readOnly: true
-          subPath: filebeat.yml
+          subPath: filebeat.yaml
         - name: config
-          mountPath: /usr/share/filebeat/modules.d/haproxy.yml
+          mountPath: /usr/share/filebeat/modules.d/haproxy.yaml
           readOnly: true
-          subPath: haproxy.yml
+          subPath: haproxy.yaml
         - name: inputs
           mountPath: /usr/share/filebeat/inputs.d
           readOnly: true

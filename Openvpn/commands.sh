@@ -7,7 +7,7 @@ docker build -t ovpn-helm:3.9 .
 ###
 cd ~/Code/CloudProject/cloud_project_kubernetes/Openvpn
 kubectl create namespace openvpn
-kubectl apply -f pv.yml
+kubectl apply -f pv.yaml
 
 # Schedule on master
 kubectl taint node back-xs openvpn=back-xs:NoSchedule
@@ -18,7 +18,7 @@ kubectl taint node pub-xs master=pub-xs:NoSchedule
 kubectl taint nodes back-xs openvpn:NoSchedule-
 kubectl taint nodes rihpc openvpn:NoSchedule-
 
-helm install --name openvpn -f values.yml stable/openvpn --namespace openvpn
+helm install --name openvpn -f values.yaml stable/openvpn --namespace openvpn
 
 
 kubectl get all --namespace openvpn
@@ -32,7 +32,7 @@ kubectl --namespace "openvpn" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$
 sudo openvpn --config ~/OpenVPN/rihpc.ovpn
 
 ### Upgrade
-helm upgrade openvpn -f values.yml stable/openvpn --namespace openvpn
+helm upgrade openvpn -f values.yaml stable/openvpn --namespace openvpn
 
 ### Delete
 helm del --purge openvpn

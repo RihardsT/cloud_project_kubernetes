@@ -17,7 +17,7 @@ cd ~/Code/Other/kube-openvpn
 sed -i '/targetPort: 1194/a\    nodePort: 32085' kube/deploy.sh
 ./kube/deploy.sh default tcp://${OVPN_SERVER_URL_HERE}:${OVPN_PORT_HERE} 10.96.0.0/12 10.244.0.0/16
 
-# Modify deployment.yml to update for Kubernetes 1.17
+# Modify deployment.yaml to update for Kubernetes 1.17
 sed -i 's#extensions/v1beta1#apps/v1#g' kube/deployment.yaml
 
 CLIENTNAME="rihpc"
@@ -29,7 +29,7 @@ sudo openvpn --config ~/OpenVPN/example.ovpn
 kubectl edit configmap openvpn-ccd
 kubectl edit configmap openvpn-portmapping
 
-kubectl apply -f service.yml
+kubectl apply -f service.yaml
 python3 -m http.server 20080
 ### Delete
 kubectl delete configmap/openvpn-crl configmap/openvpn-ccd configmap/openvpn-portmapping secret/openvpn-pki configmap/openvpn-settings service/openvpn deployment.apps/openvpn

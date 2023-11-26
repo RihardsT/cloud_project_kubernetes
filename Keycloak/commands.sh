@@ -1,8 +1,8 @@
 ### Create
 cd ~/Code/CloudProject/cloud_project_kubernetes/Keycloak
-kubectl apply -f secrets.yml
-kubectl apply -f postgres.yml
-kubectl apply -f keycloak.yml
+kubectl apply -f secrets.yaml
+kubectl apply -f postgres.yaml
+kubectl apply -f keycloak.yaml
 
 
 ### Each secret need to be base64 encoded.
@@ -12,4 +12,4 @@ base64 -w 0 FILE_NAME; echo ""
 
 
 # Gatekeeper
-kubectl create secret generic gatekeeper-netdata --from-file=secret_gatekeeper_netdata.yml
+kubectl create secret generic gatekeeper-netdata --from-file=secret_gatekeeper_netdata.yaml

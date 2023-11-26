@@ -8,7 +8,7 @@ metadata:
   labels:
     k8s-app: prometheus
 data:
-  prometheus.yml: |-
+  prometheus.yaml: |-
     global:
       scrape_interval:     15s
       evaluation_interval: 15s
@@ -53,9 +53,9 @@ spec:
         image: prom/prometheus:v2.31.1
         volumeMounts:
         - name: config
-          mountPath: /etc/prometheus/prometheus.yml
+          mountPath: /etc/prometheus/prometheus.yaml
           readOnly: true
-          subPath: prometheus.yml
+          subPath: prometheus.yaml
       volumes:
       - name: config
         configMap:

@@ -17,7 +17,7 @@
 #   labels:
 #     k8s-app: grafana
 # data:
-#   grafana.yml: |-
+#   grafana.yaml: |-
 ---
 apiVersion: apps/v1
 kind: Deployment

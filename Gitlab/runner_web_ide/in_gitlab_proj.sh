@@ -1,4 +1,4 @@
-.gitlab/.gitlab-webide.yml
+.gitlab/.gitlab-webide.yaml
 
 terminal:
   image: ubuntu:20.04

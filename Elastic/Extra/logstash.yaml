@@ -29,28 +29,28 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /usr/share/logstash/pipeline
-        - name: logstash-yml
-          mountPath: /usr/share/logstash/config/logstash.yml
+        - name: logstash-yaml
+          mountPath: /usr/share/logstash/config/logstash.yaml
           readOnly: true
-          subPath: logstash.yml
-        # - name: pipelines-yml
+          subPath: logstash.yaml
+        # - name: pipelines-yaml
         #   mountPath: /usr/share/logstash/config
-        #   # mountPath: /usr/share/logstash/config/pipelines.yml
-        #   # subPath: pipelines.yml
+        #   # mountPath: /usr/share/logstash/config/pipelines.yaml
+        #   # subPath: pipelines.yaml
       volumes:
-      - name: logstash-yml
+      - name: logstash-yaml
         configMap:
           defaultMode: 0666
-          name: logstash-yml
-      # - name: pipelines-yml
+          name: logstash-yaml
+      # - name: pipelines-yaml
       #   configMap:
       #     defaultMode: 0666
-      #     name: pipelines-yml
+      #     name: pipelines-yaml
       #     items:
-      #     - key: pipelines.yml
-      #       path: pipelines.yml
-      #     - key: logstash.yml
-      #       path: logstash.yml
+      #     - key: pipelines.yaml
+      #       path: pipelines.yaml
+      #     - key: logstash.yaml
+      #       path: logstash.yaml
       - name: config
         configMap:
           name: logstash-config
@@ -64,10 +64,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: logstash-yml
+  name: logstash-yaml
   namespace: elastic
 data:
-  logstash.yml: |-
+  logstash.yaml: |-
     http.host: "0.0.0.0"
     # xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
     # xpack.monitoring.elasticsearch.username: elastic
@@ -159,15 +159,15 @@ data:
 # apiVersion: v1
 # kind: ConfigMap
 # metadata:
-#   name: pipelines-yml
+#   name: pipelines-yaml
 #   namespace: elastic
 # data:
-#   logstash.yml: |-
+#   logstash.yaml: |-
 #     http.host: "0.0.0.0"
 #     xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 #     # xpack.monitoring.elasticsearch.username: elastic
 #     # xpack.monitoring.elasticsearch.password: changeme
-#   pipelines.yml: |-
+#   pipelines.yaml: |-
 #     - pipeline.id: upstream
 #       config.string: |
 #         input { http { codec => line

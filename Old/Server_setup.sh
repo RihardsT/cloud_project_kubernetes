@@ -9,9 +9,9 @@ ssh-keygen -f "/home/rihards/.ssh/known_hosts" -R "95.216.206.226"
 cd ~/Code/CloudProject/cloud_project_ansible
 docker run -ti --rm -v ~/Code/CloudProject/cloud_project_ansible:/d -v ~/Code/CloudProject/Secrets/:/Secrets/ -v ~/.ssh/:/root/.ssh -w /d williamyeh/ansible:alpine3-onbuild sh -c 'apk add --no-cache openssh-client && \
 eval "$(ssh-agent -s)"; ssh-add /root/.ssh/scaleway && \
-ansible-playbook -i ./Inventory --limit production --vault-password-file ../Secrets/ansible_vault_pass -u root --diff Playbook.yml -e ansible_port=22'
+ansible-playbook -i ./Inventory --limit production --vault-password-file ../Secrets/ansible_vault_pass -u root --diff Playbook.yaml -e ansible_port=22'
 
-ansible-playbook -i ./Inventory --limit production -u rihards --diff Playbook.yml
+ansible-playbook -i ./Inventory --limit production -u rihards --diff Playbook.yaml
 
 sudo mkdir /data
 sudo mkdir /backups
@@ -35,15 +35,15 @@ kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"templat
 
 cd ~/Code/CloudProject/cloud_project_kubernetes/Traefik
 kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-rbac.yaml
-kubectl apply -f traefik-configmap.yml
-kubectl apply -f traefik-deployment.yml
-kubectl apply -f traefik-ui.yml
-kubectl apply -f cheese.yml
+kubectl apply -f traefik-configmap.yaml
+kubectl apply -f traefik-deployment.yaml
+kubectl apply -f traefik-ui.yaml
+kubectl apply -f cheese.yaml
 
 # Netdata
 cd ~/Code/CloudProject/cloud_project_kubernetes/Netdata
-kubectl apply -f netdata-pub.yml
-kubectl apply -f netdata-back.yml
+kubectl apply -f netdata-pub.yaml
+kubectl apply -f netdata-back.yaml
 
 ### Nextcloud
 cd ~/Code/Kubes/nextcloud
@@ -95,4 +95,4 @@ sudo kubeadm upgrade apply v1.24.3
 # For upgrade to v1.17.0 had to use --ignore-preflight-errors=all
 # Likely because I only have single master node
 https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yaml

@@ -11,4 +11,4 @@ kubectl logs --follow $(kubectl get pods --no-headers -o custom-columns=":metada
 # And this is no longer necessary, as I set Ansible to pull the image before applying this
 
 #### On htz1
-kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Minecraft/minecraft.yml
+kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Minecraft/minecraft.yaml

@@ -29,9 +29,9 @@ spec:
         # ]
         volumeMounts:
         - name: config
-          mountPath: /usr/share/apm-server/apm-server.yml
+          mountPath: /usr/share/apm-server/apm-server.yaml
           readOnly: true
-          subPath: apm-server.yml
+          subPath: apm-server.yaml
         - name: elasticsearch-ca
           mountPath: /usr/share/apm-server/elasticsearch-ca.pem
           readOnly: true
@@ -54,8 +54,8 @@ metadata:
   name: apm-config
   namespace: elastic
 data:
-  # https://github.com/elastic/apm-server/blob/main/apm-server.yml
-  apm-server.yml: |-
+  # https://github.com/elastic/apm-server/blob/main/apm-server.yaml
+  apm-server.yaml: |-
     apm-server:
       host: "0.0.0.0:8200"
       rum:

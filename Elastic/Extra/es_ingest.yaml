@@ -7,7 +7,7 @@ metadata:
   labels:
     k8s-app: es-ingest
 data:
-  elasticsearch.yml: |-
+  elasticsearch.yaml: |-
     node.name: "elasticsearch-ingest1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
@@ -48,9 +48,9 @@ spec:
           value: changeme
         volumeMounts:
         - name: config
-          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yaml
           readOnly: true
-          subPath: elasticsearch.yml
+          subPath: elasticsearch.yaml
         - name: http-cert
           mountPath: /usr/share/elasticsearch/config/http.p12
           readOnly: true

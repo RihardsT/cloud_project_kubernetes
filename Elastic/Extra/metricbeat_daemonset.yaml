@@ -16,10 +16,10 @@ metadata:
   labels:
     k8s-app: metricbeat
 data:
-  metricbeat.yml: |-
+  metricbeat.yaml: |-
     metricbeat.config.modules:
       # Mounted `metricbeat-daemonset-modules` configmap:
-      path: ${path.config}/modules.d/*.yml
+      path: ${path.config}/modules.d/*.yaml
 
     # To enable hints based autodiscover uncomment this:
     # metricbeat.autodiscover:
@@ -59,7 +59,7 @@ metadata:
   labels:
     k8s-app: metricbeat
 data:
-  system.yml: |-
+  system.yaml: |-
     - module: system
       period: 10s
       metricsets:
@@ -85,7 +85,7 @@ data:
       processors:
       - drop_event.when.regexp:
           system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
-  # kubernetes.yml: |-
+  # kubernetes.yaml: |-
   #   - module: kubernetes
   #     metricsets:
   #       - node
@@ -102,7 +102,7 @@ data:
   #     #bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   #     #ssl.certificate_authorities:
   #       #- /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
-  elasticsearch-xpack.yml: |-
+  elasticsearch-xpack.yaml: |-
     - module: elasticsearch
       metricsets:
         - ccr
@@ -147,7 +147,7 @@ spec:
       - name: metricbeat
         image: docker.elastic.co/beats/metricbeat:7.15.1
         args: [
-          "-c", "/etc/metricbeat.yml",
+          "-c", "/etc/metricbeat.yaml",
           "-e",
           "-system.hostfs=/hostfs",
         ]
@@ -166,9 +166,9 @@ spec:
             memory: 100Mi
         volumeMounts:
         - name: config
-          mountPath: /etc/metricbeat.yml
+          mountPath: /etc/metricbeat.yaml
           readOnly: true
-          subPath: metricbeat.yml
+          subPath: metricbeat.yaml
         - name: modules
           mountPath: /usr/share/metricbeat/modules.d
           readOnly: true

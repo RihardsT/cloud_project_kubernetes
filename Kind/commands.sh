@@ -21,7 +21,7 @@ iptable_nat
 # Reboot
 
 cd ~/Code/cloud_project_kubernetes/Kind
-kind create cluster --config=${PWD}/config.yml
+kind create cluster --config=${PWD}/config.yaml
 ##### Ingress Nginx
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/usage.yaml # Example

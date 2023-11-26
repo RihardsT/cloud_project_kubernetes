@@ -6,13 +6,13 @@
 
 ### Up
 Minimal:
-kubectl apply -f secrets.yml -f elasticsearch.yml -f kibana.yml
+kubectl apply -f secrets.yaml -f elasticsearch.yaml -f kibana.yaml
 
 More elaborate:
-kubectl apply -f elasticsearch.yml -f es_ingest.yml -f kibana.yml -f metricbeat_daemonset.yml -f ingress.yml
+kubectl apply -f elasticsearch.yaml -f es_ingest.yaml -f kibana.yaml -f metricbeat_daemonset.yaml -f ingress.yaml
 
-kubectl apply -f elasticsearch.yml -f es_data.yml -f es_ingest.yml -f ingress.yml
-kubectl apply -f kibana.yml
+kubectl apply -f elasticsearch.yaml -f es_data.yaml -f es_ingest.yaml -f ingress.yaml
+kubectl apply -f kibana.yaml
 
 Restart elasticsearch:
 kubectl scale deployment -n elastic elasticsearch --replicas=0

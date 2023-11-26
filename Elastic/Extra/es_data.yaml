@@ -7,7 +7,7 @@ metadata:
   labels:
     k8s-app: es-data
 data:
-  elasticsearch.yml: |-
+  elasticsearch.yaml: |-
     node.name: "elasticsearch-data1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
@@ -54,9 +54,9 @@ spec:
         - name: elasticsearch-data
           mountPath: /usr/share/elasticsearch/data
         - name: config
-          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yaml
           readOnly: true
-          subPath: elasticsearch.yml
+          subPath: elasticsearch.yaml
       volumes:
           ##### Requires setting permissions on host, for this to work
         # - name: elasticsearch-data

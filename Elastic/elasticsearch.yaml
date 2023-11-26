@@ -7,7 +7,7 @@ metadata:
   labels:
     k8s-app: elasticsearch
 data:
-  elasticsearch.yml: |-
+  elasticsearch.yaml: |-
     node.name: "elasticsearch-master1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
@@ -72,9 +72,9 @@ spec:
           name: elasticsearch-data
           # name: elasticsearch-volume
         - name: config
-          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yaml
           readOnly: true
-          subPath: elasticsearch.yml
+          subPath: elasticsearch.yaml
         - name: http-cert
           mountPath: /usr/share/elasticsearch/config/http.p12
           readOnly: true
