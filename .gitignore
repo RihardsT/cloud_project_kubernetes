@@ -1,6 +1,6 @@
 .env*
-secrets.yml
-secrets_*.yml
+secrets.yaml
+secrets_*.yaml
 Secrets/
 Elastic/certs
 __pycache__
