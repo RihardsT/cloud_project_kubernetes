@@ -1,0 +1,39 @@
+---
+# Allows you to add config files
+apmConfig:
+  apm-server.yml: |
+    apm-server:
+      host: "0.0.0.0:8200"
+      rum:
+        enabled: true
+        event_rate.limit: 300
+        event_rate.lru_size: 1000
+        allow_origins: ['*']
+    output.elasticsearch:
+      hosts: https://elasticsearch:9200
+      username: "${ELASTICSEARCH_USERNAME}"
+      password: "${ELASTICSEARCH_PASSWORD}"
+      ssl.certificate_authorities: ["/usr/share/apm-server/certs/elasticsearch-ca.pem"]
+    queue.mem.events: 4096
+    max_procs: 4
+    monitoring:
+      enabled: true
+
+secretMounts:
+  - name: elasticsearch-ca
+    secretName: elasticsearch-ca
+    path: /usr/share/apm-server/certs/
+
+extraEnvs:
+  - name: "ELASTICSEARCH_USERNAME"
+    value: elastic
+    # valueFrom:
+    #   secretKeyRef:
+    #     name: elasticsearch-master-credentials
+    #     key: username
+  - name: "ELASTICSEARCH_PASSWORD"
+    value: changeme
+    # valueFrom:
+    #   secretKeyRef:
+    #     name: elasticsearch-master-credentials
+    #     key: password

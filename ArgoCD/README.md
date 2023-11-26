@@ -16,6 +16,8 @@ cd ~/Code/cloud_project/cloud_project_kubernetes/ArgoCD
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl apply -f argo_config.yaml
+kubectl rollout restart deployment argocd-server -n argocd
+
 # Get initial password for admin
 kubectl -n argocd get secrets argocd-initial-admin-secret -o jsonpath={'.data.password'} | base64 -d; echo
 
@@ -25,5 +27,6 @@ kubectl rollout restart deployment argocd-server -n argocd
 
 ### App stuff
 ```
+cd ~/Code/cloud_project/cloud_project_kubernetes/ArgoCD
 kubectl apply -n argocd -f application.yaml
 ```

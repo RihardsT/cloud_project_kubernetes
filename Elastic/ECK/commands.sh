@@ -44,6 +44,7 @@ sudo ./elastic-agent install \
   --fleet-server-policy=fleet-server-policy
 
 sudo /usr/bin/elastic-agent uninstall
+sudo rm -rf /opt/Elastic/Agent/ # if that uninstall doesn't work.
 
 
 http://elasticsearch-es-http.default.svc:9200

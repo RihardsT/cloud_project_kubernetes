@@ -2,6 +2,9 @@ kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/co
 kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
 kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Traefik_v2/
 
+# Dashboard
+https://traefik.rudenspavasaris.id.lv/dashboard/
+
 # Further use IngressRoute like so:
 ---
 apiVersion: traefik.containo.us/v1alpha1

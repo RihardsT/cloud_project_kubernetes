@@ -24,6 +24,9 @@ spec:
       containers:
       - name: apm-server
         image: docker.elastic.co/apm/apm-server:8.11.1
+        # command: ["apm-server", "-e",
+        #   "-E", "output.elasticsearch.hosts=['https://elasticsearch:9200']"
+        # ]
         volumeMounts:
         - name: config
           mountPath: /usr/share/apm-server/apm-server.yml

@@ -13,9 +13,10 @@ sudo jq '.default.Certificates[] | select(.domain.main == "mon3.rudenspavasaris.
 
 
 ### On host itself, for testing.
-curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.8.1-linux-x86_64.tar.gz
-tar xzvf elastic-agent-8.8.1-linux-x86_64.tar.gz
-cd elastic-agent-8.8.1-linux-x86_64
+elastic_agent_version="8.11.1"
+curl -L -O "https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-${elastic_agent_version}-linux-x86_64.tar.gz"
+tar -xzvf "elastic-agent-${elastic_agent_version}-linux-x86_64.tar.gz"
+cd "elastic-agent-${elastic_agent_version}-linux-x86_64"
 sudo ./elastic-agent install --url=https://mon3.rudenspavasaris.id.lv:8220 \
   --fleet-server-es=https://mon2.rudenspavasaris.id.lv:443 \
   --fleet-server-service-token=TOKEN_HERE \

@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: apm-server
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`apm.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: apm-server-apm-server
+      port: 8200
+  tls:
+    certResolver: default
