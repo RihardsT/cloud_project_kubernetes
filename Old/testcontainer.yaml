@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+  labels:
+    app: test
+spec:
+  selector:
+    matchLabels:
+      app: test
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+      - name: test
+        image: ubuntu:20.04
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do sleep 600; done" ]
+        resources:
+          # limits:
+          #   cpu: "0.5"
+          requests:
+            cpu: "0.1"
+        ports:
+        - containerPort: 443
+          protocol: TCP
+      nodeSelector:
+        kubernetes.io/hostname: "htz1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test
+spec:
+  ports:
+  - name: https
+    targetPort: 443
+    port: 443
+  selector:
+    app: test
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: test
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: test
+      port: 443
+  tls:
+    certResolver: default
+
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: test-haproxy
+#   annotations:
+#     haproxy.org/path-rewrite: "/"
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: test
+#             port:
+#               number: 1024
+
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRouteTCP
+# metadata:
+#   name: test
+# spec:
+#   entryPoints:
+#     - tcp
+#   routes:
+#   - match: HostSNI(`rudenspavasaris.id.lv`)
+#     kind: Rule
+#     services:
+#     - name: test
+#       port: 443
+#   # tls:
+#     # enabled: false
+#     # passthrough: false

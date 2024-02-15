@@ -2,5 +2,6 @@
 secrets.yaml
 secrets_*.yaml
 Secrets/
+secrets
 Elastic/certs
 __pycache__

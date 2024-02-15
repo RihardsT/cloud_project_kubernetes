@@ -1,3 +1,10 @@
+## To do:
+- [ ] https://github.com/jp-gouin/helm-openldap
+- [ ] https://github.com/prometheus-operator/kube-prometheus
+- [ ] https://phoenixnap.com/kb/prometheus-kubernetes
+      https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/
+
+
 ## Kubernetes for one
 I wanted to set up a couple of online and learn a bit of Kubernetes a long the way.
 Didn't want to use managed Kubernetes from any of the major cloud providers.
@@ -22,4 +29,3 @@ Backend node running Nextcloud and Collabora services, that I care about.
 ## Still to do
 - Site to site openvpn connection, to be able to add RaspberryPi worker at home
 - Ideally multiple master nodes, for HA
-- [ ] https://www.scaleway.com/en/docs/install-and-configure-nextcloud-object-storage/

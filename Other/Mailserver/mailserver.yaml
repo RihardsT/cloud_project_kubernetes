@@ -1,0 +1,263 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailserver
+  annotations:
+    ignore-check.kube-linter.io/run-as-non-root: >-
+      The mail server needs to run as root
+    ignore-check.kube-linter.io/privileged-ports: >-
+      The mail server needs privilegdes ports
+    ignore-check.kube-linter.io/no-read-only-root-fs: >-
+      There are too many files written to make The
+      root FS read-only
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailserver
+  template:
+    metadata:
+      labels:
+        app: mailserver
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/mailserver: runtime/default
+    spec:
+      hostname: mailserver
+      containers:
+        - name: mailserver
+          image: ghcr.io/docker-mailserver/docker-mailserver:10.0.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
+            privileged: false
+            capabilities:
+              add:
+                # file permission capabilities
+                - CHOWN
+                - FOWNER
+                - MKNOD
+                - SETGID
+                - SETUID
+                - DAC_OVERRIDE
+                # miscellaneous  capabilities
+                - SYS_CHROOT
+                - NET_BIND_SERVICE
+                - KILL
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+          # resources:
+          #   limits:
+          #     memory: 1Gi
+          #     cpu: 1500m
+          #   requests:
+          #     memory: 2Gi
+          #     cpu: 600m
+          volumeMounts:
+            # OpenDKIM
+            - name: opendkim-files
+              subPath: mail_com.private
+              mountPath: /tmp/docker-mailserver/opendkim/keys/domain1.tld/mail.private
+              readOnly: true
+            - name: opendkim-files
+              subPath: mail_com.txt
+              mountPath: /tmp/docker-mailserver/opendkim/keys/domain1.tld/mail.txt
+              readOnly: true
+            - name: opendkim-files
+              subPath: mail_de.private
+              mountPath: /tmp/docker-mailserver/opendkim/keys/domain2.tld/mail.private
+              readOnly: true
+            - name: opendkim-files
+              subPath: mail_de.txt
+              mountPath: /tmp/docker-mailserver/opendkim/keys/domain2.tld/mail.txt
+              readOnly: true
+            - name: opendkim-files
+              subPath: KeyTable
+              mountPath: /tmp/docker-mailserver/opendkim/KeyTable
+              readOnly: true
+            - name: opendkim-files
+              subPath: SigningTable
+              mountPath: /tmp/docker-mailserver/opendkim/SigningTable
+              readOnly: true
+            - name: opendkim-files
+              subPath: TrustedHosts
+              mountPath: /tmp/docker-mailserver/opendkim/TrustedHosts
+              readOnly: true
+            # other
+            - name: files
+              subPath: dh_4096.pem
+              mountPath: /etc/postfix/dh_4096.pem
+              readOnly: true
+            - name: files
+              subPath: hostname
+              mountPath: /etc/hostname
+              readOnly: true
+            - name: files
+              subPath: hosts
+              mountPath: /etc/hosts
+              readOnly: true
+            # Postfix
+            - name: files
+              subPath: main.cf
+              mountPath: /etc/postfix/main.cf
+              readOnly: true
+            - name: files
+              subPath: postfix-accounts.cf
+              mountPath: /tmp/docker-mailserver/postfix-accounts.cf
+              readOnly: true
+            - name: files
+              subPath: postfix-virtual.cf
+              mountPath: /tmp/docker-mailserver/postfix-virtual.cf
+              readOnly: true
+            # scrips
+            - name: files
+              subPath: setup-stack.sh
+              mountPath: /usr/local/bin/setup-stack.sh
+              readOnly: true
+            - name: files
+              subPath: user-patches.sh
+              mountPath: /tmp/docker-mailserver/user-patches.sh
+              readOnly: true
+            # spam
+            - name: files
+              subPath: 50-user
+              mountPath: /etc/amavis/conf.d/50-user
+              readOnly: true
+            - name: files
+              subPath: header_checks.pcre
+              mountPath: /etc/postfix/maps/header_checks.pcre
+              readOnly: true
+            - name: files
+              subPath: postscreen.conf
+              mountPath: /etc/fail2ban/filter.d/postscreen.conf
+              readOnly: true
+            - name: files
+              subPath: user-jail.local
+              mountPath: /etc/fail2ban/jail.d/user-jail.local
+              readOnly: true
+            # PVCs
+            - name: data
+              mountPath: /var/mail
+              subPath: data
+              readOnly: false
+            - name: data
+              mountPath: /var/mail-state
+              subPath: state
+              readOnly: false
+            - name: data
+              mountPath: /var/log/mail
+              subPath: log
+              readOnly: false
+            # time
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+            # certificates
+            - name: certificates-rsa
+              mountPath: /secrets/ssl/rsa/
+              readOnly: true
+            - name: certificates-ecdsa
+              mountPath: /secrets/ssl/ecdsa/
+              readOnly: true
+            # other
+            - name: tmp-files
+              mountPath: /tmp
+              readOnly: false
+          ports:
+            - name: transfer
+              containerPort: 25
+              protocol: TCP
+            - name: esmtp-implicit
+              containerPort: 465
+              protocol: TCP
+            - name: esmtp-explicit
+              containerPort: 587
+            - name: imap-implicit
+              containerPort: 993
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: mailserver.environment
+      restartPolicy: Always
+      volumes:
+        # configuration files
+        - name: files
+          configMap:
+            name: mailserver.other.files
+        - name: opendkim-files
+          configMap:
+            name: mailserver.opendkim.files
+        # PVCs
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        # time
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        # certificates
+        - name: certificates-rsa
+          secret:
+            secretName: mail-tls-certificate-rsa
+            items:
+              - key: tls.key
+                path: tls.key
+              - key: tls.crt
+                path: tls.crt
+        - name: certificates-ecdsa
+          secret:
+            secretName: mail-tls-certificate-ecdsa
+            items:
+              - key: tls.key
+                path: tls.key
+              - key: tls.crt
+                path: tls.crt
+        # other
+        - name: tmp-files
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailserver
+  labels:
+    app: mailserver
+spec:
+  # type: LoadBalancer
+  # externalTrafficPolicy: Local
+  selector:
+    app: mailserver
+  ports:
+    # Transfer
+    - name: transfer
+      port: 25
+      targetPort: transfer
+      protocol: TCP
+    # ESMTP with implicit TLS
+    - name: esmtp-implicit
+      port: 465
+      targetPort: esmtp-implicit
+      protocol: TCP
+    # ESMTP with explicit TLS (STARTTLS)
+    - name: esmtp-explicit
+      port: 587
+      targetPort: esmtp-explicit
+      protocol: TCP
+    # IMAPS with implicit TLS
+    - name: imap-implicit
+      port: 993
+      targetPort: imap-implicit
+      protocol: TCP
