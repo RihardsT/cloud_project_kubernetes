@@ -1,0 +1,16 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jenkins
+spec:
+  entryPoints:
+  - https
+  routes:
+  - kind: Rule
+    match: Host(`jenkins.rudenspavasaris.id.lv`)
+    services:
+    - name: jenkins
+      port: 8080
+  tls:
+    certResolver: default

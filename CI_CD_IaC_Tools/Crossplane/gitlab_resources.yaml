@@ -1,0 +1,16 @@
+---
+apiVersion: groups.gitlab.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: crossplane
+spec:
+  providerConfigRef:
+    name: provider-gitlab
+  deletionPolicy: Orphan # To not the delete the group automatically
+  forProvider:
+    name: Crossplane
+    path: crossplane
+    description: Crossplane
+    parentId: 10833561
+    # parentIdRef: # interestingly this one didn't want to work for me
+    #   name: rudenspavasaris

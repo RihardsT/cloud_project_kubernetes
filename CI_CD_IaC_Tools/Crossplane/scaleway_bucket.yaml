@@ -1,0 +1,10 @@
+---
+apiVersion: object.scaleway.upbound.io/v1alpha1
+kind: Bucket
+metadata:
+  name: scaleway-bucket
+spec:
+  forProvider:
+    name: crossplane
+  providerConfigRef:
+    name: default
