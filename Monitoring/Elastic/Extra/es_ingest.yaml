@@ -7,7 +7,7 @@ metadata:
   labels:
     k8s-app: es-ingest
 data:
-  elasticsearch.yaml: |-
+  elasticsearch.yml: |-
     node.name: "elasticsearch-ingest1"
     cluster.name: "test-cluster"
     network.host: 0.0.0.0
@@ -17,6 +17,8 @@ data:
     cluster.initial_master_nodes:
       - elasticsearch-master1
     xpack.security.enabled: true
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
     # xpack.security.http.ssl.enabled: true
     # xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
 
@@ -38,7 +40,7 @@ spec:
     spec:
       containers:
       - name: elasticsearch-ingest1
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
         env:
         - name: ES_JAVA_OPTS
           value: -Xmx256m -Xms256m
@@ -48,9 +50,9 @@ spec:
           value: changeme
         volumeMounts:
         - name: config
-          mountPath: /usr/share/elasticsearch/config/elasticsearch.yaml
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           readOnly: true
-          subPath: elasticsearch.yaml
+          subPath: elasticsearch.yml
         - name: http-cert
           mountPath: /usr/share/elasticsearch/config/http.p12
           readOnly: true
@@ -99,6 +101,5 @@ spec:
     services:
     - name: es-ingest
       port: 9200
-      targetPort: 9200
   tls:
     certResolver: default

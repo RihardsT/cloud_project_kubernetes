@@ -6,9 +6,13 @@ kubectl exec -n elastic $(kubectl get pods -n elastic --no-headers -o custom-col
 ./bin/elasticsearch-certutil http
 # Follow the instructions
 # For testing, I chose to generate single certificate, not one per node
+# Everything default, just setting hostname:
+# elasticsearch*
+# es*
 
 # Get the zip
 kubectl cp -n elastic $(kubectl get pods -n elastic --no-headers -o custom-columns=":metadata.name" | grep elasticsearch):/usr/share/elasticsearch/elasticsearch-ssl-http.zip ./elasticsearch-ssl-http.zip
+unzip elasticsearch-ssl-http.zip
 
 # Base64 them to store in secrets I guess.
 base64 -w0 elasticsearch-ssl-http/elasticsearch/http.p12

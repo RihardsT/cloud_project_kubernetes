@@ -1,4 +1,18 @@
 # https://github.com/prometheus-community/elasticsearch_exporter
+
+# prometheus.yml
+# - job_name: elasticsearch-exporter
+#   scrape_interval: 15s
+#   static_configs:
+#     - targets: ['mon3.rudenspavasaris.id.lv:443']
+#   metrics_path: /metrics
+#   scheme: https
+# - job_name: elastic-to-prometheus
+#   scrape_interval: 30s
+#   static_configs:
+#     - targets: ['rudenspavasaris.id.lv:8092']
+#   metrics_path: /metrics
+
 ---
 apiVersion: apps/v1
 kind: Deployment

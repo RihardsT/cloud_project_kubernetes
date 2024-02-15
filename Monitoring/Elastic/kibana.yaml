@@ -28,9 +28,9 @@ spec:
             value: "--max-old-space-size=512"
         volumeMounts:
         - name: config
-          mountPath: /usr/share/kibana/config/kibana.yaml
+          mountPath: /usr/share/kibana/config/kibana.yml
           readOnly: true
-          subPath: kibana.yaml
+          subPath: kibana.yml
         - name: elasticsearch-ca
           mountPath: /usr/share/kibana/config/elasticsearch-ca.pem
           readOnly: true
@@ -53,7 +53,7 @@ metadata:
   name: kibana-config
   namespace: elastic
 data:
-  kibana.yaml: |-
+  kibana.yml: |-
     server.name: kibana
     server.host: 0.0.0.0
     server.publicBaseUrl: "https://mon1.rudenspavasaris.id.lv"
