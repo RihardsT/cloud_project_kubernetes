@@ -6,7 +6,8 @@ metadata:
 spec:
   providerConfigRef:
     name: provider-gitlab
-  deletionPolicy: Orphan # To not the delete the group automatically
+  # managementPolicies: ["Observe"] # Not supported by Gitlab provider
+  # deletionPolicy: Orphan # To not the delete the group automatically
   forProvider:
     name: Crossplane
     path: crossplane

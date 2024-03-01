@@ -8,7 +8,11 @@ sudo chmod +x /usr/bin/helm
 
 ### General notes
 ```
+# Main install notes
 helm repo add REPO_NAME REPO_URL
 helm repo update
 helm install RELEASE_NAME CHART_NAME
+
+# Get available chart versions
+helm search repo REPO --versions
 ```

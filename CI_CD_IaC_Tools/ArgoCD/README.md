@@ -12,7 +12,7 @@ chmod +x argocd-linux-amd64 && sudo mv argocd-linux-amd64 /usr/bin/argocd
 
 ### ArgoCD server in Cluster
 ```
-cd ~/Code/cloud_project/cloud_project_kubernetes/ArgoCD
+cd ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl apply -f argo_config.yaml
