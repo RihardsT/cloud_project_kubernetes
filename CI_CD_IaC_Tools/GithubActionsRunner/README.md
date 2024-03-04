@@ -2,7 +2,12 @@
 Chart repo  
 https://github.com/actions/actions-runner-controller
 
-### Install
+### Further on setting it up with ArgoCD
+```
+kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/GithubActionsRunner/
+```
+
+### Install with helm manually
 ```
 NAMESPACE="github-arc"
 helm install github-arc \
@@ -12,7 +17,7 @@ helm install github-arc \
 ```
 
 ```
-INSTALLATION_NAME="github-runners"
+INSTALLATION_NAME="github-arc-runners"
 NAMESPACE="github-arc"
 GITHUB_CONFIG_URL="REPO"
 GITHUB_PAT="TOKEN"

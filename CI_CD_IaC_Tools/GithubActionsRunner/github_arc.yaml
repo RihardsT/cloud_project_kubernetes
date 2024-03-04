@@ -1,0 +1,49 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: github-arc
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    syncOptions:
+    - Replace=true
+    automated:
+      selfHeal: false
+      prune: true
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set-controller
+    targetRevision: 0.8.3
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: github-arc
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: github-arc-runners
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    syncOptions:
+    - Replace=true
+    automated:
+      selfHeal: false
+      prune: true
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: github-arc
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set
+    targetRevision: 0.8.3
+    helm:
+      values: |
+        githubConfigUrl: https://github.com/RihardsT/actionstest
+        githubConfigSecret: github-arc-token
+        controllerServiceAccount:
+          namespace: github-arc
+          name: github-arc-gha-rs-controller
