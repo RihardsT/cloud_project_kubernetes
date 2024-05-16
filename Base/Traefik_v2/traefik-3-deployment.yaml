@@ -53,5 +53,5 @@ spec:
         hostPath:
           path: /acme
       hostNetwork: true
-      nodeSelector:
-        kubernetes.io/hostname: htz1
+      # nodeSelector:
+      #   kubernetes.io/hostname: htz1
