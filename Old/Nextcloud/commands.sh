@@ -10,14 +10,14 @@ News App, RSS - https://github.com/nextcloud/news-updater
 echo -n "PASSWORD_GOES_HERE" > .env
 # echo -n '"PASSWORD_GOES_HERE"' > .env_nc # Using the same password, but with ""
 
-cd ~/Code/CloudProject/cloud_project_kubernetes/Nextcloud
-kubectl create secret generic nextcloud-password --from-file=.env
-kubectl apply -f ingress.yaml
-kubectl apply -f postgres.yaml
-kubectl apply -f nextcloud.yaml
-kubectl apply -f collabora.yaml
+cd ~/Code/cloud_project/cloud_project_kubernetes/Old/Nextcloud
+# kubectl create secret generic nextcloud-password --from-file=Secrets/db_password --from-file=Secrets/nc_admin_password # This one creates with \n in the end, because there is newline in the file. Thus use next command instead.
+kubectl create secret generic nextcloud-password --from-literal=db_password=$(cat Secrets/db_password) --from-literal=nc_admin_password=$(cat Secrets/nc_admin_password)
+oc1_ssh 'sudo mkdir /data/collabora_data'
+rsync --rsync-path="sudo rsync" ~/Code/cloud_project/cloud_project_kubernetes/Old/Nextcloud/collabora_loolwsd.xml $(terraform -chdir=/home/rihards/Code/cloud_project/cloud_project_terraform_oracle/ output -raw ip):/data/collabora_data/
+
+kubectl apply -f ingress.yaml -f postgres.yaml -f nextcloud.yaml -f collabora.yaml
 kubectl get all
-kubectl logs --follow nextcloud
 
 kubectl get secret nextcloud-password -o yaml
 

@@ -19,7 +19,7 @@ spec:
         - name: EULA
           value: "true"
         - name: MEMORY
-          value: "1500M"
+          value: "4000M"
         ports:
         - containerPort: 25565
           name: main
@@ -30,8 +30,8 @@ spec:
       - name: minecraft-data
         hostPath:
           path: "/data/minecraft_data"
-      nodeSelector:
-        kubernetes.io/hostname: "htz1"
+      # nodeSelector:
+      #   kubernetes.io/hostname: "htz1"
 # ---
 # apiVersion: v1
 # kind: Service

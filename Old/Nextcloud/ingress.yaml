@@ -53,7 +53,9 @@ kind: Middleware
 metadata:
   name: nextcloud-redirect-https
 spec:
-  permanent: true
-  redirectRegex:
-    regex: ^http://vieta.rudenspavasaris.id.lv/(.*)
-    replacement: https://vieta.rudenspavasaris.id.lv/${1}
+  redirectScheme:
+    permanent: true
+    scheme: https
+  # redirectRegex:
+  #   regex: ^http://vieta.rudenspavasaris.id.lv/(.*)
+  #   replacement: https://vieta.rudenspavasaris.id.lv/${1}
