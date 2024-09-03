@@ -21,6 +21,7 @@ kubectl get all
 
 kubectl get secret nextcloud-password -o yaml
 
+kubectl delete -f ingress.yaml -f postgres.yaml -f nextcloud.yaml -f collabora.yaml
 ### Cleanup
 kubectl delete -f nextcloud.yaml
 kubectl delete -f postgres.yaml

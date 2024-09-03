@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-aio
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`vieta.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: nextcloud-aio-apache
+      port: 4443
+    # middlewares:
+    # - name: strict-transport-security-header
+    # - name: nextcloud-redirect-https
+  tls:
+    certResolver: default
