@@ -1,5 +1,5 @@
 gitlabUrl: https://gitlab.com/
-runnerRegistrationToken: GR13489418WvZ2VVKMzoEgNpWfqs6
+runnerRegistrationToken: TOKEN # TODO, take value from secret
 rbac:
   create: true
 runners:

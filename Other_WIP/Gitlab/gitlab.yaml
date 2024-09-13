@@ -7,8 +7,6 @@ metadata:
     k8s-app: gitlab
 data:
   gitlab.rb: |-
-    ##! Check out the latest version of this file to know about the different
-    ##! settings that can be configured, when they were introduced and why:
     ##! https://gitlab.com/gitlab-org/omnibus-gitlab/blame/master/files/gitlab-config-template/gitlab.rb.template
 
     external_url "https://gitlab.rudenspavasaris.id.lv"
@@ -44,8 +42,14 @@ spec:
     spec:
       containers:
       - name: gitlab
-        image: gitlab/gitlab-ce:latest
-        # image: gitlab/gitlab-ce:14.4.1-ce.0
+        # image: gitlab/gitlab-ce:latest
+        image: zengxs/gitlab:ce # Community built ARM64 image
+        env:
+        - name: GITLAB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-password
+              key: password
         volumeMounts:
         - name: config
           mountPath: /etc/gitlab/gitlab.rb
@@ -72,8 +76,8 @@ spec:
         - name: gitlab-data
           hostPath:
             path: "/data/gitlab/data"
-      nodeSelector:
-        kubernetes.io/hostname: "htz2"
+      # nodeSelector:
+      #   kubernetes.io/hostname: "htz2"
 ---
 apiVersion: v1
 kind: Service
@@ -102,7 +106,6 @@ spec:
     - https
   routes:
   - match: HostSNI(`gitlab.rudenspavasaris.id.lv`)
-    kind: Rule
     services:
     - name: gitlab
       port: 443

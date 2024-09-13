@@ -1,3 +1,8 @@
+######### Init on K8s
+# Create root user default password:
+kubectl create secret generic nextcloud-password --from-literal=password=$(cat Secrets/password)
+kubectl apply -f gitlab.yaml
+
 ######### With Terraform and Ansible approach
 ### Backup
 kubectl exec -it $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab) -- bash -c 'gitlab-backup create'
@@ -31,3 +36,14 @@ git clone ssh://git@gitlab-ssh.rudenspavasaris.id.lv:4022/gitlab-instance-78aa14
 kubectl exec $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep gitlab) -ti -- bash
 ssh-keygen -t ed25519 -C "test_on_gitlab" # Add the generated public key to your Gitlab user too
 git clone ssh://git@localhost:22/gitlab-instance-04f68d12/Monitoring.git
+
+
+########## Gitlab can run on ARM64:
+https://docs.gitlab.com/ee/administration/package_information/supported_os.html
+# but no official docker image yet.
+# Build instructions can be found here a bit:
+https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5673
+
+# Ready ARM64 Gitlab images
+https://github.com/zengxs/gitlab-arm64
+sudo nerdctl run --name gitlab -d zengxs/gitlab:ce

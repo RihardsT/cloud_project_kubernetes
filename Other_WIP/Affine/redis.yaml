@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: affine-redis
+  # labels:
+  #   app: affine-redis
+spec:
+  selector:
+    matchLabels:
+      app: affine-redis
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: affine-redis
+    spec:
+      containers:
+      - name: affine-redis
+        image: redis:7.4.0-alpine
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+      volumes:
+      - name: redis-data
+        hostPath:
+          path: "/data/affine_redis"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: affine-redis
+spec:
+  ports:
+    - port: 6479
+      targetPort: 6479
+      protocol: TCP
+  selector:
+    app: affine-redis

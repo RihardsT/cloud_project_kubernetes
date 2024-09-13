@@ -1,0 +1,16 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: affine
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`vieta.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: affine
+      port: 3010
+  tls:
+    certResolver: default

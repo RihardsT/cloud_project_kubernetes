@@ -8,7 +8,7 @@ wget https://raw.githubusercontent.com/nextcloud/all-in-one/main/nextcloud-aio-h
 # Update the values file
 
 helm repo add nextcloud-aio https://nextcloud.github.io/all-in-one/
-helm upgrade nextcloud-aio nextcloud-aio/nextcloud-aio-helm-chart -f values.yaml
+helm install nextcloud-aio nextcloud-aio/nextcloud-aio-helm-chart -f values.yaml
 k patch  service nextcloud-aio-apache -p '{"spec":{"type":"ClusterIP"}}' # Change LoadBalancer to ClusterIP
 k apply -f ingress.yaml
 # kubectl rollout restart $(k get deployment -o NAME | grep nextcloud-aio)
