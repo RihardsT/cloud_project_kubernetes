@@ -30,7 +30,11 @@ spec:
         - containerPort: 443
           protocol: TCP
       nodeSelector:
-        kubernetes.io/hostname: "htz1"
+        kubernetes.io/hostname: "oc2"
+      tolerations:
+      - key: "oc0"
+        operator: "Exists"
+        effect: "NoSchedule"
 ---
 apiVersion: v1
 kind: Service
