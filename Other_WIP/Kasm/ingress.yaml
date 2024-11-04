@@ -1,0 +1,20 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kasm
+  namespace: kasm
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`kasm.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: kasm-proxy
+      port: 8080
+    # middlewares:
+    # - name: strict-transport-security-header
+    # - name: nextcloud-redirect-https
+  tls:
+    certResolver: default

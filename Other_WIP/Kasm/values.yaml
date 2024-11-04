@@ -1,0 +1,12 @@
+global:
+  namespace: "kasm"
+  clusterDomain: "cluster.local"
+  hostname: "kasm.rudenspavasaris.id.lv"
+  # kasmPasswords:
+  #   redisPassword: ""
+  #   dbPassword: ""
+  #   managerToken: ""
+  #   serviceToken: ""
+  #   adminPassword: ""
+  #   userPassword: ""
+

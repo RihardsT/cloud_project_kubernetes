@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graylog-config
+  namespace: elastic
+data:
+  graylog.yml: |-
+    server.name: graylog
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graylog
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: graylog
+  template:
+    metadata:
+      labels:
+        name: graylog
+    spec:
+      containers:
+      - name: graylog
+        image: graylog/graylog:6.0.7
+        env:
+          - name: SERVER_NAME
+            value: mon.rudenspavasaris.id.lv
+          - name: NODE_OPTIONS
+            value: "--max-old-space-size=512"
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/graylog/config/graylog.yml
+          readOnly: true
+          subPath: graylog.yml
+        - name: elasticsearch-ca
+          mountPath: /usr/share/graylog/config/elasticsearch-ca.pem
+          readOnly: true
+          subPath: elasticsearch-ca.pem
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 0666
+          name: graylog-config
+      - name: elasticsearch-ca
+        secret:
+          secretName: elasticsearch-ca
+      restartPolicy: Always
+      # nodeSelector:
+      #   kubernetes.io/hostname: "htz1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: graylog
+  namespace: elastic
+  labels:
+    name: graylog
+spec:
+  ports:
+    - name: http
+      port: 5601
+      targetPort: 5601
+  selector:
+    name: graylog
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: graylog
+  namespace: elastic
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`mon1.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: graylog
+      port: 5601
+  tls:
+    certResolver: default
