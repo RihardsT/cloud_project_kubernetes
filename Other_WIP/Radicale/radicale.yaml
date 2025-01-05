@@ -1,0 +1,89 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: radicale-config
+  labels:
+    k8s-app: radicale
+data:
+  config: |-
+    [auth]
+    type = htpasswd
+    htpasswd_filename = /etc/radicale/users
+    htpasswd_encryption = plain
+    # [storage]
+    # filesystem_folder = /etc/radicale/collections
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radicale
+  labels:
+    app: radicale
+spec:
+  selector:
+    matchLabels:
+      app: radicale
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: radicale
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: radicale
+        image: radicale:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5232
+          protocol: TCP
+        volumeMounts:
+        - name: radicale-config
+          mountPath: /etc/radicale/config
+          subPath: config
+        - name: radicale-users
+          mountPath: /etc/radicale/users
+          subPath: users
+      volumes:
+        - name: radicale-config
+          configMap:
+            defaultMode: 0777
+            name: radicale-config
+        - name: radicale-users
+          secret:
+            secretName: radicale-users
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: radicale
+spec:
+  ports:
+  - name: http
+    targetPort: 5232
+    port: 5232
+  selector:
+    app: radicale
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: radicale
+spec:
+  entryPoints:
+    - https
+  routes:
+  - match: Host(`vieta.rudenspavasaris.id.lv`)
+    kind: Rule
+    services:
+    - name: radicale
+      port: http
+    middlewares:
+    - name: strict-transport-security-header
+  tls:
+    certResolver: default
