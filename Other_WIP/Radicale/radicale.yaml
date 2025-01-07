@@ -11,9 +11,22 @@ data:
     type = htpasswd
     htpasswd_filename = /etc/radicale/users
     htpasswd_encryption = plain
-    # [storage]
-    # filesystem_folder = /etc/radicale/collections
-
+    [storage]
+    filesystem_folder = /etc/radicale/collections
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radicale-pvc
+  labels:
+    k8s-app: radicale
+spec:
+  storageClassName:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,6 +47,13 @@ spec:
         app: radicale
     spec:
       restartPolicy: Always
+      initContainers:
+      - name: init-permissions
+        image: busybox
+        command: ["sh", "-c", "chmod -R 777 /etc/radicale/collections"]
+        volumeMounts:
+          - name: radicale-data
+            mountPath: /etc/radicale/collections
       containers:
       - name: radicale
         image: radicale:latest
@@ -48,6 +68,8 @@ spec:
         - name: radicale-users
           mountPath: /etc/radicale/users
           subPath: users
+        - name: radicale-data
+          mountPath: /etc/radicale/collections
       volumes:
         - name: radicale-config
           configMap:
@@ -56,7 +78,14 @@ spec:
         - name: radicale-users
           secret:
             secretName: radicale-users
-      
+        # - name: radicale-data
+        #   # hostPath:
+        #   #   path: "/data/radicale_data"
+        #   emptyDir:
+        #     sizeLimit: 50Mi
+        - name: radicale-data
+          persistentVolumeClaim:
+            claimName: radicale-pvc
 ---
 apiVersion: v1
 kind: Service
