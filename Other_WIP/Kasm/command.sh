@@ -26,3 +26,4 @@ user@kasm.local
 
 ### Create custom images, main idea are arm64 images
 https://www.kasmweb.com/docs/latest/how_to/building_images.html
+https://www.kasmweb.com/docs/latest/guide/custom_images.html
