@@ -1,6 +1,10 @@
-kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yaml
-kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yaml
-kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Traefik_v2/
+https://github.com/traefik/traefik/tree/master/docs/content/reference/dynamic-configuration
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.3.4/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.3.4/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/Base/Traefik_v2/
 
 # Dashboard
 https://traefik.rudenspavasaris.id.lv/dashboard/
