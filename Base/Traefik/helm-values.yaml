@@ -1,0 +1,27 @@
+# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`traefik.rudenspavasaris.id.lv`)
+    entryPoints:
+      - web
+providers:
+  kubernetesGateway:
+    enabled: true
+gateway:
+  listeners:
+    web:
+      namespacePolicy:
+        from: All
+hostNetwork: true
+ports:
+  traefik:
+    port: 8081
+    exposedPort: 8081
+  web:
+    exposedPort: 80
+  websecure:
+    port: 6443
+    exposedPort: 443
+service:
+  externalIPs: [129.151.200.81]
