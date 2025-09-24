@@ -1,10 +1,15 @@
 # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+logs:
+  general:
+    level: "INFO" # DEBUG if necessary
 ingressRoute:
   dashboard:
     enabled: true
-    matchRule: Host(`traefik.rudenspavasaris.id.lv`)
+    matchRule: Host(`mon.rudenspavasaris.id.lv`)
     entryPoints:
-      - web
+      - websecure
+    tls:
+      certResolver: letsencrypt
 providers:
   kubernetesGateway:
     enabled: true
@@ -18,10 +23,31 @@ ports:
   traefik:
     port: 8081
     exposedPort: 8081
-  web:
-    exposedPort: 80
   websecure:
     port: 6443
-    exposedPort: 443
 service:
   externalIPs: [129.151.200.81]
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "rihards.teteris@outlook.com"
+      storage: /acme/acme.json
+      httpchallenge:
+        entrypoint: web
+# additionalArguments:
+#   - "--certificatesresolvers.le.acme.email=rihards.teteris@outlook.com"
+#   - "--certificatesresolvers.le.acme.storage=/acme/acme.json"
+#   - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+#   # - "--certificatesresolvers.le.acme.dnschallenge.provider=your-dns-provider" # Requires provider-specific config, adjust if you control your DNS provider
+### TODO: Replace this with proper persistent volume.
+# Given that my nodes currently are super tiny, probably won't use Longhorn at the moment
+# Try https://kubernetes.io/docs/concepts/storage/volumes/#local
+deployment:
+  additionalVolumes:
+    - name: acme
+      hostPath:
+        path: /acme
+additionalVolumeMounts:
+  - name: acme
+    mountPath: /acme/

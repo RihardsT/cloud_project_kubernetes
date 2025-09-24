@@ -6,7 +6,7 @@ spec:
   ports:
     - protocol: TCP
       name: admin
-      port: 8080
+      port: 8081
   selector:
     app: traefik
 ---

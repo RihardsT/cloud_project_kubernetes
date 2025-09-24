@@ -1,3 +1,4 @@
+---
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
@@ -42,3 +43,15 @@ spec:
       taint: k0sctl.k0sproject.io/evict=true
       effect: NoExecute
       controllerWorkers: false
+# Had to do all this, just to change default metricsPort, as Traefik wants 8080
+# Based on https://github.com/k0sproject/k0sctl/blob/main/README.md#configuration-file
+  k0s:
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: ClusterConfig
+      metadata:
+        name: k0s-cluster
+      spec:
+        network:
+          kuberouter:
+            metricsPort: 8082

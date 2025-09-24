@@ -25,12 +25,12 @@ spec:
         image: errm/cheese:stilton
         ports:
         - containerPort: 80
-      nodeSelector:
-        kubernetes.io/hostname: "oc2"
-      tolerations:
-      - key: "oc0"
-        operator: "Exists"
-        effect: "NoSchedule"
+      # nodeSelector:
+      #   kubernetes.io/hostname: "oc2"
+      # tolerations:
+      # - key: "oc0"
+      #   operator: "Exists"
+      #   effect: "NoSchedule"
 ---
 apiVersion: v1
 kind: Service
