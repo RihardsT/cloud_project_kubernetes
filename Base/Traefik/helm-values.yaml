@@ -23,6 +23,12 @@ ports:
   traefik:
     port: 8081
     exposedPort: 8081
+  web:
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
   websecure:
     port: 6443
 service:
