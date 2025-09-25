@@ -10,6 +10,7 @@
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
 
+k apply -f local_pv.yaml
 helm install traefik traefik/traefik -f helm-values.yaml --wait
 # Upgrade
 # https://github.com/traefik/traefik-helm-chart/tree/master?tab=readme-ov-file#upgrading
