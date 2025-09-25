@@ -33,13 +33,7 @@ certificatesResolvers:
     acme:
       email: "rihards.teteris@outlook.com"
       storage: /acme/acme.json
-      httpchallenge:
-        entrypoint: web
-# additionalArguments:
-#   - "--certificatesresolvers.le.acme.email=rihards.teteris@outlook.com"
-#   - "--certificatesresolvers.le.acme.storage=/acme/acme.json"
-#   - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-#   # - "--certificatesresolvers.le.acme.dnschallenge.provider=your-dns-provider" # Requires provider-specific config, adjust if you control your DNS provider
+      tlsChallenge: true
 ### TODO: Replace this with proper persistent volume.
 # Given that my nodes currently are super tiny, probably won't use Longhorn at the moment
 # Try https://kubernetes.io/docs/concepts/storage/volumes/#local
