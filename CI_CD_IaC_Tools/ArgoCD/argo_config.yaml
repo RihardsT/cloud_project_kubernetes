@@ -9,29 +9,3 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   server.insecure: "true"
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: argocd-server
-  namespace: argocd
-spec:
-  entryPoints:
-  - https
-  routes:
-  - kind: Rule
-    match: Host(`argocd.rudenspavasaris.id.lv`)
-    priority: 10
-    services:
-    - name: argocd-server
-      port: 80
-  - kind: Rule
-    match: Host(`argocd.rudenspavasaris.id.lv`) && Headers(`Content-Type`, `application/grpc`)
-    priority: 11
-    services:
-    - name: argocd-server
-      port: 80
-      scheme: h2c
-  tls:
-    certResolver: default

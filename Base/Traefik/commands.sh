@@ -2,14 +2,14 @@
 - [x] Get Traefik working with port 80 and 443
   Workaround with iptables
   sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8000
-  sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 6443
-- [ ] Get HTTPS working
-
+  sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443
+- [x] Get HTTPS working
 
 ### Install Traefik 3 with Helm
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
 
+# /acme folder has to be created first.
 k apply -f local_pv.yaml
 helm install traefik traefik/traefik -f helm-values.yaml --wait
 # Upgrade

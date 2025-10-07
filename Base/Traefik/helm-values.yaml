@@ -31,10 +31,11 @@ ports:
         scheme: https
         permanent: true
   websecure:
-    port: 6443
+    port: 8443
 
 service:
-  externalIPs: [129.151.200.81]
+  # externalIPs: [129.151.200.81]
+  externalIPs: [46.62.134.107]
 
 certificatesResolvers:
   letsencrypt:
@@ -45,6 +46,10 @@ certificatesResolvers:
 
 persistence:
   enabled: true
-  existingClaim: "traefik-acme-pvc"
-  storageClass: "local-storage"
   path: /acme
+  ### Only when using local storage
+  # existingClaim: "traefik-acme-pvc"
+  # storageClass: "local-storage"
+
+podSecurityContext: # When not using local storage
+  fsGroup: 65532 # https://github.com/traefik/traefik-helm-chart/issues/396#issuecomment-3287251840

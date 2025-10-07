@@ -1,16 +1,16 @@
 # Love it. Nice and easy.
 https://longhorn.io/
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/longhorn.yaml
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/$LONGHORN_VERSION/deploy/longhorn.yaml
 
 
 # Remove
-kubectl -n longhorn-system edit settings.longhorn.io deleting-confirmation-flag
-# Set ^^ the value to true
-kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/uninstall/uninstall.yaml
+kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag
+LONGHORN_VERSION="v1.10.0"
+kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/${LONGHORN_VERSION}/uninstall/uninstall.yaml
 kubectl get job/longhorn-uninstall -n longhorn-system -w
 
-kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/longhorn.yaml
-kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/uninstall/uninstall.yaml
+kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/$LONGHORN_VERSION/deploy/longhorn.yaml
+kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/$LONGHORN_VERSION/uninstall/uninstall.yaml
 
 # Force removal of the namespace, if there are issues
 NAMESPACE='longhorn-system'
