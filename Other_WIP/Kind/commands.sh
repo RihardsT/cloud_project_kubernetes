@@ -1,7 +1,13 @@
 https://github.com/kubernetes-sigs/kind
 
+sudo apt install golang -V
+
 ### Install go lang and set podman alias to docker
-go install sigs.k8s.io/kind@v0.14.0
+go install sigs.k8s.io/kind@v0.30.0
+
+PATH=$PATH:$(go env GOPATH)/bin
+echo 'PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
+kind create cluster
 
 ##### Deps for Rootless podman
 echo 'GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=1"' | sudo tee -a /etc/default/grub
