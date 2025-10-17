@@ -15,7 +15,7 @@ helm install traefik traefik/traefik -f helm-values.yaml --wait
 # Upgrade
 # https://github.com/traefik/traefik-helm-chart/tree/master?tab=readme-ov-file#upgrading
 # To make sure new config is loaded, delete the old pod also
-helm upgrade --install traefik traefik/traefik -f helm-values.yaml && \
+helm upgrade --install traefik traefik/traefik -f helm-values.yaml --set service.externalIPs[0]=IP_HERE && \
 kubectl delete pod $(kubectl get pods --no-headers -o custom-columns=":metadata.name" --sort-by=.metadata.creationTimestamp | grep traefik | head -n 1)
 # kubectl delete pod $(kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep traefik)
 

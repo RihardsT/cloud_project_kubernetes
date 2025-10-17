@@ -16,6 +16,7 @@ cd ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl apply -f argo_config.yaml
+kubectl apply -f ingress.yaml
 kubectl rollout restart deployment argocd-server -n argocd
 
 # Get initial password for admin

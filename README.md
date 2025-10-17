@@ -2,6 +2,7 @@
 Just setting up Kubernetes and learning various tools.
 
 ## To do:
+- [ ] Set up ArgoCD with Helm instead and add the Trivy extension
 - [ ] https://ubuntu.com/kubernetes/docs/explain-backups
 - [ ] https://github.com/jp-gouin/helm-openldap
 - [ ] https://github.com/prometheus-operator/kube-prometheus

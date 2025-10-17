@@ -34,8 +34,7 @@ ports:
     port: 8443
 
 service:
-  # externalIPs: [129.151.200.81]
-  externalIPs: [46.62.134.107]
+  externalIPs: []
 
 certificatesResolvers:
   letsencrypt:

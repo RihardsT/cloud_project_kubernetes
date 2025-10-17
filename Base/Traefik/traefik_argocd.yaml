@@ -1,4 +1,4 @@
-# Didn't work
+#### Didn't work
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -16,8 +16,9 @@ spec:
       targetRevision: v37.1.2
       helm:
         valueFiles:
-          - helm-values.yaml
+          - /home/rihards/Code/cloud_project/cloud_project_kubernetes/Base/Traefik/helm-values.yaml
 
   destination:
     server: https://kubernetes.default.svc
     namespace: default
+#### Didn't work

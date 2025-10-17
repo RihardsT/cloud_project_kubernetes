@@ -17,3 +17,8 @@ NAMESPACE='longhorn-system'
 kubectl get namespace $NAMESPACE -o json   | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/"   | kubectl replace --raw /api/v1/namespaces/$NAMESPACE/finalize -f -
 # Not sure if it works for specific resource too
 kubectl get -o json -n longhorn-system nodes.longhorn.io htz1 | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" | kubectl replace --raw /longhorn.io/v1beta2/nodes.longhorn.io/htz1/finalize -f -
+
+
+
+### With ArgoCD
+k apply -f /home/rihards/Code/cloud_project/cloud_project_kubernetes/Base/Storage/longhorn_argocd.yaml
