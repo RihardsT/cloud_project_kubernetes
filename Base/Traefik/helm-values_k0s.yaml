@@ -1,0 +1,4 @@
+persistence:
+  ### Only when using local storage
+  existingClaim: "traefik-acme-pvc"
+  storageClass: "local-storage"

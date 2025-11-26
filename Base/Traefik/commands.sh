@@ -25,3 +25,8 @@ helm uninstall traefik
 
 # Check what helm would apply
 helm template traefik traefik/traefik -f helm-values.yaml
+
+
+### This Traefik runs as non-root, thus adding REDIRECT on host
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8000
+sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443

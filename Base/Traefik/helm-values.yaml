@@ -52,3 +52,7 @@ persistence:
 
 podSecurityContext: # When not using local storage
   fsGroup: 65532 # https://github.com/traefik/traefik-helm-chart/issues/396#issuecomment-3287251840
+  runAsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532
+  fsGroupChangePolicy: "OnRootMismatch"

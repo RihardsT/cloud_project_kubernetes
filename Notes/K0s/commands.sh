@@ -17,6 +17,8 @@ k0sctl init > k0sctl.yaml
 k0sctl apply --config k0sctl.yaml
 # If you don't have other cluster, put kubeconfig in it's default place
 k0sctl kubeconfig > ~/.kube/config
+# If you do, put it elsewhere
+k0sctl kubeconfig > ~/.kube/config_k0s
 
 
 # Run on server
