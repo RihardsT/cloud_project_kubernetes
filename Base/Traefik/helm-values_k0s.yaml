@@ -2,3 +2,6 @@ persistence:
   ### Only when using local storage
   existingClaim: "traefik-acme-pvc"
   storageClass: "local-storage"
+ingressRoute:
+  dashboard:
+    matchRule: "Host(`mon.oc1.rudenspavasaris.id.lv`)"

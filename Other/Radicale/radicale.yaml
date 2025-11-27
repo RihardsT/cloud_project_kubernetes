@@ -15,6 +15,30 @@ data:
     filesystem_folder = /etc/radicale/collections
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radicale-pv
+spec:
+  capacity:
+    storage: 50Mi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /data/radicale
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - oc1pub
+          - htz1
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: radicale-pvc
@@ -27,6 +51,7 @@ spec:
   resources:
     requests:
       storage: 50Mi
+  storageClassName: local-storage
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,6 +72,8 @@ spec:
         app: radicale
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
       initContainers:
       - name: init-permissions
         image: busybox
@@ -56,7 +83,7 @@ spec:
             mountPath: /etc/radicale/collections
       containers:
       - name: radicale
-        image: radicale:latest
+        image: registry.gitlab.com/rudenspavasaris/cloud_project_terraform_oracle/radicale:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5232
@@ -78,11 +105,6 @@ spec:
         - name: radicale-users
           secret:
             secretName: radicale-users
-        # - name: radicale-data
-        #   # hostPath:
-        #   #   path: "/data/radicale_data"
-        #   emptyDir:
-        #     sizeLimit: 50Mi
         - name: radicale-data
           persistentVolumeClaim:
             claimName: radicale-pvc
@@ -99,20 +121,18 @@ spec:
   selector:
     app: radicale
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: radicale
 spec:
   entryPoints:
-    - https
+    - websecure
   routes:
-  - match: Host(`vieta.rudenspavasaris.id.lv`)
-    kind: Rule
-    services:
-    - name: radicale
-      port: http
-    middlewares:
-    - name: strict-transport-security-header
+    - match: Host(`rad.oc1.rudenspavasaris.id.lv`)
+      kind: Rule
+      services:
+        - name: radicale
+          port: http
   tls:
-    certResolver: default
+    certResolver: letsencrypt

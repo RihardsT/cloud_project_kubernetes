@@ -32,3 +32,8 @@ k0sctl apply --config k0sctl.yaml
 # Logs are in journalctl
 sudo journalctl -u k0sworker | grep component=kubelet
 sudo journalctl -u k0sworker | grep "kube-system/konnectivity-agent-tzvr9"
+
+
+
+#### k0s embedded bins
+/var/lib/k0s/bin
