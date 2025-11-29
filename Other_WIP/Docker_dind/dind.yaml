@@ -7,9 +7,12 @@ metadata:
 spec:
   containers:
   - name: dind
-    image: docker:20.10-dind
-    securityContext:
-      privileged: true
+    ### With root
+    # image: docker:dind
+    # securityContext:
+    #   privileged: true
+    ## Rootless
+    image: docker:dind-rootless
     env:
     - name: DOCKER_TLS_CERTDIR
       value: ""

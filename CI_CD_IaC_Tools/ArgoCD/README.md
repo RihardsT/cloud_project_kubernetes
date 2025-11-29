@@ -4,14 +4,14 @@ https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
 
 
 ### CLI install
-```
+```shell
 # Get the CLI
 wget https://github.com/argoproj/argo-cd/releases/download/v2.9.0/argocd-linux-amd64
 chmod +x argocd-linux-amd64 && sudo mv argocd-linux-amd64 /usr/bin/argocd
 ```
 
 ### ArgoCD server in Cluster
-```
+```shell
 cd ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -27,7 +27,7 @@ kubectl rollout restart deployment argocd-server -n argocd
 ```
 
 ### App stuff
-```
+```shell
 cd ~/Code/cloud_project/cloud_project_kubernetes/ArgoCD
 kubectl apply -n argocd -f application.yaml
 ```
