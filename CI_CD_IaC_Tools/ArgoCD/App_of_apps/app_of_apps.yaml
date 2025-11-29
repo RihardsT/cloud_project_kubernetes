@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/RihardsT/cloud_project_kubernetes.git
+    targetRevision: HEAD
+    path: CI_CD_IaC_Tools/ArgoCD/App_of_apps/Apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated: true
