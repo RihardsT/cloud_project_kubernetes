@@ -37,6 +37,12 @@ kubectl apply -n argocd -f application.yaml
 kubectl apply -n argocd -f ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD/application_set.yaml
 ```
 
+### App of apps
+https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/
+```shell
+kubectl apply -f ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD/App_of_apps/app_of_apps.yaml
+```
+
 ### Apps with Helm
 Currently this one seems to be the best.
 Just one helm apply to get all the apps it seems.
