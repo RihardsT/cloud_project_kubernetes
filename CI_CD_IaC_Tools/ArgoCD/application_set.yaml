@@ -1,0 +1,33 @@
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: base-apps
+spec:
+  # goTemplate: true
+  # goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - app: longhorn
+        path: Base/Storage/longhorn_argocd.yaml
+      - app: metrics-server
+        path: Monitoring/Metrics-server/metrics_server_argocd.yaml
+      - app: trivy
+        path: Security/Trivy/trivy_argocd.yaml
+  template:
+    metadata:
+      name: '{{.app}}'
+    spec:
+      syncPolicy:
+        automated:
+          enabled: true
+      project: default
+      source:
+        repoURL: https://github.com/RihardsT/cloud_project_kubernetes.git
+        targetRevision: HEAD
+        path: '{{.path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
