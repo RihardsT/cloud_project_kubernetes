@@ -5,17 +5,19 @@ kind: ApplicationSet
 metadata:
   name: base-apps
 spec:
-  # goTemplate: true
-  # goTemplateOptions: ["missingkey=error"]
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
   - list:
       elements:
-      - app: longhorn
-        path: Base/Storage/longhorn_argocd.yaml
-      - app: metrics-server
-        path: Monitoring/Metrics-server/metrics_server_argocd.yaml
-      - app: trivy
-        path: Security/Trivy/trivy_argocd.yaml
+      # - app: longhorn
+      #   path: Base/Storage/longhorn_argocd.yaml
+      # - app: metrics-server
+      #   path: Monitoring/Metrics-server/metrics_server_argocd.yaml
+      # - app: trivy
+      #   path: Security/Trivy/trivy_argocd.yaml
+      - app: apps
+        path: CI_CD_IaC_Tools/ArgoCD/Apps
   template:
     metadata:
       name: '{{.app}}'
@@ -23,11 +25,15 @@ spec:
       syncPolicy:
         automated:
           enabled: true
+          prune: true
       project: default
       source:
         repoURL: https://github.com/RihardsT/cloud_project_kubernetes.git
         targetRevision: HEAD
         path: '{{.path}}'
+        helm:
+          valueFiles:
+            - versions.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: default

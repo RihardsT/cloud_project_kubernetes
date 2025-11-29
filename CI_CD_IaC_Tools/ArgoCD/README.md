@@ -31,3 +31,14 @@ kubectl rollout restart deployment argocd-server -n argocd
 cd ~/Code/cloud_project/cloud_project_kubernetes/ArgoCD
 kubectl apply -n argocd -f application.yaml
 ```
+
+Application set
+```shell
+kubectl apply -n argocd -f ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD/application_set.yaml
+```
+
+### Apps with Helm
+```shell
+helm upgrade --install apps ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD/Apps/ -f ~/Code/cloud_project/cloud_project_kubernetes/CI_CD_IaC_Tools/ArgoCD/Apps/Environments/htz.yaml
+helm uninstall apps
+```

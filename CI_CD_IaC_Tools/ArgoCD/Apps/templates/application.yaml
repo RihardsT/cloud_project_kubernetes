@@ -1,4 +1,4 @@
-{{ range $name, $app := .Values.applications }}
+{{ range $name, $app := .Values }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -11,6 +11,7 @@ spec:
       - CreateNamespace=true
     automated:
       enabled: true
+      prune: true
   project: default
   sources:
     - chart: {{ $name }}

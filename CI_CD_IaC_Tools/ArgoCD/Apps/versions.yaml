@@ -1,0 +1,6 @@
+# longhorn:
+#   version: v1.10.0
+metrics-server:
+  version: 3.13.0
+trivy-operator:
+  version: 0.31.0

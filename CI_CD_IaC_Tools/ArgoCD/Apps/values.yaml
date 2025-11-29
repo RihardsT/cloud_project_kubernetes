@@ -1,18 +1,17 @@
-applications:
-  longhorn:
-    repoURL: https://charts.longhorn.io/
-    version: v1.10.0
-    values: |
-      preUpgradeChecker:
-        jobEnabled: false
-  metrics-server:
-    repoURL: https://kubernetes-sigs.github.io/metrics-server/
-    version: 3.13.0
-    values: |
-      apiService:
-        insecureSkipTLSVerify: true
-      args:
-        - --kubelet-insecure-tls
-  trivy-operator:
-    repoURL: https://aquasecurity.github.io/helm-charts/
-    version: 0.31.0
+# longhorn:
+#   repoURL: https://charts.longhorn.io/
+#   version: v1.10.0
+#   values: |
+#     preUpgradeChecker:
+#       jobEnabled: false
+metrics-server:
+  repoURL: https://kubernetes-sigs.github.io/metrics-server/
+  version: 3.13.0
+  values: |
+    apiService:
+      insecureSkipTLSVerify: true
+    args:
+      - --kubelet-insecure-tls
+trivy-operator:
+  repoURL: https://aquasecurity.github.io/helm-charts/
+  version: 0.31.0
