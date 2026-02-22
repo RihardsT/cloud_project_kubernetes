@@ -3,7 +3,7 @@ https://github.com/kubernetes-sigs/kind
 sudo apt install golang -V
 
 ### Install go lang and set podman alias to docker
-go install sigs.k8s.io/kind@v0.30.0
+go install sigs.k8s.io/kind@v0.31.0
 
 PATH=$PATH:$(go env GOPATH)/bin
 echo 'PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
@@ -33,12 +33,20 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/usage.yaml # Example
 curl localhost:8080/foo
 
-
 ### Clean up
-kind delete cluster # cluster is the default name
+kind delete cluster # kind is the default cluster name
 
 ### Useful commands
 kubectl config get-contexts
 kubectl config use-context CONTEXT # to switch to real K8s cluster
 
 echo "127.0.0.1 kind.local" | sudo tee -a /etc/hosts
+
+
+
+##### To lazy to set up rootless containerd?
+sudo $(go env GOPATH)/bin/kind create cluster
+mkdir ~/.kube/
+sudo $(go env GOPATH)/bin/kind get kubeconfig | tee ~/.kube/config
+
+sudo $(go env GOPATH)/bin/kind delete cluster
